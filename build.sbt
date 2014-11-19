@@ -10,6 +10,8 @@ scalaVersion := "2.11.4"
 
 libraryDependencies ++= Seq(
 	"com.typesafe.scala-logging" 	%%	"scala-logging-slf4j"   		% "2.1.2",
+	"com.typesafe.akka"          	%% "akka-actor"             		% "2.3.2",
+	"com.typesafe.akka"          	%% "akka-actor-tests"       		% "2.3.2",
 	"org.scala-lang.modules" 			%%	"scala-parser-combinators"	% "1.0.2",
 	"org.scalatest" 							%		"scalatest_2.11" 						% "2.2.1" 	% "test"
 )

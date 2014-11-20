@@ -1,4 +1,7 @@
 package deebee
+
+import deebee.schema._
+
 import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 
 /**

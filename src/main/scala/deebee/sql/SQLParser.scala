@@ -66,6 +66,8 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
   class SQLLexical extends StdLexical {
     override protected def processIdent(name: String) =
       if (reserved contains name.toLowerCase) Keyword(name.toLowerCase) else Identifier(name)
+
+
   }
 
   def parse(source: String): Try[Node] = {

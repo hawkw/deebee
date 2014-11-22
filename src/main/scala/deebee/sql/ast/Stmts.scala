@@ -1,6 +1,11 @@
 package deebee.sql.ast
 
 /**
+ * AST nodes for SQL statements
+ *
+ * TODO: add INSERT
+ * TODO: add DELETE
+ *
  * Created by hawk on 11/21/14.
  */
 sealed trait Stmt extends Node

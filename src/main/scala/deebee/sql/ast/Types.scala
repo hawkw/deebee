@@ -1,13 +1,15 @@
 package deebee.sql.ast
 
 /**
+ * AST nodes for data types
+ *
  * Created by hawk on 11/21/14.
  */
 sealed trait Type extends Node {
   override def emitSQL = this
     .getClass
     .getSimpleName
-    .toUpperCase()
+    .toUpperCase
     .replace("$", "")
 }
 case object Integer extends Type

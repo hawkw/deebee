@@ -64,24 +64,36 @@ import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 object SQLParser extends StandardTokenParsers with PackratParsers {
 
   class SQLLexical extends StdLexical {
+
+    import scala.util.parsing.input.CharArrayReader.EofCh
+
     override protected def processIdent(name: String) =
       if (reserved contains name.toLowerCase) Keyword(name.toLowerCase) else Identifier(name)
 
+    override def whitespace: Parser[Any] = rep(
+      whitespaceChar
+        | '/' ~ '*' ~ comment
+        | '#' ~ rep( chrExcept(EofCh, '\n') )
+        | '-' ~ '-' ~ rep( chrExcept(EofCh, '\n') )
+        | '/' ~ '*' ~ failure("unclosed comment")
+    )
+    override protected def comment: Parser[Any] = (
+      '*' ~ '/'  ^^ { case _ => ' '  }
+        | chrExcept(EofCh) ~ comment
+      )
 
   }
+  override val lexical = new SQLLexical
+  type NumericParser[T] = String => T
+  type P[T] = PackratParser[T]
 
   def parse(source: String): Try[Node] = {
-    val scan = new lexical.Scanner(source)
-    phrase(query)(scan) match {
+    phrase(query)(new lexical.Scanner(source)) match {
       case Success(result: Node, _) => util.Success(result)
       case x: Failure => util.Failure(new QueryParsingException(x.toString()))
       case x: Error => util.Failure(new QueryParsingException(x.toString()))
     }
   }
-
-  override val lexical = new SQLLexical
-  type NumericParser[T] = String => T
-  type P[T] = PackratParser[T]
 
   lexical.reserved ++= List("create", "table", "int", "integer", "char", "varchar", "numeric",
     "decimal", "not", "null", "foreign", "primary", "key", "unique")

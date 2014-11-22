@@ -1,13 +1,14 @@
 package deebee.sql.ast
 
 /**
+ * AST nodes for SQL constraints
  * Created by hawk on 11/21/14.
  */
 sealed trait Constraint extends Node {
   override def emitSQL = this
     .getClass
     .getSimpleName
-    .toUpperCase()
+    .toUpperCase
     .replace("_", " ")
     .replace("$", "")
 }

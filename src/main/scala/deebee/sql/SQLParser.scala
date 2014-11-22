@@ -81,7 +81,7 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
   type NumericParser[T] = String => T
   type P[T] = PackratParser[T]
 
-  lexical.reserved ++= List("create", "table", "int", "integer", "varchar", "numeric",
+  lexical.reserved ++= List("create", "table", "int", "integer", "char", "varchar", "numeric",
     "decimal", "not", "null", "foreign", "primary", "key", "unique")
 
   lexical.delimiters ++= List(

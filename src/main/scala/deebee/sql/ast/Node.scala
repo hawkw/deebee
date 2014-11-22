@@ -34,7 +34,7 @@ case class Schema(
   constraints: List[Constraint] = Nil
   ) extends Node {
   override def emitSQL = {
-    s"CREATE TABLE $name (\n\t${attributes.map(_.emitSQL).mkString("\n\t")}\n" +
+    s"CREATE TABLE $name (\n\t${attributes.map(_.emitSQL).mkString(",\n\t")}\n" +
       s"${constraints.map(_.emitSQL).mkString("\n\t")});"
   }
 }

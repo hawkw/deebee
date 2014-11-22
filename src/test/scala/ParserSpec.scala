@@ -10,7 +10,7 @@ import scala.util.{Try, Success}
  */
 class ParserSpec extends FlatSpec with Matchers {
   "The SQL Parser" should "parse a simple CREATE TABLE sequence" in {
-    val create = "CREATE TABLE Test ( test INTEGER PRIMARY KEY NOT NULL );"
+    val create = "CREATE TABLE Test (\ntest INTEGER PRIMARY KEY NOT NULL\n);"
     val result: Try[Node] = SQLParser.parse(create)
     result shouldBe a [Success[Node]]
     result.get.emitSQL should include (create)

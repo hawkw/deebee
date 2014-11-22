@@ -2,7 +2,7 @@ package deebee
 
 import akka.actor.Actor
 import deebee.exceptions.InternalStateException
-import deebee.query.{Delete, Insert, Select}
+import deebee.sql.ast._
 
 import scala.util.Failure
 
@@ -11,16 +11,16 @@ import scala.util.Failure
  *
  * Created by hawk on 11/19/14.
  */
-abstract class Table extends Actor {
+abstract class Relation(val name: String) extends Actor {
   type Row
 
   override def receive: Receive = {
-    case Select(table, rows, where) => if (table == this) {
+    case Select(proj, table, where, limit) => if (table contains this.name) {
 
     } else {
       sender ! Failure(new InternalStateException("Select was sent to wrong table"))
     }
-    case Insert(table, values) => ???
-    case Delete(table, where) => ???
+    //case Insert(table, values) => ???
+    //case Delete(table, where) => ???
   }
 }

@@ -3,13 +3,12 @@ package deebee.storage
 import java.io.File
 
 import akka.actor.Actor.Receive
-import deebee.Table
-import deebee.query.{Select,Insert,Delete}
+import deebee.Relation
 
 /**
  * Created by hawk on 11/19/14.
  */
-class CSVTable(private val back: File) extends Table {
+class CSVRelation(name: String, private val back: File) extends Relation(name) {
   override type Row = this.type
 
 

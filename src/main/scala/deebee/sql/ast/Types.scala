@@ -4,7 +4,11 @@ package deebee.sql.ast
  * Created by hawk on 11/21/14.
  */
 sealed trait Type extends Node {
-  override def emitSQL = this.getClass.getSimpleName.toUpperCase()
+  override def emitSQL = this
+    .getClass
+    .getSimpleName
+    .toUpperCase()
+    .replace("$", "")
 }
 case object Integer extends Type
 case class Char(n: Expr[Int]) extends Type {

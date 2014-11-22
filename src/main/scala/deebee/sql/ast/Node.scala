@@ -7,14 +7,16 @@ trait Node {
   def emitSQL: String = ???
 }
 sealed trait Expr[T] extends Node
-case class Const[T](x: T) extends Expr[T]
+case class Const[T](x: T) extends Expr[T] {
+  override def toString = x.toString
+}
 
 case class Column(
                    name: Expr[String],
                    datatype: Type,
                    constraints: List[Constraint]
                    ) extends Node {
-  override def emitSQL = s"$name ${datatype.emitSQL} ${constraints.map(_.emitSQL).mkString}"
+  override def emitSQL = s"$name ${datatype.emitSQL} ${constraints.map(_.emitSQL).mkString(" ")}"
 }
 
 case class Schema(

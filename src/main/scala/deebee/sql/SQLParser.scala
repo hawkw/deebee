@@ -1,7 +1,9 @@
 package deebee.sql
 
+import deebee.exceptions.QueryParsingException
 import deebee.sql.ast._
 
+import scala.util.{Try, Success, Failure}
 import scala.util.parsing.combinator.lexical.StdLexical
 import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 
@@ -16,14 +18,20 @@ object SQLParser extends StandardTokenParsers  {
       if (reserved contains name.toLowerCase) Keyword(name.toLowerCase) else Identifier(name)
   }
 
+  def parse(source: String): Try[Node] = {
+    val scan = new lexical.Scanner(source)
+    phrase(query)(scan) match {
+      case Success(result: Node, _) => util.Success(result)
+      case x: Failure => util.Failure(new QueryParsingException(x.toString()))
+      case x: Error => util.Failure(new QueryParsingException(x.toString()))
+    }
+  }
+
   override val lexical = new SQLLexical
   type NumericParser[T] = String => T
 
-  lexical.reserved ++= List("select", "as", "or", "and", "group", "order", "by", "where", "limit",
-    "join", "asc", "desc", "from", "on", "not", "having", "distinct",
-    "case", "when", "then", "else", "end", "for", "from", "exists", "between", "like", "in",
-    "year", "month", "day", "null", "is", "date", "interval", "group", "order",
-    "date", "left", "right", "outer", "inner")
+  lexical.reserved ++= List("create", "table", "int", "integer", "varchar", "numeric",
+    "decimal", "not", "null", "foreign", "primary", "key", "unique")
 
   lexical.delimiters ++= List(
     "*", "+", "-", "<", "=", "<>", "!=", "<=", ">=", ">", "/", "(", ")", ",", ".", ";"
@@ -31,11 +39,13 @@ object SQLParser extends StandardTokenParsers  {
 
   // parser for ints
   protected var intParser : NumericParser[Int] = {_.toInt}
+  def query: Parser[Node] = createTable
+  //  | select // todo: implement
 
-  def createTable: Parser[Schema] = ("create" ~ "table") ~> name ~ "(" ~ repsep(attr, ",") <~ ")" ^^{
-    case n ~ "(" ~ attrs => new Schema(n, attrs)
+  def createTable: Parser[Schema] = ("create" ~ "table") ~> ident ~ "(" ~ repsep(attr, ",") <~ ")" <~ ";" ^^{
+    case name ~ "(" ~ attrs => new Schema(name, attrs)
   }
-  def attr: Parser[Column] = name ~ typ ~ constraint.* ^^{ case n ~ dt ~ cs => Column(n, dt, cs) }
+  def attr: Parser[Column] = ident ~ typ ~ constraint.* ^^{ case name ~ dt ~ cs => Column(name, dt, cs) }
   def typ: Parser[Type] = (
     ("int" | "integer") ^^^ Integer
       | "char" ~> "(" ~> int <~ ")" ^^{ case i => Char(i) }
@@ -44,7 +54,7 @@ object SQLParser extends StandardTokenParsers  {
       | "decimal" ~> "(" ~> int ~ "," ~ int <~ ")" ^^{ case p ~ "," ~ d => Decimal(p,d)}
     )
   def int = accept("number", { case lexical.NumericLit(n) => intParser.apply(n)} )
-  def name  = accept("string", { case lexical.StringLit(n) => n} )
+  def string  = accept("string", { case lexical.StringLit(n) => n} )
   def constraint: Parser[Constraint] = (
     ("not" ~ "null") ^^^ Not_Null
       | ("primary" ~ "key") ^^^ Primary_Key

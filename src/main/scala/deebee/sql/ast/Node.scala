@@ -25,7 +25,7 @@ case class Column(
                    datatype: Type,
                    constraints: List[Constraint]
                    ) extends Node {
-  override def emitSQL = s"$name ${datatype.emitSQL} ${constraints.map(_.emitSQL).mkString(" ")}"
+  override def emitSQL = s"$name ${datatype.emitSQL}${constraints.map(" " + _.emitSQL).mkString}"
 }
 
 case class Schema(

@@ -97,7 +97,7 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
   }
 
   lexical.reserved ++= List("create", "table", "int", "integer", "char", "varchar", "numeric",
-    "decimal", "not", "null", "foreign", "primary", "key", "unique", "references")
+    "decimal", "not", "null", "foreign", "primary", "key", "unique", "references", "select", "from", "as", "where")
 
   lexical.delimiters ++= List(
     "*", "+", "-", "<", "=", "<>", "!=", "<=", ">=", ">", "/", "(", ")", ",", ".", ";"
@@ -105,10 +105,12 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
 
   // parser for ints
   protected var intParser : NumericParser[Int] = {_.toInt}
-  lazy val query: P[Node] = createTable
-  //  | select // todo: implement
+  lazy val query: P[Node] = (
+    createTable
+      | select
+    ) <~ ";"
 
-  lazy val createTable: P[CreateStmt] = ("create" ~ "table") ~> ident ~ "(" ~ rep1sep(attr | refConstraint, ",")  <~ ")" <~ ";" ^^{
+  lazy val createTable: P[CreateStmt] = ("create" ~ "table") ~> ident ~ "(" ~ rep1sep(attr | refConstraint, ",")  <~ ")"  ^^{
     case name ~ "(" ~ contents => new CreateStmt(
       name,
       contents.flatMap{case c: Column => c :: Nil; case _ => Nil},
@@ -137,4 +139,15 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
         Foreign_Key(cols,ref,othercols)
     }
 
+  lazy val select: P[SelectStmt] = "select" ~ projections ~ "from" ~ identifier ~ opt(whereClause) ^^{
+    case "select" ~ proj ~ "from" ~  from ~ where => SelectStmt(proj, from, where)
+  }
+
+  lazy val projections: P[List[Proj]] = "*" ^^^ GlobProj :: Nil | rep1sep(exprProj, ",")
+  lazy val exprProj: P[NameProj] = identifier ~ opt("as" ~> identifier) ^^{
+    case proj ~ asPart => NameProj(proj, asPart)
+  }
+  lazy val whereClause: P[Expr[Boolean]] = "where" ^^{
+    null //TODO: nyi
+  }
 }

@@ -9,10 +9,10 @@ package deebee.sql.ast
  * Created by hawk on 11/21/14.
  */
 sealed trait Stmt extends Node
-case class Select(
+case class SelectStmt(
   projections: List[Proj] = GlobProj :: Nil,
-  from: List[Const[String]],
-  where: Option[Predicate] = None,
+  from: Ident,
+  where: Option[Expr[Boolean]] = None,
   //TODO: implement these
   //groupBy: Option[GroupBy] = None,
   //orderBy: Option[OrderBy] = None,
@@ -20,9 +20,10 @@ case class Select(
                    ) extends Stmt {
 
   override def emitSQL =
-    s"SELECT  ${projections.map(_.emitSQL).mkString(", ")}" +
-    s" FROM ${from.map(_.emitSQL).mkString(",")} "+
-    s"${where.map("WHERE" + _.emitSQL)}${limit.map(" LIMIT " + _)};"
+    s"SELECT ${projections.map(_.emitSQL).mkString(", ")}" +
+    s" FROM ${from.emitSQL}"+
+    s"${where.map(" WHERE" + _.emitSQL).getOrElse("")}"+
+    s"${limit.map(" LIMIT " + _).getOrElse("")};"
     //groupBy.map(_.emitSQL),
     //orderBy.map(_.emitSQL),
 

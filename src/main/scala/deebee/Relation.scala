@@ -15,7 +15,7 @@ abstract class Relation(val name: String) extends Actor {
   type Row
 
   override def receive: Receive = {
-    case Select(proj, table, where, limit) => if (table contains this.name) {
+    case SelectStmt(proj, table, where, limit) => if (table.name == this.name) {
 
     } else {
       sender ! Failure(new InternalStateException("Select was sent to wrong table"))

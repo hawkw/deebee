@@ -20,6 +20,10 @@ ScoverageKeys.minimumCoverage := 70
 
 ScoverageKeys.failOnMinimumCoverage := false
 
+ScoverageKeys.scoverageExcludedFiles := "<empty>"
+
+ScoverageKeys.excludedPackages := "<empty>"
+
 ScoverageKeys.highlighting := {
   if (scalaBinaryVersion.value == "2.10") false
   else false

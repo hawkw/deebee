@@ -11,7 +11,7 @@ import scala.util.{Try, Success}
  */
 class ParserSpec extends FlatSpec with Matchers {
 
-  val writersSchema = Source fromURL (getClass getResource "/Writers.sql") getLines()
+  private def writersSchema = Source fromURL (getClass getResource "/Writers.sql") getLines()
 
   /**
    * Helper method for testing. Asserts that the a SQL query can be reconstructed from its'

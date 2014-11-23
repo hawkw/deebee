@@ -7,8 +7,7 @@ import scala.language.implicitConversions
  */
 package object ast {
   type Predicate = Expr[Boolean]
-  implicit def liftString(x: String): Expr[String] = Const(x)
-  implicit def unliftString(c: Const[String]): String = c.x
-  implicit def liftInt(x: Int): Expr[Int] = Const(x)
-  implicit def listDouble(x: Double): Expr[Double] = Const(x)
+  implicit def liftIdent(name: String): Ident = Ident(name)
+  implicit def liftConstant[T](x: T): Expr[T] = Const(x)
+  implicit def unliftConstant[T](c: Const[T]): T = c.x
 }

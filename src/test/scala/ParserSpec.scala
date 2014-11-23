@@ -57,7 +57,7 @@ class ParserSpec extends FlatSpec with Matchers {
     )
   }
   it should "parse a CREATE TABLE statement from Writers.sql with FOREIGN KEY constraints" in {
-    val result: Try[Node] = SQLParser.parse(writersSchema slice (28,33)  mkString "\n")
+    val result: Try[Node] = SQLParser.parse(writersSchema slice (27,33)  mkString "\n")
     result shouldBe a [Success[Node]]
     result.get.emitSQL should include (
     "CREATE TABLE Contemporaries (\n" +

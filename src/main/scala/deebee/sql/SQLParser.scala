@@ -97,7 +97,7 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
   }
 
   lexical.reserved ++= List("create", "table", "int", "integer", "char", "varchar", "numeric",
-    "decimal", "not", "null", "foreign", "primary", "key", "unique")
+    "decimal", "not", "null", "foreign", "primary", "key", "unique", "references")
 
   lexical.delimiters ++= List(
     "*", "+", "-", "<", "=", "<>", "!=", "<=", ">=", ">", "/", "(", ")", ",", ".", ";"
@@ -108,8 +108,12 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
   lazy val query: P[Node] = createTable
   //  | select // todo: implement
 
-  lazy val createTable: P[CreateStmt] = ("create" ~ "table") ~> ident ~ "(" ~ repsep(attr, ",") <~ ")" <~ ";" ^^{
-    case name ~ "(" ~ attrs => new CreateStmt(name, attrs)
+  lazy val createTable: P[CreateStmt] = ("create" ~ "table") ~> ident ~ "(" ~ rep1sep(attr | refConstraint, ",")  <~ ")" <~ ";" ^^{
+    case name ~ "(" ~ contents => new CreateStmt(
+      name,
+      contents.flatMap{case c: Column => c :: Nil; case _ => Nil},
+      contents.flatMap{case c: Constraint => c :: Nil; case _ => Nil}
+    )
   }
   lazy val attr: P[Column] = ident ~ typ ~ inPlaceConstraint.* ^^{ case name ~ dt ~ cs => Column(name, dt, cs) }
   lazy val typ: P[Type] = (
@@ -128,8 +132,8 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     )
   lazy val identifier: P[Ident] = ident ^^{ i => Ident(i)}
   lazy val refConstraint: P[Constraint] =
-    "foreign" ~ "key" ~ "(" ~ repsep(identifier, ",") ~ ")" ~ "references" ~ opt(identifier) ~ "(" ~ repsep(identifier, ",") ~ ")" ^^{
-      case "foreign" ~ "key" ~ "(" ~ cols ~ ")" ~ "references" ~ ref ~ "(" ~ othercols ~ ")" =>
+    "foreign" ~ "key" ~ "(" ~> rep1sep(identifier, ",") ~ ")" ~ "references" ~ opt(identifier) ~ "(" ~ rep1sep(identifier, ",") <~ ")" ^^{
+      case cols ~ ")" ~ "references" ~ ref ~ "(" ~ othercols  =>
         Foreign_Key(cols,ref,othercols)
     }
 

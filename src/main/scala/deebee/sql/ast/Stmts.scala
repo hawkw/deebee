@@ -27,3 +27,22 @@ case class Select(
     //orderBy.map(_.emitSQL),
 
 }
+case class Column(
+                   name: Expr[String],
+                   datatype: Type,
+                   constraints: List[Constraint]
+                   ) extends Node {
+  override def emitSQL = s"$name ${datatype.emitSQL}${constraints.map(" " + _.emitSQL).mkString}"
+}
+
+case class CreateStmt(
+                   name: Expr[String],
+                   attributes: List[Column],
+                   constraints: List[Constraint] = Nil
+                   ) extends Node {
+  override def emitSQL = {
+    s"CREATE TABLE $name (\n\t${attributes.map(_.emitSQL).mkString(",\n\t")}" +
+      {if (constraints.length > 0) ",\n\t" else ""} +
+      s"${constraints.map(_.emitSQL).mkString("\n\t")}\n);"
+  }
+}

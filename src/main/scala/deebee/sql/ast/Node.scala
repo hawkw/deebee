@@ -15,26 +15,10 @@ trait Node {
   def emitSQL: String = ???
   override def toString = emitSQL
 }
+case class Ident(name: String) extends Node {
+  override val emitSQL = name
+}
 sealed trait Expr[T] extends Node
 case class Const[T](x: T) extends Expr[T] {
-  override def toString = x.toString
-}
-
-case class Column(
-                   name: Expr[String],
-                   datatype: Type,
-                   constraints: List[Constraint]
-                   ) extends Node {
-  override def emitSQL = s"$name ${datatype.emitSQL}${constraints.map(" " + _.emitSQL).mkString}"
-}
-
-case class Schema(
-  name: Expr[String],
-  attributes: List[Column],
-  constraints: List[Constraint] = Nil
-  ) extends Node {
-  override def emitSQL = {
-    s"CREATE TABLE $name (\n\t${attributes.map(_.emitSQL).mkString(",\n\t")}\n" +
-      s"${constraints.map(_.emitSQL).mkString("\n\t")});"
-  }
+  override val emitSQL = x.toString
 }

@@ -116,5 +116,7 @@ class ParserSpec extends FlatSpec with Matchers {
     assertReconstructed("DELETE FROM test WHERE test2 > 3 LIMIT 100;")
   }
 
-
+  it should "parse a basic INSERT statement" in {
+    assertReconstructed("INSERT INTO test VALUES (1,'a string',2.0);")
+  }
 }

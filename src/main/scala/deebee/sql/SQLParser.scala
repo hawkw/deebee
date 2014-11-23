@@ -193,4 +193,21 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     | int
     | double
     ) ^^{ Const(_) }
+
+  /**
+   * Quick REPL for debugging. `.exit` exits.
+   * @param args
+   */
+  def main(args: Array[String]): Unit = {
+    var line = ""
+    while(line != ".exit") {
+      print("> ")
+      line = Console.in.readLine()
+      println(">>> " + (parse(line) match {
+          case util.Success(t) => t
+          case util.Failure(e) => e
+        })
+      )
+    }
+  }
 }

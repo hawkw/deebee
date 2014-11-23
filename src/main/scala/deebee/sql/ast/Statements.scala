@@ -23,7 +23,7 @@ case class SelectStmt(
   override def emitSQL =
     s"SELECT ${projections.map(_.emitSQL).mkString(", ")}" +
     s" FROM ${from.emitSQL}"+
-    s"${where.map(" WHERE" + _.emitSQL).getOrElse("")}"+
+    s"${where.map(" WHERE " + _.emitSQL).getOrElse("")}"+
     s"${limit.map(" LIMIT " + _).getOrElse("")};"
     //groupBy.map(_.emitSQL),
     //orderBy.map(_.emitSQL),

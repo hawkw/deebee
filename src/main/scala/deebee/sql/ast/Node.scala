@@ -17,6 +17,3 @@ trait Node {
   def emitSQL: String = ???
   override def toString = emitSQL
 }
-case class Ident(name: String) extends Node {
-  override val emitSQL = name
-}

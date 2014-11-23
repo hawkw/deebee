@@ -70,6 +70,10 @@ class ParserSpec extends FlatSpec with Matchers {
     )
   }
 
+  it should "parse a DROP TABLE statement" in {
+    assertReconstructed("DROP TABLE test;")
+  }
+
   it should "parse a simple SELECT statement" in {
     assertReconstructed("SELECT * FROM test;")
   }

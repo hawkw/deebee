@@ -1,4 +1,6 @@
-package deebee.sql.ast
+package deebee
+package sql
+package ast
 
 /**
  * Trait for a node in a SQL abstract syntax tree.
@@ -17,8 +19,4 @@ trait Node {
 }
 case class Ident(name: String) extends Node {
   override val emitSQL = name
-}
-sealed trait Expr[T] extends Node
-case class Const[T](x: T) extends Expr[T] {
-  override val emitSQL = x.toString
 }

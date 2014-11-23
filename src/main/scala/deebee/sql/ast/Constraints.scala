@@ -1,4 +1,6 @@
-package deebee.sql.ast
+package deebee
+package sql
+package ast
 
 /**
  * AST nodes for SQL constraints

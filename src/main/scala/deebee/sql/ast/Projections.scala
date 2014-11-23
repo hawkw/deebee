@@ -1,4 +1,6 @@
-package deebee.sql.ast
+package deebee
+package sql
+package ast
 
 /**
  * Created by hawk on 11/21/14.

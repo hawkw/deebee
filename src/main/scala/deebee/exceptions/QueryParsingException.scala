@@ -1,4 +1,5 @@
-package deebee.exceptions
+package deebee
+package exceptions
 
 /**
  * Created by hawk on 11/22/14.

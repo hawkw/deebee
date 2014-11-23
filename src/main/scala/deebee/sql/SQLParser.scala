@@ -96,7 +96,7 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     }
   }
 
-  lexical.reserved ++= List("create", "table", "int", "integer", "char", "varchar", "numeric",
+  lexical.reserved ++= List("create", "drop", "table", "int", "integer", "char", "varchar", "numeric",
     "decimal", "not", "null", "foreign", "primary", "key", "unique", "references", "select", "from", "as", "where",
     "and", "or", "limit", "delete"
   )
@@ -116,6 +116,7 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     createTable
       | select
       | delete
+      | dropTable
     ) <~ ";"
 
   lazy val createTable: P[CreateStmt] = ("create" ~ "table") ~> ident ~ "(" ~ rep1sep(attr | refConstraint, ",")  <~ ")"  ^^{
@@ -125,6 +126,7 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
       contents.flatMap{case c: Constraint => c :: Nil; case _ => Nil}
     )
   }
+  lazy val dropTable: P[DropStmt] = "drop" ~> "table" ~> identifier ^^{case i => DropStmt(i)}
   lazy val attr: P[Column] = ident ~ typ ~ inPlaceConstraint.* ^^{ case name ~ dt ~ cs => Column(name, dt, cs) }
   lazy val typ: P[Type] = (
     ("int" | "integer") ^^^ Integer

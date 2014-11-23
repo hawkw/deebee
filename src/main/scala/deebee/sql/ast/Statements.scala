@@ -50,7 +50,7 @@ case class Column(
 }
 
 case class CreateStmt(
-                   name: Expr[String],
+                   name: Ident,
                    attributes: List[Column],
                    constraints: List[Constraint] = Nil
                    ) extends Node {
@@ -59,4 +59,8 @@ case class CreateStmt(
       {if (constraints.length > 0) ",\n\t" else ""} +
       s"${constraints.map(_.emitSQL).mkString("\n\t")}\n);"
   }
+}
+
+case class DropStmt(name: Ident) extends Node {
+  override def emitSQL = s"DROP TABLE $name;"
 }

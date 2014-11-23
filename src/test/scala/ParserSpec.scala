@@ -117,6 +117,6 @@ class ParserSpec extends FlatSpec with Matchers {
   }
 
   it should "parse a basic INSERT statement" in {
-    assertReconstructed("INSERT INTO test VALUES (1,'a string',2.0);")
+    assertReconstructed("INSERT INTO test VALUES (1, 'a string', 2, 'another string');")
   }
 }

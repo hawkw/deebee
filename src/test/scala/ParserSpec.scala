@@ -97,4 +97,20 @@ class ParserSpec extends FlatSpec with Matchers {
     assertReconstructed("SELECT * FROM test WHERE test1 = 9 LIMIT 5;")
   }
 
+  it should "parse a DELETE statement" in {
+    assertReconstructed("DELETE FROM test;")
+  }
+  it should "parse a DELETE statement with a WHERE clause" in {
+    assertReconstructed("DELETE FROM test WHERE test9 = 'deleteme';")
+  }
+
+  it should "parse a DELETE statement with a LIMIT clause" in {
+    assertReconstructed("DELETE FROM test LIMIT 8;")
+  }
+
+  it should "parse a DELETE statement with WHERE and LIMIT clauses" in {
+    assertReconstructed("DELETE FROM test WHERE test2 > 3 LIMIT 100;")
+  }
+
+
 }

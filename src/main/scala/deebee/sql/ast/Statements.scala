@@ -17,7 +17,7 @@ case class SelectStmt(
   //TODO: implement these
   //groupBy: Option[GroupBy] = None,
   //orderBy: Option[OrderBy] = None,
-  limit: Option[Int] = None
+  limit: Option[Expr[Int]] = None
                    ) extends Stmt {
 
   override def emitSQL =

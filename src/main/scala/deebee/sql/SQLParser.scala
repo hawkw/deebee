@@ -98,7 +98,7 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
 
   lexical.reserved ++= List("create", "table", "int", "integer", "char", "varchar", "numeric",
     "decimal", "not", "null", "foreign", "primary", "key", "unique", "references", "select", "from", "as", "where",
-    "and", "or"
+    "and", "or", "limit"
   )
 
   lexical.delimiters ++= List(
@@ -144,8 +144,8 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
         Foreign_Key(cols,ref,othercols)
     }
 
-  lazy val select: P[SelectStmt] = "select" ~ projections ~ "from" ~ identifier ~ opt(whereClause) ^^{
-    case "select" ~ proj ~ "from" ~  from ~ where => SelectStmt(proj, from, where)
+  lazy val select: P[SelectStmt] = "select" ~ projections ~ "from" ~ identifier ~ opt(whereClause) ~ opt(limitClause) ^^{
+    case "select" ~ proj ~ "from" ~ from ~ where ~ limit => SelectStmt(proj, from, where, limit)
   }
 
   lazy val projections: P[List[Proj]] = "*" ^^^ GlobProj :: Nil | rep1sep(exprProj, ",")
@@ -153,6 +153,7 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     case proj ~ asPart => NameProj(proj, asPart)
   }
   lazy val whereClause: P[Expr[Boolean]] = "where" ~> comparison
+  lazy val limitClause: P[Expr[Int]] = "limit" ~> intExpr
   lazy val comparison: P[Expr[Boolean]] = (
     (expression ~ "=" ~ expression)
     | (expression ~ "!=" ~ expression)
@@ -164,8 +165,12 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     |  (expression ~ "and" ~ expression)
     | (expression ~ "or" ~ expression)
     ) ^^ {
-    case lhs ~ op ~ rhs => Comparison(lhs, op.toUpperCase(), rhs)
+    case lhs ~ op ~ rhs => Comparison(lhs, op.toUpperCase, rhs)
   }
+  lazy val intExpr: P[Expr[Int]] = (
+    int ^^{ Const(_) }
+    // | term // TODO: insert math here
+    )
   lazy val expression: P[Expr[_]] = (
     ("(" ~> comparison <~ ")") ^^{case c: Comparison => new ParenComparison(c)}
     | comparison

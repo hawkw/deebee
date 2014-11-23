@@ -84,6 +84,9 @@ class ParserSpec extends FlatSpec with Matchers {
   it should "parse a SELECT statement with a chained WHERE clause" in {
     assertReconstructed("SELECT * FROM test WHERE test1 = 9 AND test2 = 5;")
   }
+  it should "parse a SELECT statement with a parenthesized WHERE clause" in {
+    assertReconstructed("SELECT * FROM suppliers WHERE (city = 'New York' AND name = 'IBM') OR (ranking >= 10);")
+  }
 
   it should "parse a SELECT statement with a LIMIT clause" in {
     assertReconstructed("SELECT * FROM test LIMIT 5;")

@@ -68,4 +68,17 @@ class ParserSpec extends FlatSpec with Matchers {
       ");"
     )
   }
+
+  it should "parse a simple SELECT statement" in {
+    assertReconstructed("SELECT * FROM test;")
+  }
+
+  it should "parse a SELECT statement with projections" in {
+    assertReconstructed("SELECT test1, test2 FROM test;")
+  }
+
+  it should "parse a SELECT statement with a WHERE clause" in {
+    assertReconstructed("SELECT * FROM test WHERE test1 = 0;")
+  }
+
 }

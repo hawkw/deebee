@@ -42,8 +42,7 @@ class ParserSpec extends FlatSpec with Matchers {
   }
 
   it should "parse the first CREATE TABLE from Writers.sql, ignoring comments" in {
-    val lines15 = writersSchema take 15 mkString "\n"
-    val result: Try[Node] = SQLParser.parse(lines15)
+    val result: Try[Node] = SQLParser.parse(writersSchema take 15 mkString "\n")
     result shouldBe a [Success[Node]]
     result.get.emitSQL should include (
     "CREATE TABLE Writers (\n" +
@@ -54,6 +53,18 @@ class ParserSpec extends FlatSpec with Matchers {
       "\tbirth_date VARCHAR(10) NOT NULL,\n" +
       "\tdeath_date VARCHAR(10),\n" +
       "\tcountry_of_origin VARCHAR(20) NOT NULL\n" +
+      ");"
+    )
+  }
+  it should "parse a CREATE TABLE statement from Writers.sql with FOREIGN KEY constraints" in {
+    val result: Try[Node] = SQLParser.parse(writersSchema slice (28,33)  mkString "\n")
+    result shouldBe a [Success[Node]]
+    result.get.emitSQL should include (
+    "CREATE TABLE Contemporaries (\n" +
+      "\twriter_id INTEGER NOT NULL,\n" +
+      "\tcontemporary_id INTEGER NOT NULL,\n" +
+      "\tFOREIGN KEY (writer_id) REFERENCES Writers (id)\n" +
+      "\tFOREIGN KEY (contemporary_id) REFERENCES Writers (id)\n" +
       ");"
     )
   }

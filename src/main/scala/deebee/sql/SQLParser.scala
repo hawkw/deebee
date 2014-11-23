@@ -97,7 +97,9 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
   }
 
   lexical.reserved ++= List("create", "table", "int", "integer", "char", "varchar", "numeric",
-    "decimal", "not", "null", "foreign", "primary", "key", "unique", "references", "select", "from", "as", "where")
+    "decimal", "not", "null", "foreign", "primary", "key", "unique", "references", "select", "from", "as", "where",
+    "and", "or"
+  )
 
   lexical.delimiters ++= List(
     "*", "+", "-", "<", "=", "<>", "!=", "<=", ">=", ">", "/", "(", ")", ",", ".", ";"
@@ -159,11 +161,14 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     | (expression ~ "<=" ~ expression)
     | (expression ~ ">" ~ expression)
     | (expression ~ "<" ~ expression)
+    |  (expression ~ "and" ~ expression)
+    | (expression ~ "or" ~ expression)
     ) ^^ {
-    case lhs ~ op ~ rhs => Comparison(lhs, op, rhs)
+    case lhs ~ op ~ rhs => Comparison(lhs, op.toUpperCase(), rhs)
   }
   lazy val expression: P[Expr[_]] = (
-    ("(" ~> comparison <~ ")")
+    ("(" ~> comparison <~ ")") ^^{case c: Comparison => new ParenComparison(c)}
+    | comparison
     | literal
     | identifier
     )

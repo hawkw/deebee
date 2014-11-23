@@ -36,6 +36,7 @@ class ParserSpec extends FlatSpec with Matchers {
       "\ttestint INTEGER PRIMARY KEY NOT NULL,\n" +
       "\ttestvarchar VARCHAR(255),\n" +
       "\ttestnumeric NUMERIC(5, 8) NOT NULL,\n" +
+      "\ttestdec DECIMAL(1, 2),\n" +
       "\ttestchar CHAR(15)\n" +
       ");"
     )

@@ -29,6 +29,18 @@ case class SelectStmt(
     //orderBy.map(_.emitSQL),
 
 }
+
+case class DeleteStmt(
+  from: Ident,
+  where: Option[Expr[Boolean]] = None,
+  limit: Option[Expr[Int]] = None
+  ) extends Stmt {
+
+  override def emitSQL =
+    s"DELETE FROM ${from.emitSQL}" +
+      s"${where.map(" WHERE " + _.emitSQL).getOrElse("")}"+
+      s"${limit.map(" LIMIT " + _).getOrElse("")};"
+}
 case class Column(
                    name: Expr[String],
                    datatype: Type,

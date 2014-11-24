@@ -1,5 +1,4 @@
 package deebee.query
-import deebee.Relation
 
 /**
  * Messages for Query Processor <--> Table interaction

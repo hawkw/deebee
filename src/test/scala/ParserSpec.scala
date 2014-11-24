@@ -21,7 +21,7 @@ class ParserSpec extends FlatSpec with Matchers {
   private def assertReconstructed (sql: String): Unit = {
     val result: Try[Node] = SQLParser.parse(sql)
     result shouldBe a [Success[Node]]
-    result.get.emitSQL should include (sql)
+    result.get.emitSQL should include (sql.replace("NUMERIC", "DECIMAL"))
   }
   "The SQL Parser" should "parse a simple CREATE TABLE statement" in {
     assertReconstructed(

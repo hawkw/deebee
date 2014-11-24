@@ -4,5 +4,5 @@ scala:
    - 2.11.2
    - 2.11.4
 script: "sbt coveralls"
-after_success: "./travis/publish.sh"
+after_success: ".travis/publish.sh"
 secure: "exn9JRP3/A/2WVrlkselkIMj8dSgz9J6sPx3Zg92pSQq0QOURLinWMaNf1eD8gz8g9jZ/HQDxdFMihlkjeh58q2/fyNBonqAzF3gSXKkJwg/uF8gjis+wqdb10y04xxzF24jWE4fy408H0deRFe7QFvMZmnextqrenlWeN4W1zo="

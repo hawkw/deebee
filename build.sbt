@@ -8,7 +8,13 @@ version := "0.1"
 
 scalaVersion := "2.11.4"
 
+resolvers ++= Seq(
+	Resolver.sonatypeRepo("releases"),
+	Resolver.sonatypeRepo("snapshots")
+)
+
 libraryDependencies ++= Seq(
+	"com.chuusai" 								%% "shapeless" 									% "2.0.0",
 	"com.typesafe.scala-logging" 	%%	"scala-logging-slf4j"   		% "2.1.2",
 	"com.typesafe.akka"          	%% "akka-actor"             		% "2.3.2",
 	"com.typesafe.akka"          	%% "akka-actor-tests"       		% "2.3.2",

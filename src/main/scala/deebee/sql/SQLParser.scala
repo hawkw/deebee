@@ -18,8 +18,6 @@ import scala.util.parsing.combinator.syntactical.StandardTokenParsers
  * either one of the two supported DDL statements ([[ast.CreateStmt CREATE TABLE]] or [[ast.DropStmt DROP TABLE]]) or
  * one of the three supported DML statements ([[ast.SelectStmt SELECT]], [[ast.InsertStmt INSERT]], or [[ast.DeleteStmt DELETE]]).
  *
- * TODO: DROP TABLE, SELECT, INSERT, and DELETE are all varying degrees of not yet implemented.
- *
  * ==Note on Parsing==
  *
  * For anyone not familiar with Scala's [[scala.util.parsing.combinator parser-combinators]] library,
@@ -136,8 +134,7 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     ("int" | "integer") ^^^ Integer
       | "char" ~> "(" ~> int <~ ")" ^^{ case i => Char(i) }
       | "varchar" ~> "(" ~> int <~ ")" ^^{ case n => Varchar(n) }
-      | "numeric" ~> "(" ~> int ~ "," ~ int <~ ")" ^^{ case p ~ "," ~ d => Numeric(p,d)}
-      | "decimal" ~> "(" ~> int ~ "," ~ int <~ ")" ^^{ case p ~ "," ~ d => Decimal(p,d)}
+      | ("numeric" | "decimal") ~> "(" ~> int ~ "," ~ int <~ ")" ^^{ case p ~ "," ~ d =>Decimal(p,d)}
     )
   lazy val inPlaceConstraint: P[Constraint] = (
     ("not" ~ "null") ^^^ Not_Null

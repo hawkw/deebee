@@ -121,20 +121,20 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
   lazy val createTable: P[CreateStmt] = ("create" ~ "table") ~> identifier ~ "(" ~ rep1sep(attr | refConstraint, ",")  <~ ")"  ^^{
     case name ~ "(" ~ contents => new CreateStmt(
       name,
-      contents.flatMap{case c: Column => c :: Nil; case _ => Nil},
-      contents.flatMap{case c: Constraint => c :: Nil; case _ => Nil}
+      contents.filter{_.isInstanceOf[Column[_]]}.asInstanceOf[List[Column[_]]],
+      contents.filter{_.isInstanceOf[Constraint]}.asInstanceOf[List[Constraint]]
     )
   }
   lazy val insert: P[InsertStmt] = "insert" ~> "into" ~> identifier ~ ("values" ~> "(" ~> repsep(expression, ",") <~ ")") ^^{
     case into ~ values => InsertStmt(into, values)
   }
   lazy val dropTable: P[DropStmt] = "drop" ~> "table" ~> identifier ^^{case i => DropStmt(i)}
-  lazy val attr: P[Column] = ident ~ typ ~ inPlaceConstraint.* ^^{ case name ~ dt ~ cs => Column(name, dt, cs) }
-  lazy val typ: P[Type] = (
-    ("int" | "integer") ^^^ Integer
-      | "char" ~> "(" ~> int <~ ")" ^^{ case i => Char(i) }
-      | "varchar" ~> "(" ~> int <~ ")" ^^{ case n => Varchar(n) }
-      | ("numeric" | "decimal") ~> "(" ~> int ~ "," ~ int <~ ")" ^^{ case p ~ "," ~ d =>Decimal(p,d)}
+  lazy val attr: P[Column[_]] = ident ~ typ ~ inPlaceConstraint.* ^^{ case name ~ dt ~ cs => Column(name, dt, cs) }
+  lazy val typ: P[Type[_]] = (
+    ("int" | "integer") ^^^ IntegerType
+      | "char" ~> "(" ~> int <~ ")" ^^{ case i => CharType(i) }
+      | "varchar" ~> "(" ~> int <~ ")" ^^{ case n => VarcharType(n) }
+      | ("numeric" | "decimal") ~> "(" ~> int ~ "," ~ int <~ ")" ^^{ case p ~ "," ~ d => DecimalType(p,d)}
     )
   lazy val inPlaceConstraint: P[Constraint] = (
     ("not" ~ "null") ^^^ Not_Null
@@ -160,9 +160,9 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
   lazy val exprProj: P[NameProj] = identifier ~ opt("as" ~> identifier) ^^{
     case proj ~ asPart => NameProj(proj, asPart)
   }
-  lazy val whereClause: P[Expr[Boolean]] = "where" ~> comparison
+  lazy val whereClause: P[Comparison] = "where" ~> comparison
   lazy val limitClause: P[Expr[Int]] = "limit" ~> intExpr
-  lazy val comparison: P[Expr[Boolean]] = (
+  lazy val comparison: P[Comparison] = (
     (expression ~ "=" ~ expression)
     | (expression ~ "!=" ~ expression)
     | (expression ~ "<>" ~ expression)
@@ -181,9 +181,9 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     )
   lazy val expression: P[Expr[_]] = (
     ("(" ~> comparison <~ ")") ^^{case c: Comparison => new ParenComparison(c)}
-    | comparison
-    | literal
-    | identifier
+      | comparison
+     | literal
+    | identifier ^^{ case i => i.asInstanceOf[Expr[_]] }
     )
   lazy val literal: P[Expr[_]] = (
     stringLit

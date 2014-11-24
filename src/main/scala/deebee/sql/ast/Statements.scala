@@ -1,6 +1,8 @@
 package deebee
 package sql
 package ast
+
+import deebee.storage.{Entry, Relation}
 /**
  * AST nodes for SQL statements
  *
@@ -13,7 +15,7 @@ sealed trait Stmt extends Node
 case class SelectStmt(
   projections: List[Proj] = GlobProj :: Nil,
   from: Ident,
-  where: Option[Expr[Boolean]] = None,
+  where: Option[Comparison] = None,
   //TODO: implement these
   //groupBy: Option[GroupBy] = None,
   //orderBy: Option[OrderBy] = None,
@@ -32,7 +34,7 @@ case class SelectStmt(
 
 case class DeleteStmt(
   from: Ident,
-  where: Option[Expr[Boolean]] = None,
+  where: Option[Comparison] = None,
   limit: Option[Expr[Int]] = None
   ) extends Stmt {
 
@@ -41,17 +43,21 @@ case class DeleteStmt(
       s"${where.map(" WHERE " + _.emitSQL).getOrElse("")}"+
       s"${limit.map(" LIMIT " + _).getOrElse("")};"
 }
-case class Column(
-                   name: Expr[String],
-                   datatype: Type,
+case class Column[T](
+                   name: Ident,
+                   datatype: Type[T],
                    constraints: List[Constraint]
                    ) extends Node {
   override def emitSQL = s"$name ${datatype.emitSQL}${constraints.map(" " + _.emitSQL).mkString}"
+  def apply(context: Relation)(a: T): Entry[T] = {
+    // TODO: apply {Unique | Not Null | Primary Key} constraints here
+      datatype.entry(a)
+  }
 }
 
 case class CreateStmt(
                    name: Ident,
-                   attributes: List[Column],
+                   attributes: List[Column[_]],
                    constraints: List[Constraint] = Nil
                    ) extends Node {
   override def emitSQL = {

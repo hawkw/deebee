@@ -1,9 +1,8 @@
 package deebee
-package storage
 
-import akka.actor.{Actor, ActorSystem}
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import akka.actor.{Actor, ActorLogging, ActorSystem}
 import deebee.sql.ast._
+import deebee.storage.Relation
 
 /**
  * Represents the top level of a database, responsible for sending queries
@@ -13,7 +12,7 @@ import deebee.sql.ast._
  * Eventually, this will also probably manage joins, when that happens.
  * @author Hawk Weisman
  */
-abstract class Database(val name: String) extends Actor with LazyLogging {
+abstract class Database(val name: String) extends Actor with ActorLogging {
 
   type Table <: Relation
   val system = ActorSystem("Database: " + name)
@@ -21,16 +20,17 @@ abstract class Database(val name: String) extends Actor with LazyLogging {
 
   override def receive: Receive = {
     case c: CreateStmt => if (tables contains c.name) {
-      logger.warn(s"Could not create table ${c.name}, relation already exists")
+      //TODO: eventually support the "IF NOT EXISTS" statement here
+      log.warning(s"Could not create table ${c.name}, relation already exists")
     } else {
       tables += (c.name.toString -> create(c))
-      logger.info(s"Created table ${c.name}")
+      log.info(s"Created table ${c.name}")
     }
     case DropStmt(which) => if (tables contains which) {
       tables -= which
-      logger.info(s"Dropped table $which")
+      log.info(s"Dropped table $which")
     } else {
-      logger.warn(s"Could not drop table $which, no relation by that name exists")
+      log.warning(s"Could not drop table $which, no relation by that name exists")
     }
     case s: SelectStmt => sender ! (for (target <- tables get s.from) yield ())
   }
@@ -40,6 +40,6 @@ abstract class Database(val name: String) extends Actor with LazyLogging {
    * This adds actors to the actor system.
    * @return
    */
-  protected def create(c: CreateStmt): Table = ???
+  protected def create(c: CreateStmt): Table
 }
 

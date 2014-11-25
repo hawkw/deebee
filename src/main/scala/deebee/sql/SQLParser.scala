@@ -1,8 +1,8 @@
 package deebee
 package sql
 
-import ast._
-import exceptions._
+import deebee.exceptions._
+import deebee.sql.ast._
 
 import scala.util.Try
 import scala.util.parsing.combinator.PackratParsers
@@ -62,36 +62,28 @@ import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 
 object SQLParser extends StandardTokenParsers with PackratParsers {
 
-  class SQLLexical extends StdLexical {
-
-    import scala.util.parsing.input.CharArrayReader.EofCh
-
-    override protected def processIdent(name: String) =
-      if (reserved contains name.toLowerCase) Keyword(name.toLowerCase) else Identifier(name)
-
-    override def whitespace: Parser[Any] = rep(
-      whitespaceChar
-        | '/' ~ '*' ~ comment
-        | '#' ~ rep( chrExcept(EofCh, '\n') )
-        | '-' ~ '-' ~ rep( chrExcept(EofCh, '\n') )
-        | '/' ~ '*' ~ failure("unclosed comment")
-    )
-    override protected def comment: Parser[Any] = (
-      '*' ~ '/'  ^^ { case _ => ' '  }
-        | chrExcept(EofCh) ~ comment
-      )
-
-  }
-  override val lexical = new SQLLexical
   type NumericParser[T] = String => T
   type P[T] = PackratParser[T]
-
-  def parse(source: String): Try[Node] = {
-    phrase(query)(new lexical.Scanner(source)) match {
-      case Success(result: Node, _) => util.Success(result)
-      case x: Failure => util.Failure(new QueryParsingException(x.toString()))
-      case x: Error => util.Failure(new QueryParsingException(x.toString()))
-    }
+  lazy val query: P[Node] = (
+    createTable
+      | select
+      | delete
+      | insert
+      | dropTable
+    ) <~ ";"
+  lazy val createTable: P[CreateStmt] = ("create" ~ "table") ~> identifier ~ "(" ~ rep1sep(attr | refConstraint, ",") <~ ")" ^^ {
+    case name ~ "(" ~ contents => new CreateStmt(
+      name,
+      contents.filter {
+        _.isInstanceOf[Attribute[_]]
+      }.asInstanceOf[List[Attribute[_]]],
+      contents.filter {
+        _.isInstanceOf[Constraint]
+      }.asInstanceOf[List[Constraint]]
+    )
+  }
+  lazy val insert: P[InsertStmt] = "insert" ~> "into" ~> identifier ~ ("values" ~> "(" ~> repsep(expression, ",") <~ ")") ^^ {
+    case into ~ values => InsertStmt(into, values)
   }
 
   lexical.reserved ++= List("create", "drop", "table", "int", "integer", "char", "varchar", "numeric",
@@ -102,34 +94,8 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
   lexical.delimiters ++= List(
     "*", "+", "-", "<", "=", "<>", "!=", "<=", ">=", ">", "/", "(", ")", ",", ".", ";"
   )
-
-  // parser for ints
-  protected var intParser : NumericParser[Int] = {_.toInt}
-  protected var doubleParser : NumericParser[Double] = {_.toDouble}
-  def int = accept("integer", { case lexical.NumericLit(n) => intParser.apply(n)} )
-  def double = accept("double", { case lexical.NumericLit(n) => doubleParser.apply(n)} )
-  def string  = accept("string", { case lexical.StringLit(n) => n} )
-
-  lazy val query: P[Node] = (
-    createTable
-      | select
-      | delete
-      | insert
-      | dropTable
-    ) <~ ";"
-
-  lazy val createTable: P[CreateStmt] = ("create" ~ "table") ~> identifier ~ "(" ~ rep1sep(attr | refConstraint, ",")  <~ ")"  ^^{
-    case name ~ "(" ~ contents => new CreateStmt(
-      name,
-      contents.filter{_.isInstanceOf[Column[_]]}.asInstanceOf[List[Column[_]]],
-      contents.filter{_.isInstanceOf[Constraint]}.asInstanceOf[List[Constraint]]
-    )
-  }
-  lazy val insert: P[InsertStmt] = "insert" ~> "into" ~> identifier ~ ("values" ~> "(" ~> repsep(expression, ",") <~ ")") ^^{
-    case into ~ values => InsertStmt(into, values)
-  }
   lazy val dropTable: P[DropStmt] = "drop" ~> "table" ~> identifier ^^{case i => DropStmt(i)}
-  lazy val attr: P[Column[_]] = ident ~ typ ~ inPlaceConstraint.* ^^{ case name ~ dt ~ cs => Column(name, dt, cs) }
+  lazy val attr: P[Attribute[_]] = ident ~ typ ~ inPlaceConstraint.* ^^ { case name ~ dt ~ cs => Attribute(name, dt, cs)}
   lazy val typ: P[Type[_]] = (
     ("int" | "integer") ^^^ IntegerType
       | "char" ~> "(" ~> int <~ ")" ^^{ case i => CharType(i) }
@@ -147,15 +113,12 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
       case cols ~ ")" ~ "references" ~ ref ~ "(" ~ othercols  =>
         Foreign_Key(cols,ref,othercols)
     }
-
   lazy val select: P[SelectStmt] = "select" ~> projections ~ "from" ~ identifier ~ opt(whereClause) ~ opt(limitClause) ^^{
     case proj ~ "from" ~ from ~ where ~ limit => SelectStmt(proj, from, where, limit)
   }
-
   lazy val delete: P[DeleteStmt] = "delete" ~> "from" ~> identifier ~ opt(whereClause) ~ opt(limitClause) ^^{
     case from ~ where ~ limit => DeleteStmt( from, where, limit )
   }
-
   lazy val projections: P[List[Proj]] = "*" ^^^ GlobProj :: Nil | rep1sep(exprProj, ",")
   lazy val exprProj: P[NameProj] = identifier ~ opt("as" ~> identifier) ^^{
     case proj ~ asPart => NameProj(proj, asPart)
@@ -190,6 +153,20 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     | int
     | double
     ) ^^{ Const(_) }
+  override val lexical = new SQLLexical
+  // parser for ints
+  protected var intParser: NumericParser[Int] = {
+    _.toInt
+  }
+  protected var doubleParser: NumericParser[Double] = {
+    _.toDouble
+  }
+
+  def int = accept("integer", { case lexical.NumericLit(n) => intParser.apply(n)})
+
+  def double = accept("double", { case lexical.NumericLit(n) => doubleParser.apply(n)})
+
+  def string = accept("string", { case lexical.StringLit(n) => n})
 
   /**
    * Quick REPL for debugging. `.exit` exits.
@@ -206,5 +183,35 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
         })
       )
     }
+  }
+
+  def parse(source: String): Try[Node] = {
+    phrase(query)(new lexical.Scanner(source)) match {
+      case Success(result: Node, _) => util.Success(result)
+      case x: Failure => util.Failure(new QueryParsingException(x.toString()))
+      case x: Error => util.Failure(new QueryParsingException(x.toString()))
+    }
+  }
+
+  class SQLLexical extends StdLexical {
+
+    import scala.util.parsing.input.CharArrayReader.EofCh
+
+    override def whitespace: Parser[Any] = rep(
+      whitespaceChar
+        | '/' ~ '*' ~ comment
+        | '#' ~ rep(chrExcept(EofCh, '\n'))
+        | '-' ~ '-' ~ rep(chrExcept(EofCh, '\n'))
+        | '/' ~ '*' ~ failure("unclosed comment")
+    )
+
+    override protected def processIdent(name: String) =
+      if (reserved contains name.toLowerCase) Keyword(name.toLowerCase) else Identifier(name)
+
+    override protected def comment: Parser[Any] = (
+      '*' ~ '/' ^^ { case _ => ' '}
+        | chrExcept(EofCh) ~ comment
+      )
+
   }
 }

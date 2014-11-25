@@ -9,6 +9,7 @@ import deebee.storage.{Entry, Relation}
  * Created by hawk on 11/21/14.
  */
 sealed trait Stmt extends Node {
+  def process(context: Relation) = ???
 }
 
 
@@ -43,7 +44,8 @@ case class DeleteStmt(
       s"${where.map(" WHERE " + _.emitSQL).getOrElse("")}"+
       s"${limit.map(" LIMIT " + _).getOrElse("")};"
 }
-case class Column[T](
+
+case class Attribute[T](
                    name: Ident,
                    datatype: Type[T],
                    constraints: List[Constraint]
@@ -57,7 +59,7 @@ case class Column[T](
 
 case class CreateStmt(
                    name: Ident,
-                   attributes: List[Column[_]],
+                   attributes: List[Attribute[_]],
                    constraints: List[Constraint] = Nil
                    ) extends Node {
   override def emitSQL = {

@@ -2,7 +2,7 @@ package deebee
 package sql.ast
 
 import deebee.exceptions.QueryException
-import deebee.storage.{Relation, Row}
+import deebee.storage.Relation
 
 import scala.util.{Failure, Success, Try}
 
@@ -47,7 +47,7 @@ case class Ident(name: String) extends Expr[Int] {
 /**
  * Representation for a comparison.
  *
- * [[Comparison.emit( ) e m i t]]s a partial function taking [[Row]]s and returning
+ * [[Comparison# e m i t ( ) e m i t]]s a partial function taking [[Row]]s and returning
  * true or false. This can then be used for filtering the database rows by the predicate,
  * such as when processing a SELECT statement.
  *

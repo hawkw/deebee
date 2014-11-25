@@ -1,4 +1,5 @@
-package deebee.storage
+package deebee
+package storage
 
 import java.util.Date
 

@@ -1,0 +1,687 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>ast - deebee.sql.ast</title>
+          <meta name="description" content="ast - deebee.sql.ast" />
+          <meta name="keywords" content="ast deebee.sql.ast" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../index.html';
+            var hash = 'deebee.sql.ast.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../../lib/package_big.png" />
+        <p id="owner"><a href="../../package.html" class="extype" name="deebee">deebee</a>.<a href="../package.html" class="extype" name="deebee.sql">sql</a></p>
+        <h1>ast</h1> <span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ast</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Created by hawk on 11/21/14.
+</p></div><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="deebee.sql.ast"><span>ast</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="deebee.sql.ast.Attribute" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Attribute[T]extendsNodewithProductwithSerializable"></a>
+      <a id="Attribute[T]:Attribute[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Attribute.html"><span class="name">Attribute</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="name">name: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="datatype">datatype: <a href="Type.html" class="extype" name="deebee.sql.ast.Type">Type</a>[<span class="extype" name="deebee.sql.ast.Attribute.T">T</span>]</span>, <span name="constraints">constraints: <span class="extype" name="scala.List">List</span>[<a href="Constraint.html" class="extype" name="deebee.sql.ast.Constraint">Constraint</a>]</span>)</span><span class="result"> extends <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@Attribute[T]extendsNodewithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.CharType" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CharTypeextendsType[String]withProductwithSerializable"></a>
+      <a id="CharType:CharType"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CharType.html"><span class="name">CharType</span></a><span class="params">(<span name="n">n: <a href="Const.html" class="extype" name="deebee.sql.ast.Const">Const</a>[<span class="extype" name="scala.Int">Int</span>]</span>)</span><span class="result"> extends <a href="Type.html" class="extype" name="deebee.sql.ast.Type">Type</a>[<span class="extype" name="scala.Predef.String">String</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@CharTypeextendsType[String]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.Comparison" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ComparisonextendsExpr[deebee.Row=&gt;Boolean]withProductwithSerializable"></a>
+      <a id="Comparison:Comparison"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Comparison.html"><span class="name">Comparison</span></a><span class="params">(<span name="left">left: <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[_]</span>, <span name="op">op: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="right">right: <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[_]</span>)</span><span class="result"> extends <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[(<a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@ComparisonextendsExpr[deebee.Row=&gt;Boolean]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Representation for a comparison.</p><div class="fullcomment"><div class="comment cmt"><p>Representation for a comparison.</p><p><a href="Comparison.html" class="extype" name="deebee.sql.ast.Comparison">e m i t ( ) e m i t</a>s a partial function taking <a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>s and returning
+true or false. This can then be used for filtering the database rows by the predicate,
+such as when processing a SELECT statement.
+</p></div><dl class="paramcmts block"><dt class="param">left</dt><dd class="cmt"><p>the left-hand side of the predicate. Currently this is either a row name or another predicate</p></dd><dt class="param">op</dt><dd class="cmt"><p>the operator</p></dd><dt class="param">right</dt><dd class="cmt"><p>the right-hand side of the predicate
+</p></dd></dl></div>
+    </li><li name="deebee.sql.ast.Const" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Const[T]extendsExpr[T]withProductwithSerializable"></a>
+      <a id="Const[T]:Const[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Const.html"><span class="name">Const</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="x">x: <span class="extype" name="deebee.sql.ast.Const.T">T</span></span>)</span><span class="result"> extends <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[<span class="extype" name="deebee.sql.ast.Const.T">T</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@Const[T]extendsExpr[T]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.Constraint" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ConstraintextendsNode"></a>
+      <a id="Constraint:Constraint"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Constraint.html"><span class="name">Constraint</span></a><span class="result"> extends <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@ConstraintextendsNode" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">AST nodes for SQL constraints
+Created by hawk on 11/21/14.</p>
+    </li><li name="deebee.sql.ast.CreateStmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CreateStmtextendsNodewithProductwithSerializable"></a>
+      <a id="CreateStmt:CreateStmt"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CreateStmt.html"><span class="name">CreateStmt</span></a><span class="params">(<span name="name">name: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="attributes">attributes: <span class="extype" name="scala.List">List</span>[<a href="Attribute.html" class="extype" name="deebee.sql.ast.Attribute">Attribute</a>[_]]</span>, <span name="constraints">constraints: <span class="extype" name="scala.List">List</span>[<a href="Constraint.html" class="extype" name="deebee.sql.ast.Constraint">Constraint</a>] = <span class="symbol">Nil</span></span>)</span><span class="result"> extends <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@CreateStmtextendsNodewithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.DecimalType" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DecimalTypeextendsType[Double]withProductwithSerializable"></a>
+      <a id="DecimalType:DecimalType"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DecimalType.html"><span class="name">DecimalType</span></a><span class="params">(<span name="p">p: <a href="Const.html" class="extype" name="deebee.sql.ast.Const">Const</a>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="s">s: <a href="Const.html" class="extype" name="deebee.sql.ast.Const">Const</a>[<span class="extype" name="scala.Int">Int</span>]</span>)</span><span class="result"> extends <a href="Type.html" class="extype" name="deebee.sql.ast.Type">Type</a>[<span class="extype" name="scala.Double">Double</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@DecimalTypeextendsType[Double]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.DeleteStmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DeleteStmtextendsStmtwithProductwithSerializable"></a>
+      <a id="DeleteStmt:DeleteStmt"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DeleteStmt.html"><span class="name">DeleteStmt</span></a><span class="params">(<span name="from">from: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="where">where: <span class="extype" name="scala.Option">Option</span>[<a href="Comparison.html" class="extype" name="deebee.sql.ast.Comparison">Comparison</a>] = <span class="symbol">None</span></span>, <span name="limit">limit: <span class="extype" name="scala.Option">Option</span>[<a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[<span class="extype" name="scala.Int">Int</span>]] = <span class="symbol">None</span></span>)</span><span class="result"> extends <a href="Stmt.html" class="extype" name="deebee.sql.ast.Stmt">Stmt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@DeleteStmtextendsStmtwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.DropStmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DropStmtextendsNodewithProductwithSerializable"></a>
+      <a id="DropStmt:DropStmt"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DropStmt.html"><span class="name">DropStmt</span></a><span class="params">(<span name="name">name: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>)</span><span class="result"> extends <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@DropStmtextendsNodewithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.Expr" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="Expr[T]extendsNode"></a>
+      <a id="Expr[T]:Expr[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Expr.html"><span class="name">Expr</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@Expr[T]extendsNode" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Trait for SQL exceptions.</p><div class="fullcomment"><div class="comment cmt"><p>Trait for SQL exceptions.</p><p>Created by hawk on 11/23/14.
+</p></div></div>
+    </li><li name="deebee.sql.ast.Foreign_Key" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Foreign_KeyextendsConstraintwithProductwithSerializable"></a>
+      <a id="Foreign_Key:Foreign_Key"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Foreign_Key.html"><span class="name">Foreign_Key</span></a><span class="params">(<span name="cols">cols: <span class="extype" name="scala.List">List</span>[<a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a>]</span>, <span name="relation">relation: <span class="extype" name="scala.Option">Option</span>[<a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a>] = <span class="symbol">None</span></span>, <span name="references">references: <span class="extype" name="scala.List">List</span>[<a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a>]</span>)</span><span class="result"> extends <a href="Constraint.html" class="extype" name="deebee.sql.ast.Constraint">Constraint</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@Foreign_KeyextendsConstraintwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.Ident" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="IdentextendsExpr[Int]withProductwithSerializable"></a>
+      <a id="Ident:Ident"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Ident.html"><span class="name">Ident</span></a><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[<span class="extype" name="scala.Int">Int</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@IdentextendsExpr[Int]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.InsertStmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InsertStmtextendsNodewithProductwithSerializable"></a>
+      <a id="InsertStmt:InsertStmt"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="InsertStmt.html"><span class="name">InsertStmt</span></a><span class="params">(<span name="into">into: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="values">values: <span class="extype" name="scala.List">List</span>[<a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[_]]</span>)</span><span class="result"> extends <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@InsertStmtextendsNodewithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.NameProj" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="NameProjextendsProjwithProductwithSerializable"></a>
+      <a id="NameProj:NameProj"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="NameProj.html"><span class="name">NameProj</span></a><span class="params">(<span name="name">name: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="as">as: <span class="extype" name="scala.Option">Option</span>[<a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a>]</span>)</span><span class="result"> extends <a href="Proj.html" class="extype" name="deebee.sql.ast.Proj">Proj</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@NameProjextendsProjwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.Node" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="NodeextendsAnyRef"></a>
+      <a id="Node:Node"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Node.html"><span class="name">Node</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@NodeextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Trait for a node in a SQL abstract syntax tree.</p>
+    </li><li name="deebee.sql.ast.ParenComparison" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="ParenComparisonextendsExpr[deebee.Row=&gt;Boolean]withProductwithSerializable"></a>
+      <a id="ParenComparison:ParenComparison"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ParenComparison.html"><span class="name">ParenComparison</span></a><span class="params">(<span name="left">left: <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[_]</span>, <span name="op">op: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="right">right: <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[_]</span>)</span><span class="result"> extends <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[(<a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@ParenComparisonextendsExpr[deebee.Row=&gt;Boolean]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Wraps a parenthesized comparison.</p><div class="fullcomment"><div class="comment cmt"><p>Wraps a parenthesized comparison. Basically, this just farms out to
+<a href="Comparison.html" class="extype" name="deebee.sql.ast.Comparison">Comparison</a> for all the heavy-lifting.
+</p></div><dl class="paramcmts block"><dt class="param">left</dt><dd class="cmt"><p>the left-hand side of the predicate. Currently this is either a row name or another predicate</p></dd><dt class="param">op</dt><dd class="cmt"><p>the operator</p></dd><dt class="param">right</dt><dd class="cmt"><p>the right-hand side of the predicate
+</p></dd></dl></div>
+    </li><li name="deebee.sql.ast.Predicate" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Predicate=deebee.sql.ast.Expr[Boolean]"></a>
+      <a id="Predicate:Predicate"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Predicate</span><span class="result"> = <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[<span class="extype" name="scala.Boolean">Boolean</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@Predicate=deebee.sql.ast.Expr[Boolean]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.Proj" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ProjextendsNode"></a>
+      <a id="Proj:Proj"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Proj.html"><span class="name">Proj</span></a><span class="result"> extends <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@ProjextendsNode" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Created by hawk on 11/21/14.</p>
+    </li><li name="deebee.sql.ast.SelectStmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SelectStmtextendsStmtwithProductwithSerializable"></a>
+      <a id="SelectStmt:SelectStmt"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SelectStmt.html"><span class="name">SelectStmt</span></a><span class="params">(<span name="projections">projections: <span class="extype" name="scala.List">List</span>[<a href="Proj.html" class="extype" name="deebee.sql.ast.Proj">Proj</a>] = <span class="symbol"><span class="name"><a href="GlobProj$.html">GlobProj :: Nil</a></span></span></span>, <span name="from">from: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="where">where: <span class="extype" name="scala.Option">Option</span>[<a href="Comparison.html" class="extype" name="deebee.sql.ast.Comparison">Comparison</a>] = <span class="symbol">None</span></span>, <span name="limit">limit: <span class="extype" name="scala.Option">Option</span>[<a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[<span class="extype" name="scala.Int">Int</span>]] = <span class="symbol">None</span></span>)</span><span class="result"> extends <a href="Stmt.html" class="extype" name="deebee.sql.ast.Stmt">Stmt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@SelectStmtextendsStmtwithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.Stmt" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="StmtextendsNode"></a>
+      <a id="Stmt:Stmt"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Stmt.html"><span class="name">Stmt</span></a><span class="result"> extends <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@StmtextendsNode" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">AST nodes for SQL statements</p><div class="fullcomment"><div class="comment cmt"><p>AST nodes for SQL statements</p><p>Created by hawk on 11/21/14.
+</p></div></div>
+    </li><li name="deebee.sql.ast.Type" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="Type[T]extendsNode"></a>
+      <a id="Type[T]:Type[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Type.html"><span class="name">Type</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@Type[T]extendsNode" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">AST nodes for data types</p><div class="fullcomment"><div class="comment cmt"><p>AST nodes for data types</p><p>Created by hawk on 11/21/14.
+</p></div></div>
+    </li><li name="deebee.sql.ast.VarcharType" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="VarcharTypeextendsType[String]withProductwithSerializable"></a>
+      <a id="VarcharType:VarcharType"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="VarcharType.html"><span class="name">VarcharType</span></a><span class="params">(<span name="n">n: <a href="Const.html" class="extype" name="deebee.sql.ast.Const">Const</a>[<span class="extype" name="scala.Int">Int</span>]</span>)</span><span class="result"> extends <a href="Type.html" class="extype" name="deebee.sql.ast.Type">Type</a>[<span class="extype" name="scala.Predef.String">String</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@VarcharTypeextendsType[String]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="deebee.sql.ast.DateType" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DateType"></a>
+      <a id="DateType:DateType"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DateType$.html"><span class="name">DateType</span></a><span class="result"> extends <a href="Type.html" class="extype" name="deebee.sql.ast.Type">Type</a>[<span class="extype" name="java.util.Date">Date</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@DateType" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.GlobProj" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GlobProj"></a>
+      <a id="GlobProj:GlobProj"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="GlobProj$.html"><span class="name">GlobProj</span></a><span class="result"> extends <a href="Proj.html" class="extype" name="deebee.sql.ast.Proj">Proj</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@GlobProj" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.IntegerType" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="IntegerType"></a>
+      <a id="IntegerType:IntegerType"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="IntegerType$.html"><span class="name">IntegerType</span></a><span class="result"> extends <a href="Type.html" class="extype" name="deebee.sql.ast.Type">Type</a>[<span class="extype" name="scala.Int">Int</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@IntegerType" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.Not_Null" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Not_Null"></a>
+      <a id="Not_Null:Not_Null"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Not_Null$.html"><span class="name">Not_Null</span></a><span class="result"> extends <a href="Constraint.html" class="extype" name="deebee.sql.ast.Constraint">Constraint</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@Not_Null" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.Primary_Key" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Primary_Key"></a>
+      <a id="Primary_Key:Primary_Key"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Primary_Key$.html"><span class="name">Primary_Key</span></a><span class="result"> extends <a href="Constraint.html" class="extype" name="deebee.sql.ast.Constraint">Constraint</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@Primary_Key" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast.Unique" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Unique"></a>
+      <a id="Unique:Unique"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Unique$.html"><span class="name">Unique</span></a><span class="result"> extends <a href="Constraint.html" class="extype" name="deebee.sql.ast.Constraint">Constraint</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@Unique" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast#liftConstant" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="liftConstant[T](x:T):deebee.sql.ast.Const[T]"></a>
+      <a id="liftConstant[T](T):Const[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">liftConstant</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="x">x: <span class="extype" name="deebee.sql.ast.liftConstant.T">T</span></span>)</span><span class="result">: <a href="Const.html" class="extype" name="deebee.sql.ast.Const">Const</a>[<span class="extype" name="deebee.sql.ast.liftConstant.T">T</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@liftConstant[T](x:T):deebee.sql.ast.Const[T]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast#liftIdent" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="liftIdent(name:String):deebee.sql.ast.Ident"></a>
+      <a id="liftIdent(String):Ident"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">liftIdent</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@liftIdent(name:String):deebee.sql.ast.Ident" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast#unliftConstant" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="unliftConstant[T](c:deebee.sql.ast.Const[T]):T"></a>
+      <a id="unliftConstant[T](Const[T]):T"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unliftConstant</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="c">c: <a href="Const.html" class="extype" name="deebee.sql.ast.Const">Const</a>[<span class="extype" name="deebee.sql.ast.unliftConstant.T">T</span>]</span>)</span><span class="result">: <span class="extype" name="deebee.sql.ast.unliftConstant.T">T</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@unliftConstant[T](c:deebee.sql.ast.Const[T]):T" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.sql.ast#unwrapIdent" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="unwrapIdent(i:deebee.sql.ast.Ident):String"></a>
+      <a id="unwrapIdent(Ident):String"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">unwrapIdent</span><span class="params">(<span name="i">i: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>)</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@unwrapIdent(i:deebee.sql.ast.Ident):String" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

@@ -62,8 +62,56 @@ import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 
 object SQLParser extends StandardTokenParsers with PackratParsers {
 
+  class SQLLexical extends StdLexical {
+
+    import scala.util.parsing.input.CharArrayReader.EofCh
+
+    override def whitespace: Parser[Any] = rep(
+      whitespaceChar
+        | '/' ~ '*' ~ comment
+        | '#' ~ rep(chrExcept(EofCh, '\n'))
+        | '-' ~ '-' ~ rep(chrExcept(EofCh, '\n'))
+        | '/' ~ '*' ~ failure("unclosed comment")
+    )
+
+    override protected def processIdent(name: String) =
+      if (reserved contains name.toLowerCase) Keyword(name.toLowerCase) else Identifier(name)
+
+    override protected def comment: Parser[Any] = (
+      '*' ~ '/' ^^ { case _ => ' '}
+        | chrExcept(EofCh) ~ comment
+      )
+
+  }
+
   type NumericParser[T] = String => T
   type P[T] = PackratParser[T]
+  override val lexical = new SQLLexical
+
+  lexical.reserved ++= List("create", "drop", "table", "int", "integer", "char", "varchar", "numeric",
+    "decimal", "not", "null", "foreign", "primary", "key", "unique", "references", "select", "from", "as", "where",
+    "and", "or", "limit", "delete", "insert", "into", "values"
+  )
+
+  lexical.delimiters ++= List(
+    "*", "+", "-", "<", "=", "<>", "!=", "<=", ">=", ">", "/", "(", ")", ",", ".", ";"
+  )
+
+  // parser for ints
+  protected var intParser: NumericParser[Int] = {
+    _.toInt
+  }
+  protected var doubleParser: NumericParser[Double] = {
+    _.toDouble
+  }
+
+  def int = accept("integer", { case lexical.NumericLit(n) => intParser.apply(n)})
+
+  def double = accept("double", { case lexical.NumericLit(n) => doubleParser.apply(n)})
+
+  def string = accept("string", { case lexical.StringLit(n) => n})
+
+
   lazy val query: P[Node] = (
     createTable
       | select
@@ -86,14 +134,6 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     case into ~ values => InsertStmt(into, values)
   }
 
-  lexical.reserved ++= List("create", "drop", "table", "int", "integer", "char", "varchar", "numeric",
-    "decimal", "not", "null", "foreign", "primary", "key", "unique", "references", "select", "from", "as", "where",
-    "and", "or", "limit", "delete", "insert", "into", "values"
-  )
-
-  lexical.delimiters ++= List(
-    "*", "+", "-", "<", "=", "<>", "!=", "<=", ">=", ">", "/", "(", ")", ",", ".", ";"
-  )
   lazy val dropTable: P[DropStmt] = "drop" ~> "table" ~> identifier ^^{case i => DropStmt(i)}
   lazy val attr: P[Attribute[_]] = ident ~ typ ~ inPlaceConstraint.* ^^ { case name ~ dt ~ cs => Attribute(name, dt, cs)}
   lazy val typ: P[Type[_]] = (
@@ -153,21 +193,6 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     | int
     | double
     ) ^^{ Const(_) }
-  override val lexical = new SQLLexical
-  // parser for ints
-  protected var intParser: NumericParser[Int] = {
-    _.toInt
-  }
-  protected var doubleParser: NumericParser[Double] = {
-    _.toDouble
-  }
-
-  def int = accept("integer", { case lexical.NumericLit(n) => intParser.apply(n)})
-
-  def double = accept("double", { case lexical.NumericLit(n) => doubleParser.apply(n)})
-
-  def string = accept("string", { case lexical.StringLit(n) => n})
-
   /**
    * Quick REPL for debugging. `.exit` exits.
    * @param args
@@ -193,25 +218,5 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     }
   }
 
-  class SQLLexical extends StdLexical {
 
-    import scala.util.parsing.input.CharArrayReader.EofCh
-
-    override def whitespace: Parser[Any] = rep(
-      whitespaceChar
-        | '/' ~ '*' ~ comment
-        | '#' ~ rep(chrExcept(EofCh, '\n'))
-        | '-' ~ '-' ~ rep(chrExcept(EofCh, '\n'))
-        | '/' ~ '*' ~ failure("unclosed comment")
-    )
-
-    override protected def processIdent(name: String) =
-      if (reserved contains name.toLowerCase) Keyword(name.toLowerCase) else Identifier(name)
-
-    override protected def comment: Parser[Any] = (
-      '*' ~ '/' ^^ { case _ => ' '}
-        | chrExcept(EofCh) ~ comment
-      )
-
-  }
 }

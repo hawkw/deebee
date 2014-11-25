@@ -6,12 +6,12 @@ import deebee.storage.{Entry, Relation}
 /**
  * AST nodes for SQL statements
  *
- * TODO: add INSERT
- * TODO: add DELETE
- *
  * Created by hawk on 11/21/14.
  */
-sealed trait Stmt extends Node
+sealed trait Stmt extends Node {
+}
+
+
 case class SelectStmt(
   projections: List[Proj] = GlobProj :: Nil,
   from: Ident,

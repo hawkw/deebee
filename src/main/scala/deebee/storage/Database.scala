@@ -6,8 +6,12 @@ import com.typesafe.scalalogging.slf4j.LazyLogging
 import deebee.sql.ast._
 
 /**
- * Manager for a database
- * Created by hawk on 11/23/14.
+ * Represents the top level of a database, responsible for sending queries
+ * to the individual actors handling those tables and for managing the creation
+ * of new tables.
+ *
+ * Eventually, this will also probably manage joins, when that happens.
+ * @author Hawk Weisman
  */
 abstract class Database(val name: String) extends Actor with LazyLogging {
 

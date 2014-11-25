@@ -1,4 +1,4 @@
-if [ "$TRAVIS_REPO_SLUG" == "hawkw/deebee" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && ["$TRAVIS_SCALA_VERSION" == "2.11.4"]; then
+if [ "$TRAVIS_REPO_SLUG" == "hawkw/deebee" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_SCALA_VERSION" == "2.11.4" ]; then
 
 	echo -e "Publishing ScalaDoc...\n"
 

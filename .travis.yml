@@ -3,8 +3,9 @@ scala:
    - 2.10.4
    - 2.11.2
    - 2.11.4
-script: "sbt coveralls"
+script: "sbt test"
 after_success:
+   - "sbt coveralls"
    - "sbt doc"
    - ".travis/publish.sh"
 env:

@@ -8,9 +8,9 @@ import org.scalatest.Assertions._
 /**
  * Created by hawk on 11/27/14.
  */
-class QueryProcessingSpec extends WordSpec with Matchers with GivenWhenThen {
+class RelationSpec extends WordSpec with Matchers {
 
-  "A Relation" when {
+  "A relation" when {
     "in memory" should {
       val row1 = Seq[Entry[_]](new IntegerEntry(1), new VarcharEntry("a string", 16))
       val row2 = Seq[Entry[_]](new IntegerEntry(2), new VarcharEntry("another string", 16))
@@ -20,23 +20,23 @@ class QueryProcessingSpec extends WordSpec with Matchers with GivenWhenThen {
       )
 
       "provide access to its' rows" in {
-        target.rows shouldBe a [Set[_]]
+        target.rows shouldBe a[Set[_]]
         target.rows should not be 'empty
-        target.rows should contain (row1)
-        target.rows should contain (row2)
+        target.rows should contain(row1)
+        target.rows should contain(row2)
       }
       "project a new relation with the given attributes" in {
         val result = target.project(Seq("test1"))
-        result.rows shouldBe a [Set[_]]
+        result.rows shouldBe a[Set[_]]
         result.rows should not be 'empty
-        result.rows should contain (Seq[Entry[_]](new IntegerEntry(1)))
-        result.rows should contain (Seq[Entry[_]](new IntegerEntry(2)))
+        result.rows should contain(Seq[Entry[_]](new IntegerEntry(1)))
+        result.rows should contain(Seq[Entry[_]](new IntegerEntry(2)))
       }
       "correctly filter by a given predicate, returning a new relation" in {
-        val result = target.filter({r: Row => r(0).value == 1})
-        result.rows shouldBe a [Set[_]]
+        val result = target.filter({ r: Row => r(0).value == 1})
+        result.rows shouldBe a[Set[_]]
         result.rows should not be 'empty
-        result.rows should contain (row1)
+        result.rows should contain(row1)
       }
     }
     "backed by a CSV" should {
@@ -47,6 +47,25 @@ class QueryProcessingSpec extends WordSpec with Matchers with GivenWhenThen {
         pending
       }
       "correctly filter by a given predicate, returning a new relation" in {
+        pending
+      }
+    }
+  }
+}
+class RelationActorSpec extends WordSpec with Matchers {
+
+  "A relation actor" when {
+    "backed by a CSV" should {
+      "return the correct results for a basic SELECT" in {
+        pending
+      }
+      "return the correct results for a SELECT with projections" in {
+        pending
+      }
+      "return the correct results for a SELECT with a WHERE clause" in {
+        pending
+      }
+      "return the correct results for a SELECT with a WHERE and projections" in {
         pending
       }
     }

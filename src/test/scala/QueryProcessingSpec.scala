@@ -8,7 +8,7 @@ import org.scalatest.Assertions._
 /**
  * Created by hawk on 11/27/14.
  */
-class RelationSpec extends WordSpec with Matchers {
+class QueryProcessingSpec extends WordSpec with Matchers {
 
   "A relation" when {
     "in memory" should {
@@ -51,8 +51,6 @@ class RelationSpec extends WordSpec with Matchers {
       }
     }
   }
-}
-class RelationActorSpec extends WordSpec with Matchers {
 
   "A relation actor" when {
     "backed by a CSV" should {

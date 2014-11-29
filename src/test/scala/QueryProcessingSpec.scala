@@ -33,7 +33,10 @@ class QueryProcessingSpec extends WordSpec with Matchers with GivenWhenThen {
         result.rows should contain (Seq[Entry[_]](new IntegerEntry(2)))
       }
       "correctly filter by a given predicate, returning a new relation" in {
-        pending
+        val result = target.filter({r: Row => r(0).value == 1})
+        result.rows shouldBe a [Set[_]]
+        result.rows should not be 'empty
+        result.rows should contain (row1)
       }
     }
     "backed by a CSV" should {

@@ -43,14 +43,14 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">CSVRelation</span><span class="result"> extends <a href="Relation.html" class="extype" name="deebee.storage.Relation">Relation</a></span>
+        <span class="name">CSVRelation</span><span class="result"> extends <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Created by hawk on 11/19/14.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="Relation.html" class="extype" name="deebee.storage.Relation">Relation</a>, <span class="extype" name="akka.actor.ActorLogging">ActorLogging</span>, <span class="extype" name="akka.actor.Actor">Actor</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a>, <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>, <span class="extype" name="akka.actor.ActorLogging">ActorLogging</span>, <span class="extype" name="akka.actor.Actor">Actor</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -68,7 +68,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="deebee.storage.CSVRelation"><span>CSVRelation</span></li><li class="in" name="deebee.storage.Relation"><span>Relation</span></li><li class="in" name="akka.actor.ActorLogging"><span>ActorLogging</span></li><li class="in" name="akka.actor.Actor"><span>Actor</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="deebee.storage.CSVRelation"><span>CSVRelation</span></li><li class="in" name="deebee.storage.RelationActor"><span>RelationActor</span></li><li class="in" name="deebee.Relation"><span>Relation</span></li><li class="in" name="akka.actor.ActorLogging"><span>ActorLogging</span></li><li class="in" name="akka.actor.Actor"><span>Actor</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -287,7 +287,7 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
-    </li><li name="deebee.storage.Relation#attributes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="deebee.storage.RelationActor#attributes" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="attributes:List[deebee.sql.ast.Attribute[_]]"></a>
       <a id="attributes:List[Attribute[_]]"></a>
       <h4 class="signature">
@@ -303,7 +303,7 @@
         <img src="../../lib/permalink.png" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Relation.html" class="extype" name="deebee.storage.Relation">Relation</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a> → <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -327,61 +327,7 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="deebee.storage.CSVRelation#column" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="column(n:Int):deebee.Column"></a>
-      <a id="column(Int):Column"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">column</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../package.html#Column=Stream[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Column">Column</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#deebee.storage.CSVRelation@column(n:Int):deebee.Column" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Return all entries from the <code>n</code>th column</p><div class="fullcomment"><div class="comment cmt"><p>Return all entries from the <code>n</code>th column</p></div><dl class="paramcmts block"><dt class="param">n</dt><dd class="cmt"><p>the number of the column to select</p></dd><dt>returns</dt><dd class="cmt"><p>A List of all the entries from the <code>n</code>th colum
-</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a> → <a href="Relation.html" class="extype" name="deebee.storage.Relation">Relation</a></dd></dl></div>
-    </li><li name="deebee.storage.Relation#column" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="column(name:String):deebee.Column"></a>
-      <a id="column(String):Column"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">column</span><span class="params">(<span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <a href="../package.html#Column=Stream[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Column">Column</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#deebee.storage.CSVRelation@column(name:String):deebee.Column" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Return all entries from the named column</p><div class="fullcomment"><div class="comment cmt"><p>Return all entries from the named column</p></div><dl class="paramcmts block"><dt class="param">name</dt><dd class="cmt"><p>the name of the column to select</p></dd><dt>returns</dt><dd class="cmt"><p>A List of all the entries from the named column
-</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="Relation.html" class="extype" name="deebee.storage.Relation">Relation</a></dd></dl></div>
-    </li><li name="deebee.storage.CSVRelation#columns" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="columns:List[deebee.Column]"></a>
-      <a id="columns:List[Column]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">columns</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="../package.html#Column=Stream[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Column">Column</a>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#deebee.storage.CSVRelation@columns:List[deebee.Column]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
-      </a>
-    </span>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>all columns from the table.
-</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a> → <a href="Relation.html" class="extype" name="deebee.storage.Relation">Relation</a></dd></dl></div>
-    </li><li name="deebee.storage.Relation#constraints" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="deebee.storage.RelationActor#constraints" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="constraints:List[deebee.sql.ast.Constraint]"></a>
       <a id="constraints:List[Constraint]"></a>
       <h4 class="signature">
@@ -397,7 +343,7 @@
         <img src="../../lib/permalink.png" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Relation.html" class="extype" name="deebee.storage.Relation">Relation</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a></dd></dl></div>
     </li><li name="akka.actor.Actor#context" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="context:akka.actor.ActorContext"></a>
       <a id="context:ActorContext"></a>
@@ -449,6 +395,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="deebee.Relation#filter" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="filter(predicate:deebee.Row=&gt;Boolean):deebee.Relation"></a>
+      <a id="filter((Row)⇒Boolean):Relation"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">filter</span><span class="params">(<span name="predicate">predicate: (<a href="../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.storage.CSVRelation@filter(predicate:deebee.Row=&gt;Boolean):deebee.Relation" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -523,6 +486,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
+    </li><li name="deebee.Relation#iterator" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="iterator:Iterator[deebee.Row]"></a>
+      <a id="iterator:Iterator[Row]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">iterator</span><span class="result">: <span class="extype" name="scala.collection.Iterator">Iterator</span>[<a href="../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.storage.CSVRelation@iterator:Iterator[deebee.Row]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
     </li><li name="akka.actor.ActorLogging#log" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="log:akka.event.LoggingAdapter"></a>
       <a id="log:LoggingAdapter"></a>
@@ -540,7 +520,7 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ActorLogging</dd></dl></div>
-    </li><li name="deebee.storage.Relation#name" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="deebee.storage.RelationActor#name" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="name:String"></a>
       <a id="name:String"></a>
       <h4 class="signature">
@@ -556,7 +536,7 @@
         <img src="../../lib/permalink.png" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Relation.html" class="extype" name="deebee.storage.Relation">Relation</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a></dd></dl></div>
     </li><li name="scala.AnyRef#ne" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ne(x$1:AnyRef):Boolean"></a>
       <a id="ne(AnyRef):Boolean"></a>
@@ -700,8 +680,25 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="deebee.storage.Relation#receive" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="receive:Relation.this.Receive"></a>
+    </li><li name="deebee.Relation#project" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="project(names:Seq[String]):deebee.Relation"></a>
+      <a id="project(Seq[String]):Relation"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">project</span><span class="params">(<span name="names">names: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>)</span><span class="result">: <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.storage.CSVRelation@project(names:Seq[String]):deebee.Relation" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
+    </li><li name="deebee.storage.RelationActor#receive" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="receive:RelationActor.this.Receive"></a>
       <a id="receive:Receive"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -712,7 +709,7 @@
         <span class="name">receive</span><span class="result">: <a href="#Receive=akka.actor.Actor.Receive" class="extmbr" name="deebee.storage.CSVRelation.Receive">Receive</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#deebee.storage.CSVRelation@receive:Relation.this.Receive" title="Permalink" target="_top">
+      <a href="../../index.html#deebee.storage.CSVRelation@receive:RelationActor.this.Receive" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" />
       </a>
     </span>
@@ -721,11 +718,11 @@ This will also handle <code>UPDATE</code> statements when they are implemented.<
 receives them from the frontend (either an API connection or a SQL console). The database is responsible for
 dispatching these queries to the appropriate child table's actor. Query results (if any) will be sent back to
 the sender.</p><p>These queries should be able to be handled at this level of abstraction using the database's internal API
-(<span class="extype" name="Relation.column(">)</span>, <span class="extype" name="Relation.columns(">)</span>, <span class="extype" name="Relation.rows(">)</span>) and filtering them by the received
-<span class="extype" name="Stmt">Stmt</span>'s predicates (if any). This means that the concrete <a href="Relation.html" class="extype" name="deebee.storage.Relation">Relation</a> implementations need not deal with
+(<span class="extype" name="Relation.project()">Relation.project()</span>, <span class="extype" name="Relation.filter()">Relation.filter()</span>, <span class="extype" name="Relation.rows(">)</span>) and filtering them by the received
+<span class="extype" name="Stmt">Stmt</span>'s predicates (if any). This means that the concrete <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> implementations need not deal with
 query processing, and must only provide the internal API for providing columns and rows.</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>
-</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Relation.html" class="extype" name="deebee.storage.Relation">Relation</a> → Actor</dd></dl></div>
-    </li><li name="deebee.storage.CSVRelation#rows" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a> → Actor</dd></dl></div>
+    </li><li name="deebee.storage.CSVRelation#rows" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="rows:Set[deebee.Row]"></a>
       <a id="rows:Set[Row]"></a>
       <h4 class="signature">
@@ -734,7 +731,7 @@ query processing, and must only provide the internal API for providing columns a
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">rows</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>]</span>
+        <span class="name">rows</span><span class="result">: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#deebee.storage.CSVRelation@rows:Set[deebee.Row]" title="Permalink" target="_top">
@@ -742,7 +739,7 @@ query processing, and must only provide the internal API for providing columns a
       </a>
     </span>
       <p class="shortcomment cmt">Selects the whole table (unordered)</p><div class="fullcomment"><div class="comment cmt"><p>Selects the whole table (unordered)</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the whole table, as a set of lists of entries
-</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a> → <a href="Relation.html" class="extype" name="deebee.storage.Relation">Relation</a></dd></dl></div>
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a> → <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
     </li><li name="akka.actor.Actor#self" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="self:akka.actor.ActorRef"></a>
       <a id="self:ActorRef"></a>
@@ -811,6 +808,23 @@ query processing, and must only provide the internal API for providing columns a
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="deebee.Relation#take" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="take(n:Int):deebee.View"></a>
+      <a id="take(Int):View"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">take</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <a href="../View.html" class="extype" name="deebee.View">View</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.storage.CSVRelation@take(n:Int):deebee.View" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
     </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -923,8 +937,10 @@ query processing, and must only provide the internal API for providing columns a
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="deebee.storage.Relation">
-              <h3>Inherited from <a href="Relation.html" class="extype" name="deebee.storage.Relation">Relation</a></h3>
+        <div class="parent" name="deebee.storage.RelationActor">
+              <h3>Inherited from <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a></h3>
+            </div><div class="parent" name="deebee.Relation">
+              <h3>Inherited from <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></h3>
             </div><div class="parent" name="akka.actor.ActorLogging">
               <h3>Inherited from <span class="extype" name="akka.actor.ActorLogging">ActorLogging</span></h3>
             </div><div class="parent" name="akka.actor.Actor">

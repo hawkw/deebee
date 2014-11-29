@@ -43,7 +43,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">ParenComparison</span><span class="params">(<span name="left">left: <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[_]</span>, <span name="op">op: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="right">right: <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[_]</span>)</span><span class="result"> extends <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[(<a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">ParenComparison</span><span class="params">(<span name="left">left: <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[_]</span>, <span name="op">op: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="right">right: <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[_]</span>)</span><span class="result"> extends <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[(<a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -52,7 +52,7 @@
 </p></div><dl class="paramcmts block"><dt class="param">left</dt><dd class="cmt"><p>the left-hand side of the predicate. Currently this is either a row name or another predicate</p></dd><dt class="param">op</dt><dd class="cmt"><p>the operator</p></dd><dt class="param">right</dt><dd class="cmt"><p>the right-hand side of the predicate
 </p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[(<a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span>], <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[(<a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span>], <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -226,7 +226,7 @@
               
         </dd></dl></div>
     </li><li name="deebee.sql.ast.ParenComparison#emit" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="emit(context:deebee.storage.Relation):scala.util.Try[deebee.Row=&gt;Boolean]"></a>
+      <a id="emit(context:deebee.Relation):scala.util.Try[deebee.Row=&gt;Boolean]"></a>
       <a id="emit(Relation):Try[(Row)⇒Boolean]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -234,10 +234,10 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">emit</span><span class="params">(<span name="context">context: <a href="../../storage/Relation.html" class="extype" name="deebee.storage.Relation">Relation</a></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[(<a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span>]</span>
+        <span class="name">emit</span><span class="params">(<span name="context">context: <a href="../../Relation.html" class="extype" name="deebee.Relation">Relation</a></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[(<a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.ParenComparison@emit(context:deebee.storage.Relation):scala.util.Try[deebee.Row=&gt;Boolean]" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.ParenComparison@emit(context:deebee.Relation):scala.util.Try[deebee.Row=&gt;Boolean]" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -567,7 +567,7 @@ be thrown to top level.
             </div><div class="parent" name="scala.Equals">
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
             </div><div class="parent" name="deebee.sql.ast.Expr">
-              <h3>Inherited from <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[(<a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span>]</h3>
+              <h3>Inherited from <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[(<a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span>]</h3>
             </div><div class="parent" name="deebee.sql.ast.Node">
               <h3>Inherited from <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a></h3>
             </div><div class="parent" name="scala.AnyRef">

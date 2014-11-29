@@ -43,13 +43,13 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">Predicate</span><span class="result"> extends (<a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">Predicate</span><span class="result"> extends (<a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Wraps partial functions of the form <a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a> =&gt; <span class="extype" name="Boolean">Boolean</span> to allow composition</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Wraps partial functions of the form <a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a> =&gt; <span class="extype" name="Boolean">Boolean</span> to allow composition</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent">(<a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent">(<a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -96,14 +96,14 @@
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Predicate</span><span class="params">(<span name="pred">pred: (<a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
+        <span class="name">Predicate</span><span class="params">(<span name="pred">pred: (<a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span>
       </span>
       </h4><span class="permalink">
       <a href="../../../index.html#deebee.sql.ast.Comparison$Predicate@&lt;init&gt;(pred:deebee.Row=&gt;Boolean):Comparison.this.Predicate" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
-      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">pred</dt><dd class="cmt"><p>a partial function <a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a> =&gt; <span class="extype" name="Boolean">Boolean</span>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">pred</dt><dd class="cmt"><p>a partial function <a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a> =&gt; <span class="extype" name="Boolean">Boolean</span>
 </p></dd></dl></div>
     </li></ol>
             </div>
@@ -157,7 +157,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $amp$amp" class="name">&amp;&amp;</span><span class="params">(<span name="that">that: (<a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="deebee.sql.ast.Comparison.Predicate">Predicate</a></span>
+        <span title="gt4s: $amp$amp" class="name">&amp;&amp;</span><span class="params">(<span name="that">that: (<a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="deebee.sql.ast.Comparison.Predicate">Predicate</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../index.html#deebee.sql.ast.Comparison$Predicate@&amp;&amp;(that:deebee.Row=&gt;Boolean):Comparison.this.Predicate" title="Permalink" target="_top">
@@ -191,7 +191,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">andThen</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="g">g: (<span class="extype" name="scala.Boolean">Boolean</span>) ⇒ <span class="extype" name="scala.Function1.andThen.A">A</span></span>)</span><span class="result">: (<a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Function1.andThen.A">A</span></span>
+        <span class="name">andThen</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="g">g: (<span class="extype" name="scala.Boolean">Boolean</span>) ⇒ <span class="extype" name="scala.Function1.andThen.A">A</span></span>)</span><span class="result">: (<a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Function1.andThen.A">A</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../index.html#deebee.sql.ast.Comparison$Predicate@andThen[A](g:R=&gt;A):T1=&gt;A" title="Permalink" target="_top">
@@ -211,7 +211,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="x">x: <a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">apply</span><span class="params">(<span name="x">x: <a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../index.html#deebee.sql.ast.Comparison$Predicate@apply(x:deebee.Row):Boolean" title="Permalink" target="_top">
@@ -268,7 +268,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">compose</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="g">g: (<span class="extype" name="scala.Function1.compose.A">A</span>) ⇒ <a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a></span>)</span><span class="result">: (<span class="extype" name="scala.Function1.compose.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">compose</span><span class="tparams">[<span name="A">A</span>]</span><span class="params">(<span name="g">g: (<span class="extype" name="scala.Function1.compose.A">A</span>) ⇒ <a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a></span>)</span><span class="result">: (<span class="extype" name="scala.Function1.compose.A">A</span>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../index.html#deebee.sql.ast.Comparison$Predicate@compose[A](g:A=&gt;T1):A=&gt;R" title="Permalink" target="_top">
@@ -447,14 +447,14 @@
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">pred</span><span class="result">: (<a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>
+        <span class="name">pred</span><span class="result">: (<a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../index.html#deebee.sql.ast.Comparison$Predicate@pred:deebee.Row=&gt;Boolean" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
-      <p class="shortcomment cmt">a partial function <a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a> =&gt; <span class="extype" name="Boolean">Boolean</span>
+      <p class="shortcomment cmt">a partial function <a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a> =&gt; <span class="extype" name="Boolean">Boolean</span>
 </p>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
@@ -585,7 +585,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span title="gt4s: $bar$bar" class="name">||</span><span class="params">(<span name="that">that: (<a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="deebee.sql.ast.Comparison.Predicate">Predicate</a></span>
+        <span title="gt4s: $bar$bar" class="name">||</span><span class="params">(<span name="that">that: (<a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="" class="extype" name="deebee.sql.ast.Comparison.Predicate">Predicate</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../../index.html#deebee.sql.ast.Comparison$Predicate@||(that:deebee.Row=&gt;Boolean):Comparison.this.Predicate" title="Permalink" target="_top">
@@ -603,7 +603,7 @@
 
         <div id="inheritedMembers">
         <div class="parent" name="scala.Function1">
-              <h3>Inherited from (<a href="../../package.html#Row=List[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></h3>
+              <h3>Inherited from (<a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">

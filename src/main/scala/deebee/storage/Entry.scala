@@ -6,7 +6,12 @@ import java.util.Date
 /**
  * Created by hawk on 11/24/14.
  */
-sealed abstract class Entry[T](val value: T)
+sealed abstract class Entry[T](val value: T){
+  override def equals(that: Any): Boolean = that match {
+    case that : Entry[T] => this.value == that.value
+    case _ => false
+  }
+}
 
 object Entry {
   implicit def unpackImplicitly[T](e: Entry[T]): T = e.value

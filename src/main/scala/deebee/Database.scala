@@ -2,7 +2,7 @@ package deebee
 
 import akka.actor.{Actor, ActorLogging, ActorSystem}
 import deebee.sql.ast._
-import deebee.storage.Relation
+import deebee.storage.RelationActor
 
 /**
  * Represents the top level of a database, responsible for sending queries
@@ -14,7 +14,7 @@ import deebee.storage.Relation
  */
 abstract class Database(val name: String) extends Actor with ActorLogging {
 
-  type Table <: Relation
+  type Table <: RelationActor
   val system = ActorSystem("Database: " + name)
   var tables = Map[String, Table]()
 

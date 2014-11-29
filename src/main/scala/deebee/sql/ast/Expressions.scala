@@ -2,7 +2,7 @@ package deebee
 package sql.ast
 
 import deebee.exceptions.QueryException
-import deebee.storage.Relation
+import deebee.Relation
 
 import scala.util.{Failure, Success, Try}
 
@@ -35,6 +35,7 @@ case class Const[T](x: T) extends Expr[T] {
     case s: String => "\'" + x.toString + "\'"
     case _ => x.toString
   }
+  override def emit(context: Relation) = Success(x)
 }
 case class Ident(name: String) extends Expr[Int] {
   override val emitSQL = name

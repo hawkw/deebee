@@ -2,7 +2,7 @@ package deebee
 package sql
 package ast
 
-import deebee.storage.{Entry, Relation}
+import deebee.storage.Entry
 /**
  * AST nodes for SQL statements
  *

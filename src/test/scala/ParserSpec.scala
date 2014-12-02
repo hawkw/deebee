@@ -6,7 +6,7 @@ import scala.io.Source
 import scala.util.{Try, Success}
 
 /**
- * Tests for the SQL parser
+ * Unit tests for the SQL parser
  * Created by hawk on 11/22/14.
  */
 class ParserSpec extends WordSpec with Matchers {

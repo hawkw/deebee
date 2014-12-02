@@ -43,7 +43,7 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">Attribute</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="name">name: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="datatype">datatype: <a href="Type.html" class="extype" name="deebee.sql.ast.Type">Type</a>[<span class="extype" name="deebee.sql.ast.Attribute.T">T</span>]</span>, <span name="constraints">constraints: <span class="extype" name="scala.List">List</span>[<a href="Constraint.html" class="extype" name="deebee.sql.ast.Constraint">Constraint</a>]</span>)</span><span class="result"> extends <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">Attribute</span><span class="params">(<span name="name">name: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="datatype">datatype: <a href="Type.html" class="extype" name="deebee.sql.ast.Type">Type</a></span>, <span name="constraints">constraints: <span class="extype" name="scala.List">List</span>[<a href="Constraint.html" class="extype" name="deebee.sql.ast.Constraint">Constraint</a>]</span>)</span><span class="result"> extends <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
@@ -88,18 +88,18 @@
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
               <ol><li name="deebee.sql.ast.Attribute#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(name:deebee.sql.ast.Ident,datatype:deebee.sql.ast.Type[T],constraints:List[deebee.sql.ast.Constraint]):deebee.sql.ast.Attribute[T]"></a>
-      <a id="&lt;init&gt;:Attribute[T]"></a>
+      <a id="&lt;init&gt;(name:deebee.sql.ast.Ident,datatype:deebee.sql.ast.Type,constraints:List[deebee.sql.ast.Constraint]):deebee.sql.ast.Attribute"></a>
+      <a id="&lt;init&gt;:Attribute"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">Attribute</span><span class="params">(<span name="name">name: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="datatype">datatype: <a href="Type.html" class="extype" name="deebee.sql.ast.Type">Type</a>[<span class="extype" name="deebee.sql.ast.Attribute.T">T</span>]</span>, <span name="constraints">constraints: <span class="extype" name="scala.List">List</span>[<a href="Constraint.html" class="extype" name="deebee.sql.ast.Constraint">Constraint</a>]</span>)</span>
+        <span class="name">Attribute</span><span class="params">(<span name="name">name: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="datatype">datatype: <a href="Type.html" class="extype" name="deebee.sql.ast.Type">Type</a></span>, <span name="constraints">constraints: <span class="extype" name="scala.List">List</span>[<a href="Constraint.html" class="extype" name="deebee.sql.ast.Constraint">Constraint</a>]</span>)</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.Attribute@&lt;init&gt;(name:deebee.sql.ast.Ident,datatype:deebee.sql.ast.Type[T],constraints:List[deebee.sql.ast.Constraint]):deebee.sql.ast.Attribute[T]" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.Attribute@&lt;init&gt;(name:deebee.sql.ast.Ident,datatype:deebee.sql.ast.Type,constraints:List[deebee.sql.ast.Constraint]):deebee.sql.ast.Attribute" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -165,18 +165,18 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="deebee.sql.ast.Attribute#apply" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="apply(context:deebee.Relation)(a:T):deebee.storage.Entry[T]"></a>
-      <a id="apply(Relation)(T):Entry[T]"></a>
+      <a id="apply(a:Any):scala.util.Try[deebee.storage.Entry[_]]"></a>
+      <a id="apply(Any):Try[Entry[_]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">apply</span><span class="params">(<span name="context">context: <a href="../../Relation.html" class="extype" name="deebee.Relation">Relation</a></span>)</span><span class="params">(<span name="a">a: <span class="extype" name="deebee.sql.ast.Attribute.T">T</span></span>)</span><span class="result">: <a href="../../storage/Entry.html" class="extype" name="deebee.storage.Entry">Entry</a>[<span class="extype" name="deebee.sql.ast.Attribute.T">T</span>]</span>
+        <span class="name">apply</span><span class="params">(<span name="a">a: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../../storage/Entry.html" class="extype" name="deebee.storage.Entry">Entry</a>[_]]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.Attribute@apply(context:deebee.Relation)(a:T):deebee.storage.Entry[T]" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.Attribute@apply(a:Any):scala.util.Try[deebee.storage.Entry[_]]" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -239,18 +239,18 @@
     </span>
       
     </li><li name="deebee.sql.ast.Attribute#datatype" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="datatype:deebee.sql.ast.Type[T]"></a>
-      <a id="datatype:Type[T]"></a>
+      <a id="datatype:deebee.sql.ast.Type"></a>
+      <a id="datatype:Type"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">val</span>
       </span>
       <span class="symbol">
-        <span class="name">datatype</span><span class="result">: <a href="Type.html" class="extype" name="deebee.sql.ast.Type">Type</a>[<span class="extype" name="deebee.sql.ast.Attribute.T">T</span>]</span>
+        <span class="name">datatype</span><span class="result">: <a href="Type.html" class="extype" name="deebee.sql.ast.Type">Type</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.Attribute@datatype:deebee.sql.ast.Type[T]" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.Attribute@datatype:deebee.sql.ast.Type" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>

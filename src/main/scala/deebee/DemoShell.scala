@@ -1,7 +1,5 @@
 package deebee
 
-import deebee.exceptions.QueryException
-import deebee.{Relation, View, Row}
 import deebee.storage._
 import deebee.sql.ast._
 import deebee.sql.SQLParser
@@ -9,6 +7,7 @@ import deebee.sql.SQLParser
 import scala.util.{Failure, Success}
 
 /**
+ * A quick shell for demoing DML queries when DDL is not implemented.
  * Created by hawk on 12/2/14.
  */
 object DemoShell {
@@ -30,7 +29,7 @@ object DemoShell {
 
   /**
    * Quick REPL for debugging. `.exit` exits.
-   * @param args
+   * @param args any command-line args passed to the REPL. Currently none are supported.
    */
   def main(args: Array[String]): Unit = {
     var line = ""
@@ -40,7 +39,7 @@ object DemoShell {
       println(
         SQLParser.parse(line) match {
         case util.Success(t) => t match {
-          case s: SelectStmt if s.from.name == "faculty" => faculty.processSelect(s).getOrElse("")
+          case s: SelectStmt if s.from.name == "faculty" => faculty.process(s).getOrElse("")
           case _ => t
         }
         case util.Failure(e) => e

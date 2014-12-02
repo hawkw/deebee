@@ -6,6 +6,8 @@ import org.scalatest.{GivenWhenThen, Matchers, WordSpec}
 import org.scalatest.Assertions._
 
 /**
+ * Unit tests for the query processing system
+ *
  * Created by hawk on 11/27/14.
  */
 class QueryProcessingSpec extends WordSpec with Matchers {

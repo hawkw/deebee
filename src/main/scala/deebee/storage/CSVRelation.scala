@@ -39,4 +39,8 @@ class CSVRelation(
    * @return a [[Try]] on a reference to a [[Relation]] with the row appended
    */
   override protected def add(row: deebee.Row): Try[Relation] = ???
+
+  override protected def filterNot(predicate: (Row) => Boolean): Try[Relation with Modifyable] = ???
+
+  override protected def drop(n: Int): Try[Relation with Modifyable] = ???
 }

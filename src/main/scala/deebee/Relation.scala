@@ -52,14 +52,16 @@ trait Relation {
       ),
     attributes.filter(names contains _.name.name)
   )
-  def filter(predicate: Row => Boolean): Relation = new View(
+  protected def filter(predicate: Row => Boolean): Relation = new View(
     rows.filter(predicate),
     attributes
   )
+  protected def filterNot(predicate: Row => Boolean): Try[Relation with Modifyable]
+  protected def drop(n: Int): Try[Relation with Modifyable]
+
   def iterator = rows.toIterator
 
   def take(n: Int) = new View (rows.take(n), attributes)
-
   override def toString = rows.map(r => r.foldLeft("")((acc, thing) => acc + "|" + thing)).mkString("\n")
 }
 
@@ -90,8 +92,13 @@ trait Selectable extends Relation {
 
 }
 trait Modifyable extends Relation {
-  def process(insert: InsertStmt): Try[Relation] = ???
-  def process(delete: DeleteStmt): Try[Relation] = ???
+  def process(insert: InsertStmt): Try[Relation with Modifyable] = ???
+  def process(delete: DeleteStmt): Try[Relation with Modifyable] = delete match {
+    case DeleteStmt(_, None, None) => drop(rows.size)
+    case DeleteStmt(_, Some(comp), None) => (for (pred <- comp.emit(this)) yield filterNot(pred)).flatten
+    case DeleteStmt(_, None, Some(limit)) => (for (n <- limit.emit(this)) yield drop(n)).flatten
+    case DeleteStmt(_, Some(comp), Some(limit)) => ??? //TODO: Implement
+  }
 
 }
 
@@ -119,7 +126,15 @@ class View(
    * @param row the row to add
    * @return a reference to a [[Relation]] with the row appended
    */
-  override protected def add(row: deebee.Row): Try[Relation] = Success(
+  override protected def add(row: Row): Try[Relation] = Success(
     new View(rows + row, attributes)
+  )
+
+  override protected def filterNot(predicate: (Row) => Boolean): Try[Relation with Modifyable] = Success(
+    new View(rows.filterNot(predicate), attributes) with Modifyable
+  )
+
+  override protected def drop(n: Int): Try[Relation with Modifyable] = Success(
+    new View(rows.drop(n), attributes) with Modifyable
   )
 }

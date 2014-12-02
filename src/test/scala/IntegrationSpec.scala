@@ -184,7 +184,7 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen {
         )
       ) with Modifyable
       When("the relation is queried")
-      val query = SQLParser.parse("DELETE * FROM faculty;").get
+      val query = SQLParser.parse("DELETE FROM faculty;").get
 
       Then("the parser should parse the query as a DELETE statement")
       query shouldBe a[DeleteStmt]
@@ -214,7 +214,7 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen {
         )
       ) with Modifyable
       When("the relation is queried")
-      val query = SQLParser.parse("DELETE * FROM faculty WHERE id > 2;").get
+      val query = SQLParser.parse("DELETE FROM faculty WHERE id > 2;").get
 
       Then("the parser should parse the query as a DELETE statement")
       query shouldBe a[DeleteStmt]
@@ -245,7 +245,7 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen {
         )
       ) with Modifyable
       When("the relation is queried")
-      val query = SQLParser.parse("DELETE * FROM faculty LIMIT 1;").get
+      val query = SQLParser.parse("DELETE FROM faculty LIMIT 1;").get
 
       Then("the parser should parse the query as a DELETE statement")
       query shouldBe a[DeleteStmt]

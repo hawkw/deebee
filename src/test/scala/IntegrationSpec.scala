@@ -167,7 +167,97 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen {
     }
   }
   feature("DELETE statements are processed correctly.") {
-    pending
+    scenario("an in-memory relation receives a `DELETE` statement") {
+      Given("a simple in-memory modifyable relation")
+      var faculty: Relation with Modifyable = new View(
+        Set[Row](
+          Seq[Entry[_]](new IntegerEntry(1), new VarcharEntry("Gregory", 25), new VarcharEntry("Kapfhammer", 25), new VarcharEntry("Alden 106", 25)),
+          Seq[Entry[_]](new IntegerEntry(2), new VarcharEntry("Robert", 25), new VarcharEntry("Roos", 25), new VarcharEntry("Alden 107", 25)),
+          Seq[Entry[_]](new IntegerEntry(3), new VarcharEntry("Janyl", 25), new VarcharEntry("Jumadinova", 25), new VarcharEntry("Alden 107", 25)),
+          Seq[Entry[_]](new IntegerEntry(4), new VarcharEntry("John", 25), new VarcharEntry("Wenskovitch", 25), new VarcharEntry("Alden 108", 25))
+        ),
+        Seq[Attribute[_]](
+          Attribute("id", IntegerType, List(Primary_Key, Not_Null)),
+          Attribute("first_name", VarcharType(25), Nil),
+          Attribute("last_name", VarcharType(25), Nil),
+          Attribute("office", VarcharType(25), Nil)
+        )
+      ) with Modifyable
+      When("the relation is queried")
+      val query = SQLParser.parse("DELETE * FROM faculty;").get
+
+      Then("the parser should parse the query as a DELETE statement")
+      query shouldBe a[DeleteStmt]
+
+      And("the query should be processed successfully")
+      val result = faculty.process(query.asInstanceOf[DeleteStmt])
+      result shouldBe a[Success[_]]
+
+      And("the relation should be empty.")
+      faculty = result.get
+      faculty.rows should have size 0
+    }
+    scenario("an in-memory relation receives a `DELETE` statement with a predicate") {
+      Given("a simple in-memory modifyable relation")
+      var faculty: Relation with Modifyable = new View(
+        Set[Row](
+          Seq[Entry[_]](new IntegerEntry(1), new VarcharEntry("Gregory", 25), new VarcharEntry("Kapfhammer", 25), new VarcharEntry("Alden 106", 25)),
+          Seq[Entry[_]](new IntegerEntry(2), new VarcharEntry("Robert", 25), new VarcharEntry("Roos", 25), new VarcharEntry("Alden 107", 25)),
+          Seq[Entry[_]](new IntegerEntry(3), new VarcharEntry("Janyl", 25), new VarcharEntry("Jumadinova", 25), new VarcharEntry("Alden 107", 25)),
+          Seq[Entry[_]](new IntegerEntry(4), new VarcharEntry("John", 25), new VarcharEntry("Wenskovitch", 25), new VarcharEntry("Alden 108", 25))
+        ),
+        Seq[Attribute[_]](
+          Attribute("id", IntegerType, List(Primary_Key, Not_Null)),
+          Attribute("first_name", VarcharType(25), Nil),
+          Attribute("last_name", VarcharType(25), Nil),
+          Attribute("office", VarcharType(25), Nil)
+        )
+      ) with Modifyable
+      When("the relation is queried")
+      val query = SQLParser.parse("DELETE * FROM faculty WHERE id > 2;").get
+
+      Then("the parser should parse the query as a DELETE statement")
+      query shouldBe a[DeleteStmt]
+
+      And("the query should be processed successfully")
+      val result = faculty.process(query.asInstanceOf[DeleteStmt])
+      result shouldBe a[Success[_]]
+
+      And("the relation should not contain rows matching the predicate.")
+      faculty = result.get
+      faculty.rows should have size 2
+      faculty.toString should not include("|3|Janyl|Jumadinova|Alden 107\n|4|John|Wenskovitch|Alden 108")
+    }
+    scenario("an in-memory relation receives a `DELETE` statement with a `LIMIT` clause") {
+      Given("a simple in-memory modifyable relation")
+      var faculty: Relation with Modifyable = new View(
+        Set[Row](
+          Seq[Entry[_]](new IntegerEntry(1), new VarcharEntry("Gregory", 25), new VarcharEntry("Kapfhammer", 25), new VarcharEntry("Alden 106", 25)),
+          Seq[Entry[_]](new IntegerEntry(2), new VarcharEntry("Robert", 25), new VarcharEntry("Roos", 25), new VarcharEntry("Alden 107", 25)),
+          Seq[Entry[_]](new IntegerEntry(3), new VarcharEntry("Janyl", 25), new VarcharEntry("Jumadinova", 25), new VarcharEntry("Alden 107", 25)),
+          Seq[Entry[_]](new IntegerEntry(4), new VarcharEntry("John", 25), new VarcharEntry("Wenskovitch", 25), new VarcharEntry("Alden 108", 25))
+        ),
+        Seq[Attribute[_]](
+          Attribute("id", IntegerType, List(Primary_Key, Not_Null)),
+          Attribute("first_name", VarcharType(25), Nil),
+          Attribute("last_name", VarcharType(25), Nil),
+          Attribute("office", VarcharType(25), Nil)
+        )
+      ) with Modifyable
+      When("the relation is queried")
+      val query = SQLParser.parse("DELETE * FROM faculty LIMIT 1;").get
+
+      Then("the parser should parse the query as a DELETE statement")
+      query shouldBe a[DeleteStmt]
+
+      And("the query should be processed successfully")
+      val result = faculty.process(query.asInstanceOf[DeleteStmt])
+      result shouldBe a[Success[_]]
+
+      And("the relation should have the correct number of rows.")
+      faculty = result.get
+      faculty.rows should have size 3
+    }
   }
   feature("INSERT statements are processed correctly.") {
     pending

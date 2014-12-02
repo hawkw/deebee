@@ -123,8 +123,8 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     case name ~ "(" ~ contents => new CreateStmt(
       name,
       contents.filter {
-        _.isInstanceOf[Attribute[_]]
-      }.asInstanceOf[List[Attribute[_]]],
+        _.isInstanceOf[Attribute]
+      }.asInstanceOf[List[Attribute]],
       contents.filter {
         _.isInstanceOf[Constraint]
       }.asInstanceOf[List[Constraint]]
@@ -135,8 +135,8 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
   }
 
   lazy val dropTable: P[DropStmt] = "drop" ~> "table" ~> identifier ^^{case i => DropStmt(i)}
-  lazy val attr: P[Attribute[_]] = ident ~ typ ~ inPlaceConstraint.* ^^ { case name ~ dt ~ cs => Attribute(name, dt, cs)}
-  lazy val typ: P[Type[_]] = (
+  lazy val attr: P[Attribute] = ident ~ typ ~ inPlaceConstraint.* ^^ { case name ~ dt ~ cs => Attribute(name, dt, cs)}
+  lazy val typ: P[Type] = (
     ("int" | "integer") ^^^ IntegerType
       | "char" ~> "(" ~> int <~ ")" ^^{ case i => CharType(i) }
       | "varchar" ~> "(" ~> int <~ ")" ^^{ case n => VarcharType(n) }

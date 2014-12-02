@@ -12,7 +12,7 @@ import deebee.sql.ast.{Attribute, Constraint}
  */
 class CSVRelation(
                    name: String,
-                   attributes: List[Attribute[_]],
+                   attributes: List[Attribute],
                    constraints: List[Constraint],
                    private val back: File
                    ) extends RelationActor(name, attributes, constraints) {
@@ -38,7 +38,7 @@ class CSVRelation(
    * @param row the row to add
    * @return a [[Try]] on a reference to a [[Relation]] with the row appended
    */
-  override protected def add(row: deebee.Row): Try[Relation] = ???
+  override protected def add(row: deebee.Row): Try[Relation with Modifyable] = ???
 
   override protected def filterNot(predicate: (Row) => Boolean): Try[Relation with Modifyable] = ???
 

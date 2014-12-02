@@ -14,7 +14,7 @@ import scala.util.{Success, Try, Failure}
  */
 abstract class RelationActor(
                          val name: String,
-                         val attributes: List[Attribute[_]],
+                         val attributes: List[Attribute],
                          val constraints: List[Constraint]
                          ) extends Actor with ActorLogging with Relation {
 

@@ -2,6 +2,7 @@ package deebee
 
 import deebee.exceptions.QueryException
 import deebee.sql.ast._
+import deebee.storage.Entry
 
 import scala.util.{Try, Failure, Success}
 
@@ -20,7 +21,7 @@ trait Relation {
    */
   def rows: Set[Row]
 
-  def attributes: Seq[Attribute[_]]
+  def attributes: Seq[Attribute]
 
   /**
    * Add a new [[Row]] to this [[Relation]], returning a [[Try]] on a [[Relation]]with the row appended.
@@ -37,7 +38,7 @@ trait Relation {
    * @param row the row to add
    * @return a [[Try]] on a reference to a [[Relation]] with the row appended
    */
-  protected def add(row: Row): Try[Relation]
+  protected def add(row: Row): Try[Relation with Modifyable]
 
   def project(names: Seq[String]): Relation = new View(
     rows.map(
@@ -61,7 +62,7 @@ trait Relation {
 
   def iterator = rows.toIterator
 
-  def take(n: Int) = new View (rows.take(n), attributes)
+  def take(n: Int) = new View(rows.take(n), attributes)
   override def toString = rows.map(r => r.foldLeft("")((acc, thing) => acc + "|" + thing)).mkString("\n")
 }
 
@@ -93,7 +94,11 @@ trait Selectable extends Relation {
 }
 trait Modifyable extends Relation {
   def process(insert: InsertStmt): Try[Relation with Modifyable] = insert match {
-    //case InsertStmt(_, vals) if vals.length == attributes.length =>
+    case InsertStmt(_, vals: List[Expr[_]]) if vals.length == attributes.length => add(Try(
+      (for { i <- 0 until vals.length } yield {
+        attributes(i).apply(vals(i))
+      }).map{t: Try[Entry[_]] => t.get}
+    ).get)
     case InsertStmt(_, vals) => Failure(new QueryException(s"Could not insert (${vals.mkString(", ")}):\n" +
       s"Expected ${attributes.length} values, but received ${vals.length}."))
   }
@@ -113,7 +118,7 @@ trait Modifyable extends Relation {
  */
 class View(
             val rows: Set[Row],
-            val attributes: Seq[Attribute[_]]
+            val attributes: Seq[Attribute]
             ) extends Relation {
   /**
    * Add a new [[Row]] to this [[Relation]], returning a [[Try]] on a [[Relation]]with the row appended.
@@ -130,8 +135,8 @@ class View(
    * @param row the row to add
    * @return a reference to a [[Relation]] with the row appended
    */
-  override protected def add(row: Row): Try[Relation] = Success(
-    new View(rows + row, attributes)
+  override protected def add(row: Row): Try[Relation with Modifyable] = Success(
+    new View(rows + row, attributes) with Modifyable
   )
 
   override protected def filterNot(predicate: (Row) => Boolean): Try[Relation with Modifyable] = Success(

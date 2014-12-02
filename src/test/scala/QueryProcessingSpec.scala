@@ -18,7 +18,7 @@ class QueryProcessingSpec extends WordSpec with Matchers {
       val row2 = Seq[Entry[_]](new IntegerEntry(2), new VarcharEntry("another string", 16))
       val target: Relation = new View(
         Set[Row](row1, row2),
-        Seq[Attribute[_]](Attribute("test1", IntegerType, Nil), Attribute("test2", VarcharType(16), Nil))
+        Seq[Attribute](Attribute("test1", IntegerType, Nil), Attribute("test2", VarcharType(16), Nil))
       )
 
       "provide access to its' rows" in {

@@ -2,7 +2,13 @@ package deebee
 package sql
 package ast
 
+
+import deebee.exceptions.QueryException
 import deebee.storage.Entry
+
+import scala.reflect.runtime.universe.TypeTag
+import scala.util.{Try, Success, Failure}
+
 /**
  * AST nodes for SQL statements
  *
@@ -42,21 +48,18 @@ case class DeleteStmt(
       s"${limit.map(" LIMIT " + _).getOrElse("")};"
 }
 
-case class Attribute[T](
+case class Attribute(
                    name: Ident,
-                   datatype: Type[T],
+                   datatype: Type,
                    constraints: List[Constraint]
                    ) extends Node {
   override def emitSQL = s"$name ${datatype.emitSQL}${constraints.map(" " + _.emitSQL).mkString}"
-  def apply(context: Relation)(a: T): Entry[T] = {
-    // TODO: apply {Unique | Not Null | Primary Key} constraints here
-      datatype.entry(a)
-  }
+  def apply(a: Any): Try[Entry[_]] = Try(datatype.entry(a))
 }
 
 case class CreateStmt(
                    name: Ident,
-                   attributes: List[Attribute[_]],
+                   attributes: List[Attribute],
                    constraints: List[Constraint] = Nil
                    ) extends Node {
   override def emitSQL = {

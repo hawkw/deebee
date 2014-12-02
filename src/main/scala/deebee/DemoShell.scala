@@ -19,7 +19,7 @@ object DemoShell {
       Seq[Entry[_]](new IntegerEntry(3), new VarcharEntry("Janyl", 25), new VarcharEntry("Jumadinova", 25), new VarcharEntry("Alden 107", 25)),
       Seq[Entry[_]](new IntegerEntry(4), new VarcharEntry("John", 25), new VarcharEntry("Wenskovitch", 25), new VarcharEntry("Alden 108", 25))
     ),
-    Seq[Attribute[_]](
+    Seq[Attribute](
       Attribute("id", IntegerType, List(Primary_Key, Not_Null)),
       Attribute("first_name", VarcharType(25), Nil),
       Attribute("last_name", VarcharType(25), Nil),

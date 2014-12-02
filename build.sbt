@@ -27,7 +27,7 @@ ScoverageKeys.minimumCoverage := 70
 
 ScoverageKeys.failOnMinimumCoverage := false
 
-ScoverageKeys.scoverageExcludedFiles := "<empty>"
+ScoverageKeys.scoverageExcludedFiles := "*Demo*.*"
 
 ScoverageKeys.excludedPackages := "<empty>"
 

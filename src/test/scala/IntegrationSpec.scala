@@ -1,4 +1,5 @@
 import deebee._
+import deebee.exceptions.QueryException
 import deebee.sql.SQLParser
 import deebee.sql.ast._
 import deebee.storage.{VarcharEntry, IntegerEntry, Entry}
@@ -321,14 +322,19 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen {
 
       And("the should fail")
       val result = faculty.process(query.asInstanceOf[InsertStmt])
-      result shouldBe a [Failure[_]]
+      result should be a 'failure
+
+      And("the failure should contain the correct exception")
+      the [QueryException] thrownBy result.get should have message "Could not insert " +
+        "(4, 'John', 'Wenskovitch', 'Alden 108', 'Ph.D Candidate', 100238):\nExpected 4 values, but received 6."
 
       And("the relation should have the correct number of rows.")
-      faculty = result.get
       faculty.rows should have size 3
 
       And("the relation should not contain the added row")
       faculty.toString should not include ("|4|John|Wenskovitch|Alden 108")
+
+
     }
   }
   feature("CREATE TABLE statements are processed correctly.") {

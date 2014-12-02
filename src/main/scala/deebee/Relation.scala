@@ -1,7 +1,9 @@
 package deebee
 
 import deebee.exceptions.QueryException
-import deebee.sql.ast.Attribute
+import deebee.sql.ast.{SelectStmt, Proj, GlobProj, Attribute}
+
+import scala.util.{Try, Failure, Success}
 
 /**
  * Created by hawk on 11/29/14.
@@ -36,6 +38,31 @@ trait Relation {
   def take(n: Int) = new View (rows.take(n), attributes)
 
   override def toString = rows.map(r => r.foldLeft("")((acc, thing) => acc + "|" + thing)).mkString("\n")
+}
+
+trait Selectable extends Relation {
+  def processSelect(select: SelectStmt): Try[Relation] = {
+    val predicate = select.where
+      .map(clause => clause.emit(this))
+    (select.projections match {
+      case GlobProj :: Nil => Success(if (predicate.isDefined) {
+        this.filter(predicate.get.get)
+      } else this)
+      case Nil => Failure(new QueryException("Received a SELECT statement with no projections."))
+      case p: Seq[Proj] if p.length > 0 => Success((if (predicate.isDefined) {
+        this.filter(predicate.get.get)
+      } else this).project(p.map(_.emit)))
+    }).map(results =>
+      results.take(
+        select.limit
+          .map(_
+          .emit(this)
+          .get // this will be Success because it's a constant.
+          )
+          .getOrElse(results.rows.size)
+      )
+      )
+  }
 }
 
 class View(

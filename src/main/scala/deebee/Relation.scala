@@ -18,11 +18,10 @@ trait Relation {
     rows.map(
       r => names.map(
         name => {
-          val i: Int = attributes.indexWhere(_.name.name == name) match {
+          r(attributes.indexWhere(a => a.name.name == name) match {
             case n if n < 0 => throw new QueryException(s"Could not process projection, $this did not contain $name")
             case n: Int => n
-          }
-          r(i)
+          })
         }
         )
       ),
@@ -35,6 +34,8 @@ trait Relation {
   def iterator = rows.toIterator
 
   def take(n: Int) = new View (rows.take(n), attributes)
+
+  override def toString = rows.map(r => r.foldLeft("")((acc, thing) => acc + "|" + thing)).mkString("\n")
 }
 
 class View(

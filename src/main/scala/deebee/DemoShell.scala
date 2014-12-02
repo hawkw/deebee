@@ -59,10 +59,10 @@ object DemoShell {
                     .get // this will be Success because it's a constant.
                     )
                     .getOrElse(results.rows.size)
+                  )
                 )
-                )
-            }
-              )
+            }.getOrElse("")
+          )
           case _ => t
         }
         case util.Failure(e) => e

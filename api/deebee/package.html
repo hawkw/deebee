@@ -128,6 +128,23 @@ to the individual actors handling those tables and for managing the creation
 of new tables.</p><div class="fullcomment"><div class="comment cmt"><p>Represents the top level of a database, responsible for sending queries
 to the individual actors handling those tables and for managing the creation
 of new tables.</p><p>Eventually, this will also probably manage joins, when that happens.</p></div></div>
+    </li><li name="deebee.Modifyable" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ModifyableextendsRelation"></a>
+      <a id="Modifyable:Modifyable"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Modifyable.html"><span class="name">Modifyable</span></a><span class="result"> extends <a href="Relation.html" class="extype" name="deebee.Relation">Relation</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../index.html#deebee.package@ModifyableextendsRelation" title="Permalink" target="_top">
+        <img src="../lib/permalink.png" />
+      </a>
+    </span>
+      
     </li><li name="deebee.Relation" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
       <a id="RelationextendsAnyRef"></a>
       <a id="Relation:Relation"></a>
@@ -144,7 +161,7 @@ of new tables.</p><p>Eventually, this will also probably manage joins, when that
         <img src="../lib/permalink.png" />
       </a>
     </span>
-      <p class="shortcomment cmt">Created by hawk on 11/29/14.</p>
+      <p class="shortcomment cmt">Common operations for all Relations.</p>
     </li><li name="deebee.Row" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Row=Seq[deebee.storage.Entry[_]]"></a>
       <a id="Row:Row"></a>
@@ -158,6 +175,23 @@ of new tables.</p><p>Eventually, this will also probably manage joins, when that
       </span>
       </h4><span class="permalink">
       <a href="../index.html#deebee.package@Row=Seq[deebee.storage.Entry[_]]" title="Permalink" target="_top">
+        <img src="../lib/permalink.png" />
+      </a>
+    </span>
+      
+    </li><li name="deebee.Selectable" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="SelectableextendsRelation"></a>
+      <a id="Selectable:Selectable"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Selectable.html"><span class="name">Selectable</span></a><span class="result"> extends <a href="Relation.html" class="extype" name="deebee.Relation">Relation</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../index.html#deebee.package@SelectableextendsRelation" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
@@ -178,7 +212,7 @@ of new tables.</p><p>Eventually, this will also probably manage joins, when that
         <img src="../lib/permalink.png" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">An immutable, in-memory <a href="Relation.html" class="extype" name="deebee.Relation">Relation</a>.</p>
     </li></ol>
             </div>
 
@@ -186,7 +220,26 @@ of new tables.</p><p>Eventually, this will also probably manage joins, when that
 
         <div id="values" class="values members">
               <h3>Value Members</h3>
-              <ol><li name="deebee.exceptions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="deebee.DemoShell" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="DemoShell"></a>
+      <a id="DemoShell:DemoShell"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DemoShell$.html"><span class="name">DemoShell</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../index.html#deebee.package@DemoShell" title="Permalink" target="_top">
+        <img src="../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">A quick shell for demoing DML queries when DDL is not implemented.</p><div class="fullcomment"><div class="comment cmt"><p>A quick shell for demoing DML queries when DDL is not implemented.
+Created by hawk on 12/2/14.
+</p></div></div>
+    </li><li name="deebee.exceptions" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="exceptions"></a>
       <a id="exceptions:exceptions"></a>
       <h4 class="signature">

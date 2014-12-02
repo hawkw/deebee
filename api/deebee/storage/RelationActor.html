@@ -135,7 +135,31 @@
 
         <div id="values" class="values members">
               <h3>Abstract Value Members</h3>
-              <ol><li name="deebee.Relation#rows" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+              <ol><li name="deebee.Relation#add" visbl="prt" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="add(row:deebee.Row):scala.util.Try[deebee.Relation]"></a>
+      <a id="add(Row):Try[Relation]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">add</span><span class="params">(<span name="row">row: <a href="../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.storage.RelationActor@add(row:deebee.Row):scala.util.Try[deebee.Relation]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Add a new <a href="../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a> to this <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>, returning a <span class="extype" name="Try">Try</span> on a <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>with the row appended.</p><div class="fullcomment"><div class="comment cmt"><p>Add a new <a href="../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a> to this <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>, returning a <span class="extype" name="Try">Try</span> on a <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>with the row appended.</p><p>In the case of mutable <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>s (i.e. <a href="CSVRelation.html" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a>), this
+can be a reference back to the same relation after it has been modified; while in the course of
+immutable relations (i.e. <a href="../View.html" class="extype" name="deebee.View">View</a>) this can be a new relation with those rows appended. This
+is intended to ensure that the code for processing <code>INSERT</code> statements is polymorphic
+across mutable and immutable <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>s.</p><p>If the relation cannot be modified, this returns a <span class="extype" name="Try">Try</span> containing an
+<a href="../exceptions/InternalStateException.html" class="extype" name="deebee.exceptions.InternalStateException">deebee.exceptions.InternalStateException</a>.
+</p></div><dl class="paramcmts block"><dt class="param">row</dt><dd class="cmt"><p>the row to add</p></dd><dt>returns</dt><dd class="cmt"><p>a <span class="extype" name="Try">Try</span> on a reference to a <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with the row appended
+</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
+    </li><li name="deebee.Relation#rows" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="rows:Set[deebee.Row]"></a>
       <a id="rows:Set[Row]"></a>
       <h4 class="signature">
@@ -831,7 +855,7 @@ query processing, and must only provide the internal API for providing columns a
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
-    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="deebee.Relation#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
       <h4 class="signature">
@@ -840,14 +864,14 @@ query processing, and must only provide the internal API for providing columns a
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#deebee.storage.RelationActor@toString():String" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> → AnyRef → Any</dd></dl></div>
     </li><li name="akka.actor.Actor#unhandled" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="unhandled(message:&lt;?&gt;):Unit"></a>
       <a id="unhandled(Any):Unit"></a>

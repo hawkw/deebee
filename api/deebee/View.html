@@ -47,7 +47,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>An immutable, in-memory <a href="Relation.html" class="extype" name="deebee.Relation">Relation</a>.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><a href="Relation.html" class="extype" name="deebee.Relation">Relation</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -87,7 +87,7 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="deebee.View#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="deebee.View#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="&lt;init&gt;(rows:Set[deebee.Row],attributes:Seq[deebee.sql.ast.Attribute[_]]):deebee.View"></a>
       <a id="&lt;init&gt;:View"></a>
       <h4 class="signature">
@@ -103,7 +103,8 @@
         <img src="../lib/permalink.png" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">rows</dt><dd class="cmt"></dd><dt class="param">attributes</dt><dd class="cmt"><p>
+</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -164,6 +165,30 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="deebee.View#add" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="add(row:deebee.Row):scala.util.Try[deebee.Relation]"></a>
+      <a id="add(Row):Try[Relation]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">add</span><span class="params">(<span name="row">row: <a href="package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="Relation.html" class="extype" name="deebee.Relation">Relation</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../index.html#deebee.View@add(row:deebee.Row):scala.util.Try[deebee.Relation]" title="Permalink" target="_top">
+        <img src="../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Add a new <a href="package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a> to this <a href="Relation.html" class="extype" name="deebee.Relation">Relation</a>, returning a <span class="extype" name="Try">Try</span> on a <a href="Relation.html" class="extype" name="deebee.Relation">Relation</a>with the row appended.</p><div class="fullcomment"><div class="comment cmt"><p>Add a new <a href="package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a> to this <a href="Relation.html" class="extype" name="deebee.Relation">Relation</a>, returning a <span class="extype" name="Try">Try</span> on a <a href="Relation.html" class="extype" name="deebee.Relation">Relation</a>with the row appended.</p><p>In the case of mutable <a href="Relation.html" class="extype" name="deebee.Relation">Relation</a>s (i.e. <a href="storage/CSVRelation.html" class="extype" name="deebee.storage.CSVRelation">C S V R e l a t i o n</a>), this
+can be a reference back to the same relation after it has been modified; while in the course of
+immutable relations (i.e. <a href="" class="extype" name="deebee.View">View</a>) this can be a new relation with those rows appended. This
+is intended to ensure that the code for processing <code>INSERT</code> statements is polymorphic
+across mutable and immutable <a href="Relation.html" class="extype" name="deebee.Relation">Relation</a>s.</p><p>If the relation cannot be modified, this returns a <span class="extype" name="Try">Try</span> containing an
+<a href="exceptions/InternalStateException.html" class="extype" name="deebee.exceptions.InternalStateException">deebee.exceptions.InternalStateException</a>.
+</p></div><dl class="paramcmts block"><dt class="param">row</dt><dd class="cmt"><p>the row to add</p></dd><dt>returns</dt><dd class="cmt"><p>a reference to a <a href="Relation.html" class="extype" name="deebee.Relation">Relation</a> with the row appended
+</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.View">View</a> → <a href="Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
     </li><li name="scala.Any#asInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="asInstanceOf[T0]:T0"></a>
       <a id="asInstanceOf[T0]:T0"></a>
@@ -197,7 +222,9 @@
         <img src="../lib/permalink.png" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.View">View</a> → <a href="Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
+      <p class="shortcomment cmt">
+</p><div class="fullcomment"><div class="comment cmt"><p>
+</p></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.View">View</a> → <a href="Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
     </li><li name="scala.AnyRef#clone" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="clone():Object"></a>
       <a id="clone():AnyRef"></a>
@@ -447,8 +474,7 @@
         <img src="../lib/permalink.png" />
       </a>
     </span>
-      <p class="shortcomment cmt">Selects the whole table (unordered)</p><div class="fullcomment"><div class="comment cmt"><p>Selects the whole table (unordered)</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>the whole table, as a set of lists of entries
-</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.View">View</a> → <a href="Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.View">View</a> → <a href="Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -483,7 +509,7 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
-    </li><li name="scala.AnyRef#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="deebee.Relation#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
       <h4 class="signature">
@@ -492,14 +518,14 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.String">String</span></span>
+        <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4><span class="permalink">
       <a href="../index.html#deebee.View@toString():String" title="Permalink" target="_top">
         <img src="../lib/permalink.png" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Relation.html" class="extype" name="deebee.Relation">Relation</a> → AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>

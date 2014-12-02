@@ -39,7 +39,7 @@ case class Const[T](x: T) extends Expr[T] {
 }
 case class Ident(name: String) extends Expr[Int] {
   override val emitSQL = name
-  override def emit(context: Relation): Try[Int] = context.attributes.indexWhere(_.name == name) match {
+  override def emit(context: Relation): Try[Int] = context.attributes.indexWhere(_.name.name == name) match {
     case -1 => Failure(new QueryException(s"Relation $context did not contain attribute $name"))
     case i: Int => Success(i)
   }
@@ -75,34 +75,34 @@ case class Comparison(left: Expr[_], op: String, right: Expr[_]) extends Expr[Ro
     (leftside, op, rightside) match {
       case (l: (Row => Boolean), "AND", r: (Row => Boolean)) => Success(l && r)
       case (l: (Row => Boolean), "OR", r: (Row => Boolean)) => Success(l || r)
-      case (l: Int, "=" | "==", Const(value)) => Success({ x: Row =>
-        x(l) == value
+      case (l: Int, "=" | "==", value) => Success({ x: Row =>
+        x(l).value == value
       })
-      case (l: Int, "!=", Const(value)) => Success({ x: Row =>
-        x(l) != value
+      case (l: Int, "!=", value) => Success({ x: Row =>
+        x(l).value != value
       })
-      case (l: Int, ">", Const(value)) => (context.attributes(l).datatype, value) match {
-        case (IntegerType, v: Int) => Success({ x: Row => x(l).asInstanceOf[Int] > v})
-        case (DecimalType(_,_), v: Double) => Success({ x: Row => x(l).asInstanceOf[Double] > v})
+      case (l: Int, ">", value) => (context.attributes(l).datatype, value) match {
+        case (IntegerType, v: Int) => Success({ x: Row => x(l).value.asInstanceOf[Int] > v})
+        case (DecimalType(_,_), v: Double) => Success({ x: Row => x(l).value.asInstanceOf[Double] > v})
         case thing => Failure(new QueryException(s"TypeError: '>' requires numeric type, got $thing."))
       }
-      case (l: Int, "<", Const(value)) => (context.attributes(l).datatype, value) match {
+      case (l: Int, "<", value) => (context.attributes(l).datatype, value) match {
         case (IntegerType, v: Int) => Success({ x: Row => x(l).asInstanceOf[Int] < v})
-        case (DecimalType(_,_), v: Double) => Success({ x: Row => x(l).asInstanceOf[Double] < v})
+        case (DecimalType(_,_), v: Double) => Success({ x: Row => x(l).value.asInstanceOf[Double] < v})
         case thing => Failure(new QueryException(s"TypeError: '<' requires numeric type, got $thing."))
       }
-      case (l: Int, "<=", Const(value)) => (context.attributes(l).datatype, value) match {
+      case (l: Int, "<=", value) => (context.attributes(l).datatype, value) match {
         case (IntegerType, v: Int) => Success({ x: Row => x(l).asInstanceOf[Int] <= v})
-        case (DecimalType(_,_), v: Double) => Success({ x: Row => x(l).asInstanceOf[Double] <= v})
+        case (DecimalType(_,_), v: Double) => Success({ x: Row => x(l).value.asInstanceOf[Double] <= v})
         case thing => Failure(new QueryException(s"TypeError: '<=' requires numeric type, got $thing."))
       }
-      case (l: Int, ">=", Const(value)) => (context.attributes(l).datatype, value) match {
+      case (l: Int, ">=", value) => (context.attributes(l).datatype, value) match {
         case (IntegerType, v: Int) => Success({ x: Row => x(l).asInstanceOf[Int] >= v})
-        case (DecimalType(_,_), v: Double) => Success({ x: Row => x(l).asInstanceOf[Double] >= v})
+        case (DecimalType(_,_), v: Double) => Success({ x: Row => x(l).value.asInstanceOf[Double] >= v})
         case thing => Failure(new QueryException(s"TypeError: '>=' requires numeric type, got $thing."))
       }
-      case (l: Int, "LIKE", Const(value)) => (context.attributes(l).datatype, value) match {
-        case (CharType(_) | VarcharType(_), v: String) => Success({ x: Row => x(l).asInstanceOf[String].matches(v)})
+      case (l: Int, "LIKE", value) => (context.attributes(l).datatype, value) match {
+        case (CharType(_) | VarcharType(_), v: String) => Success({ x: Row => x(l).value.asInstanceOf[String].matches(v)})
         case thing => Failure(new QueryException(s"TypeError: 'LIKE' requires character type, got $thing."))
       }
     }

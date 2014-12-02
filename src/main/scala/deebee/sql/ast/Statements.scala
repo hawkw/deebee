@@ -8,10 +8,7 @@ import deebee.storage.Entry
  *
  * Created by hawk on 11/21/14.
  */
-sealed trait Stmt extends Node {
-  def process(context: Relation) = ???
-}
-
+sealed trait Stmt extends Node
 
 case class SelectStmt(
   projections: List[Proj] = GlobProj :: Nil,

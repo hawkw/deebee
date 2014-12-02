@@ -52,7 +52,7 @@ trait Relation {
       ),
     attributes.filter(names contains _.name.name)
   )
-  protected def filter(predicate: Row => Boolean): Relation = new View(
+  def filter(predicate: Row => Boolean): Relation = new View(
     rows.filter(predicate),
     attributes
   )
@@ -92,7 +92,11 @@ trait Selectable extends Relation {
 
 }
 trait Modifyable extends Relation {
-  def process(insert: InsertStmt): Try[Relation with Modifyable] = ???
+  def process(insert: InsertStmt): Try[Relation with Modifyable] = insert match {
+    //case InsertStmt(_, vals) if vals.length == attributes.length =>
+    case InsertStmt(_, vals) => Failure(new QueryException(s"Could not insert (${vals.mkString(", ")}):\n" +
+      s"Expected ${attributes.length} values, but received ${vals.length}."))
+  }
   def process(delete: DeleteStmt): Try[Relation with Modifyable] = delete match {
     case DeleteStmt(_, None, None) => drop(rows.size)
     case DeleteStmt(_, Some(comp), None) => (for (pred <- comp.emit(this)) yield filterNot(pred)).flatten

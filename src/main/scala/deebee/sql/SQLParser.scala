@@ -130,7 +130,7 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
       }.asInstanceOf[List[Constraint]]
     )
   }
-  lazy val insert: P[InsertStmt] = "insert" ~> "into" ~> identifier ~ ("values" ~> "(" ~> repsep(expression, ",") <~ ")") ^^ {
+  lazy val insert: P[InsertStmt] = "insert" ~> "into" ~> identifier ~ ("values" ~> "(" ~> repsep(literal, ",") <~ ")") ^^ {
     case into ~ values => InsertStmt(into, values)
   }
 
@@ -188,7 +188,7 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
      | literal
     | identifier ^^{ case i => i.asInstanceOf[Expr[_]] }
     )
-  lazy val literal: P[Expr[_]] = (
+  lazy val literal: P[Const[_]] = (
     stringLit
     | int
     | double

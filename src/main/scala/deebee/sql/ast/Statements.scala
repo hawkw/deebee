@@ -73,6 +73,6 @@ case class DropStmt(name: Ident) extends Node {
   override def emitSQL = s"DROP TABLE $name;"
 }
 
-case class InsertStmt(into: Ident, values: List[Expr[_]]) extends Node {
+case class InsertStmt(into: Ident, values: List[Const[_]]) extends Node {
   override def emitSQL = s"INSERT INTO $into VALUES (${values.map(_.toString).mkString(", ")});"
 }

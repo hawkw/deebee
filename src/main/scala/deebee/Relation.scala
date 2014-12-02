@@ -94,9 +94,9 @@ trait Selectable extends Relation {
 }
 trait Modifyable extends Relation {
   def process(insert: InsertStmt): Try[Relation with Modifyable] = insert match {
-    case InsertStmt(_, vals: List[Expr[_]]) if vals.length == attributes.length => add(Try(
+    case InsertStmt(_, vals: List[Const[_]]) if vals.length == attributes.length => add(Try(
       (for { i <- 0 until vals.length } yield {
-        attributes(i).apply(vals(i))
+        attributes(i).apply(vals(i).emit(this).get)
       }).map{t: Try[Entry[_]] => t.get}
     ).get)
     case InsertStmt(_, vals) => Failure(new QueryException(s"Could not insert (${vals.mkString(", ")}):\n" +

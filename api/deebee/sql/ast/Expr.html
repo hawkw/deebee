@@ -93,10 +93,39 @@
 
         
 
-        
+        <div id="values" class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="deebee.sql.ast.Expr#emit" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="emit(context:deebee.Relation):scala.util.Try[T]"></a>
+      <a id="emit(Relation):Try[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">emit</span><span class="params">(<span name="context">context: <a href="../../Relation.html" class="extype" name="deebee.Relation">Relation</a></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="deebee.sql.ast.Expr.T">T</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.Expr@emit(context:deebee.Relation):scala.util.Try[T]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Evaluate this expression against the given context, emitting a <span class="extype" name="Try">Try</span> containing either
+whatever this expression produces, or any semantic errors generated while processing the expression.</p><div class="fullcomment"><div class="comment cmt"><p>Evaluate this expression against the given context, emitting a <span class="extype" name="Try">Try</span> containing either
+whatever this expression produces, or any semantic errors generated while processing the expression.</p><p>This needs to be contextualized in order to access the schema and state of the table the expression is
+evaluated relative to.</p><p>Query processing exceptions include type errors, accesses to nonexistent attributes, or any malformed
+syntax that might slip through the parser. These are generally instances of <span class="extype" name="QueryException">QueryException</span> - handle
+these with warnings. If a different type of exception ever slips through, that probably is fatal and should
+be thrown to top level.
+</p></div><dl class="paramcmts block"><dt class="param">context</dt><dd class="cmt"><p>The relation against which to evaluate the expression.</p></dd><dt>returns</dt><dd class="cmt"><p>a <span class="extype" name="Try">Try</span> containing either whatever the expression generates (<span class="extype" name="T">T</span>) or any <span class="extype" name="Exception">Exception</span>s
+        generated during processing.
+</p></dd></dl></div>
+    </li></ol>
+            </div>
 
         <div id="values" class="values members">
-              <h3>Value Members</h3>
+              <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
@@ -188,32 +217,6 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="deebee.sql.ast.Expr#emit" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="emit(context:deebee.Relation):scala.util.Try[T]"></a>
-      <a id="emit(Relation):Try[T]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">emit</span><span class="params">(<span name="context">context: <a href="../../Relation.html" class="extype" name="deebee.Relation">Relation</a></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="deebee.sql.ast.Expr.T">T</span>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.Expr@emit(context:deebee.Relation):scala.util.Try[T]" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Evaluate this expression against the given context, emitting a <span class="extype" name="Try">Try</span> containing either
-whatever this expression produces, or any semantic errors generated while processing the expression.</p><div class="fullcomment"><div class="comment cmt"><p>Evaluate this expression against the given context, emitting a <span class="extype" name="Try">Try</span> containing either
-whatever this expression produces, or any semantic errors generated while processing the expression.</p><p>This needs to be contextualized in order to access the schema and state of the table the expression is
-evaluated relative to.</p><p>Query processing exceptions include type errors, accesses to nonexistent attributes, or any malformed
-syntax that might slip through the parser. These are generally instances of <span class="extype" name="QueryException">QueryException</span> - handle
-these with warnings. If a different type of exception ever slips through, that probably is fatal and should
-be thrown to top level.
-</p></div><dl class="paramcmts block"><dt class="param">context</dt><dd class="cmt"><p>The relation against which to evaluate the expression.</p></dd><dt>returns</dt><dd class="cmt"><p>a <span class="extype" name="Try">Try</span> containing either whatever the expression generates (<span class="extype" name="T">T</span>) or any <span class="extype" name="Exception">Exception</span>s
-        generated during processing.
-</p></dd></dl></div>
     </li><li name="deebee.sql.ast.Node#emitSQL" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="emitSQL:String"></a>
       <a id="emitSQL:String"></a>

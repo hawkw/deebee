@@ -297,7 +297,26 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen {
       pending
     }
     scenario("an in-memory relation recieves an `INSERT INTO` statement that violates its' type constraints") {
-      pending
+      Given("a simple in-memory modifyable relation")
+      var faculty: Relation with Modifyable = new View(
+        Set[Row](
+          Seq[Entry[_]](new IntegerEntry(1), new VarcharEntry("Gregory", 25), new VarcharEntry("Kapfhammer", 25), new VarcharEntry("Alden 106", 25)),
+          Seq[Entry[_]](new IntegerEntry(2), new VarcharEntry("Robert", 25), new VarcharEntry("Roos", 25), new VarcharEntry("Alden 107", 25)),
+          Seq[Entry[_]](new IntegerEntry(3), new VarcharEntry("Janyl", 25), new VarcharEntry("Jumadinova", 25), new VarcharEntry("Alden 107", 25))
+        ),
+        Seq[Attribute](
+          Attribute("id", IntegerType, List(Primary_Key, Not_Null)),
+          Attribute("first_name", VarcharType(25), Nil),
+          Attribute("last_name", VarcharType(25), Nil),
+          Attribute("office", VarcharType(25), Nil)
+        )
+      ) with Modifyable
+      When("the relation is queried")
+      val query = SQLParser.parse("INSERT INTO faculty VALUES('this is a bad place for a string to be', 'John', 'Wenskovitch', 'Alden 108');").get
+
+      Then("it should throw a QueryException with the correct message")
+      the [QueryException] thrownBy faculty.process(query.asInstanceOf[InsertStmt]) should have message "TypeError when creating Integer entry"
+
     }
     scenario("an in-memory relation recieves an `INSERT INTO` statement that contains the wrong number of values") {
       Given("a simple in-memory modifyable relation")
@@ -320,7 +339,7 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen {
       Then("the parser should parse the query as an INSERT statement")
       query shouldBe an [InsertStmt]
 
-      And("the should fail")
+      And("the query should fail")
       val result = faculty.process(query.asInstanceOf[InsertStmt])
       result should be a 'failure
 

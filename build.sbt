@@ -39,7 +39,3 @@ ScoverageKeys.highlighting := {
 publishArtifact in Test := false
 
 parallelExecution in Test := false
-
-assemblyJarName in assembly := "deebee-demo.jar"
-
-mainClass in assembly := Some("deebee.DemoShell")

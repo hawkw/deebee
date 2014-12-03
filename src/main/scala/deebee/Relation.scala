@@ -40,7 +40,7 @@ trait Relation {
    */
   protected def add(row: Row): Try[Relation with Modifyable]
 
-  def project(names: Seq[String]): Relation = new View(
+  def project(names: Seq[String]): Relation with Selectable = new View(
     rows.map(
       r => names.map(
         name => {
@@ -92,8 +92,8 @@ trait Selectable extends Relation {
   }
 
 }
-trait Modifyable extends Relation {
-  def process(insert: InsertStmt): Try[Relation with Modifyable] = insert match {
+trait Modifyable extends Relation with Selectable {
+  def process(insert: InsertStmt): Try[Relation with Selectable with Modifyable] = insert match {
     case InsertStmt(_, vals: List[Const[_]]) if vals.length == attributes.length => add(Try(
       (for { i <- 0 until vals.length } yield {
         attributes(i).apply(vals(i).emit(this).get)
@@ -102,7 +102,7 @@ trait Modifyable extends Relation {
     case InsertStmt(_, vals) => Failure(new QueryException(s"Could not insert (${vals.mkString(", ")}):\n" +
       s"Expected ${attributes.length} values, but received ${vals.length}."))
   }
-  def process(delete: DeleteStmt): Try[Relation with Modifyable] = delete match {
+  def process(delete: DeleteStmt): Try[Relation with Selectable with Modifyable] = delete match {
     case DeleteStmt(_, None, None) => drop(rows.size)
     case DeleteStmt(_, Some(comp), None) => (for (pred <- comp.emit(this)) yield filterNot(pred)).flatten
     case DeleteStmt(_, None, Some(limit)) => (for (n <- limit.emit(this)) yield drop(n)).flatten
@@ -119,7 +119,7 @@ trait Modifyable extends Relation {
 class View(
             val rows: Set[Row],
             val attributes: Seq[Attribute]
-            ) extends Relation {
+            ) extends Relation with Selectable with Modifyable {
   /**
    * Add a new [[Row]] to this [[Relation]], returning a [[Try]] on a [[Relation]]with the row appended.
    *
@@ -135,15 +135,15 @@ class View(
    * @param row the row to add
    * @return a reference to a [[Relation]] with the row appended
    */
-  override protected def add(row: Row): Try[Relation with Modifyable] = Success(
-    new View(rows + row, attributes) with Modifyable
+  override protected def add(row: Row): Try[Relation with Selectable with Modifyable] = Success(
+    new View(rows + row, attributes)
   )
 
-  override protected def filterNot(predicate: (Row) => Boolean): Try[Relation with Modifyable] = Success(
-    new View(rows.filterNot(predicate), attributes) with Modifyable
+  override protected def filterNot(predicate: (Row) => Boolean): Try[Relation with Selectable with Modifyable] = Success(
+    new View(rows.filterNot(predicate), attributes)with Selectable with Modifyable
   )
 
-  override protected def drop(n: Int): Try[Relation with Modifyable] = Success(
+  override protected def drop(n: Int): Try[Relation with Selectable with Modifyable] = Success(
     new View(rows.drop(n), attributes) with Modifyable
   )
 }

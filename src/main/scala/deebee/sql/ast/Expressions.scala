@@ -28,7 +28,7 @@ sealed trait Expr[T] extends Node {
    * @return a [[Try]] containing either whatever the expression generates ([[T]]) or any [[Exception]]s
    *         generated during processing.
    */
-  def emit(context: Relation): Try[T] = ???
+  def emit(context: Relation): Try[T]
 }
 case class Const[T](x: T) extends Expr[T] {
   override val emitSQL = x match {

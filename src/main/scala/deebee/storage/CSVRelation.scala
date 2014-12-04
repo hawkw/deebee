@@ -2,8 +2,11 @@ package deebee
 package storage
 
 import java.io.File
+import com.github.tototoshi.csv.{CSVWriter, CSVReader}
+import deebee.sql.SQLParser
+
 import scala.util.{Try, Success, Failure}
-import deebee.sql.ast.{Attribute, Constraint}
+import deebee.sql.ast.{CreateStmt, Attribute, Constraint}
 
 /**
  * Implementation for a [[Relation]] backed by a comma-separated values file.
@@ -14,14 +17,32 @@ class CSVRelation(
                    name: String,
                    attributes: List[Attribute],
                    constraints: List[Constraint],
-                   private val back: File
+                   path: String
                    ) extends RelationActor(name, attributes, constraints) {
+  def this(c: CreateStmt, path: String) = this (c.name,c.attributes, c.constraints, path)
+
+  lazy val back = new File(s"$path/$name.csv")
+  def reader = CSVReader.open(back)
+  def writer = CSVWriter.open(back)
 
   /**
    * Selects the whole table (unordered)
    * @return the whole table, as a set of lists of entries
    */
-  override def rows: Set[Row] = ???
+  override def rows: Set[Row] =
+    reader
+      .all()
+      .toSet
+      .map( row =>
+        for {
+         i <- 0 until row.length
+        } yield {
+          attributes(i)
+            .apply(SQLParser.parseLit(row(i)))
+            .get
+        }
+      )
+
 
   /**
    * Add a new [[Row]] to this [[Relation]], returning a [[Try]] on a [[Relation]]with the row appended.

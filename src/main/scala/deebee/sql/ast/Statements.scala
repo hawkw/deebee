@@ -15,6 +15,7 @@ import scala.util.{Try, Success, Failure}
  * Created by hawk on 11/21/14.
  */
 sealed trait Stmt extends Node
+sealed abstract class DMLStmt(val table: Ident) extends Stmt
 
 case class SelectStmt(
   projections: List[Proj] = GlobProj :: Nil,
@@ -24,7 +25,7 @@ case class SelectStmt(
   //groupBy: Option[GroupBy] = None,
   //orderBy: Option[OrderBy] = None,
   limit: Option[Expr[Int]] = None
-                   ) extends Stmt {
+                   ) extends DMLStmt(from) {
 
   override def emitSQL =
     s"SELECT ${projections.map(_.emitSQL).mkString(", ")}" +
@@ -40,7 +41,7 @@ case class DeleteStmt(
   from: Ident,
   where: Option[Comparison] = None,
   limit: Option[Expr[Int]] = None
-  ) extends Stmt {
+  ) extends DMLStmt(from) {
 
   override def emitSQL =
     s"DELETE FROM ${from.emitSQL}" +
@@ -69,10 +70,10 @@ case class CreateStmt(
   }
 }
 
-case class DropStmt(name: Ident) extends Node {
+case class DropStmt(name: Ident) extends DMLStmt(name) {
   override def emitSQL = s"DROP TABLE $name;"
 }
 
-case class InsertStmt(into: Ident, values: List[Const[_]]) extends Node {
+case class InsertStmt(into: Ident, values: List[Const[_]]) extends DMLStmt(into) {
   override def emitSQL = s"INSERT INTO $into VALUES (${values.map(_.toString).mkString(", ")});"
 }

@@ -217,6 +217,11 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
       case x: Error => util.Failure(new QueryParsingException(x.toString()))
     }
   }
+  def parseLit(lit: String): Try[Const[_]] = phrase(literal)(new lexical.Scanner(lit)) match {
+    case Success(result: Const[_], _) => util.Success(result)
+    case x: Failure => util.Failure(new QueryParsingException(x.toString()))
+    case x: Error => util.Failure(new QueryParsingException(x.toString()))
+  }
 
 
 }

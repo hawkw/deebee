@@ -16,7 +16,7 @@ abstract class RelationActor(
                          val name: String,
                          val attributes: List[Attribute],
                          val constraints: List[Constraint]
-                         ) extends Actor with ActorLogging with Relation {
+                         ) extends Actor with Relation with Selectable with Modifyable {
 
 
   /**
@@ -35,28 +35,11 @@ abstract class RelationActor(
    * @return
    */
   override def receive: Receive = {
-    case SelectStmt(projections, table, where, limit) => if (table.name == this.name) {
-      sender ! (for {
-          predicate <- where map (_.emit(this)) getOrElse Success({_: Row => true})
-        } yield {
-        (projections match {
-            case GlobProj ::Nil => Success(filter(predicate))
-            case Nil => Failure(new QueryException("Received a SELECT statement with no projections."))
-            case p: Seq[Proj] if p.length > 0 => Success(filter(predicate).project(p.map(_.emit)))
-          }).map(results =>
-          results.take(
-            limit
-              .map(_
-                .emit(this)
-                .get // this will be Success because it's a constant.
-              )
-              .getOrElse(results.rows.size)
-          ))
-        })
-    } else {
-      sender ! Failure(new InternalStateException("Select was sent to wrong table"))
-    }
-    //case Insert(table, values) => ???
-    //case Delete(table, where) => ???
+    case s: SelectStmt if s.table.name == this.name => sender ! process(s)
+    case s: DeleteStmt if s.table.name == this.name => sender ! process(s)
+    case s: InsertStmt if s.table.name == this.name => sender ! process(s)
+    case s: DMLStmt if s.table.name != this.name => sender ! Failure(
+      new InternalStateException(s"$name received a DML query intended for ${s.table.name}."))
+    case a: _ => sender ! Failure(new InternalStateException(s"$name didn't know how to handle $a."))
   }
 }

@@ -41,3 +41,14 @@ project/plugins/project/
 *.mtc1
 *.out
 *.synctex.gz
+.idea
+
+*.fdb_latexmk
+
+*.snm
+
+*.pyg
+
+*.nav
+
+*.fls

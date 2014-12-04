@@ -23,7 +23,7 @@ class CSVRelation(
 
   lazy val back = new File(s"$path/$name.csv")
   def reader = CSVReader.open(back)
-  def writer = CSVWriter.open(back)
+  def writer = CSVWriter.open(back, append = true)
 
   /**
    * Selects the whole table (unordered)
@@ -59,9 +59,11 @@ class CSVRelation(
    * @param row the row to add
    * @return a [[Try]] on a reference to a [[Relation]] with the row appended
    */
-  override protected def add(row: deebee.Row): Try[Relation with Modifyable] = ???
-
-  override protected def filterNot(predicate: (Row) => Boolean): Try[Relation with Modifyable] = ???
+  override protected def add(row: deebee.Row): Try[Relation with Modifyable] = {
+    writer.writeRow(row)
+    writer.close()
+    Success(this)
+  }
 
   override protected def drop(n: Int): Try[Relation with Modifyable] = ???
 }

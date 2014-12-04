@@ -57,7 +57,10 @@ trait Relation {
     rows.filter(predicate),
     attributes
   )
-  protected def filterNot(predicate: Row => Boolean): Try[Relation with Modifyable]
+  protected def filterNot(predicate: Row => Boolean): Relation = new View(
+    rows.filterNot(predicate),
+    attributes
+  )
   protected def drop(n: Int): Try[Relation with Modifyable]
 
   def iterator = rows.toIterator

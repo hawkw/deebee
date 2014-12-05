@@ -40,6 +40,6 @@ abstract class RelationActor(
     case s: InsertStmt if s.table.name == this.name => sender ! process(s)
     case s: DMLStmt if s.table.name != this.name => sender ! Failure(
       new InternalStateException(s"$name received a DML query intended for ${s.table.name}."))
-    case a: _ => sender ! Failure(new InternalStateException(s"$name didn't know how to handle $a."))
+    case a: Any => sender ! Failure(new InternalStateException(s"$name didn't know how to handle $a."))
   }
 }

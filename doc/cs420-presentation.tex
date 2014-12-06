@@ -7,7 +7,7 @@
 \mode<presentation>
 {
   \usetheme{Bergen}
-  \usecolortheme{dove}
+  \usecolortheme{crane}
 
   \setbeamercovered{transparent}
   % or whatever (possibly just delete it)
@@ -97,43 +97,49 @@
   %   for anyone how does not follow everything on the slide itself.
 
   \begin{itemize}
-  \item``The primary data model for commercial data-processing applications.''~\cite{silberschatz2010database}
+  \item ``The primary data model for commercial data-processing applications.''~\cite{silberschatz2010database} \pause
+  \item A {\it relation} is a table of values~\cite{silberschatz2010database,garcia2000database} \pause
+  \item A relation consists of: \pause
+  \begin{itemize}
+    \item a set of rows, or {\it tuples}~\cite{silberschatz2010database,garcia2000database} \pause
+     \item a set of columns, or {\it attributes}~\cite{silberschatz2010database,garcia2000database} \pause
+  \end{itemize} 
+  \item A database can consist of multiple relations~\cite{silberschatz2010database,garcia2000database}
+  \item So how does this relate to compilers?
   \end{itemize}
-  
 \end{frame}
 
 \subsection{Query Languages}
 \begin{frame}{What is a query langauge?}
-
-  You can create overlays\dots
   \begin{itemize}
-  \item using the \texttt{pause} command:
-    \begin{itemize}
-    \item
-      First item.
-      \pause
-    \item    
-      Second item.
-    \end{itemize}
-  \item
-    using overlay specifications:
-    \begin{itemize}
-    \item<3->
-      First item.
-    \item<4->
-      Second item.
-    \end{itemize}
-  \item
-    using the general \texttt{uncover} command:
-    \begin{itemize}
-      \uncover<5->{\item
-        First item.}
-      \uncover<6->{\item
-        Second item.}
-    \end{itemize}
+  \item Users and client software interact with databases through {\it query languages}~\cite{silberschatz2010database,garcia2000database} \pause
+  \item These are {\it domain-specific languages} for accessing and modifying the database \pause
+  \item Query languages are {\it declarative} rather than {\it imperative} programming languages \pause
+  \item Just like other programming languages, query languages must be parsed, analyzed, and compiled or interpreted.
   \end{itemize}
 \end{frame}
+
 \begin{frame}{SQL}
+\begin{itemize}
+  \item SQL is the {\it Structured Query Language}. \pause
+  \item It is the query language used by most modern RDBMSs \pause
+  \item SQL consists of two components: \pause
+    \begin{itemize}
+      \item {\it Data definition language} (DDL): defines the structure of the database 
+      \begin{itemize}
+        \item creating and deleting tables
+        \item adding relationships betweent tables
+        \item et cetera
+        \end{itemize}\pause
+      \item {\it Data manipulation language} (DML): accesses and modifies data stored in the database
+      \begin{itemize}
+        \item selecting rows
+        \item adding, deleting, and modifying rows
+        \item et cetera
+      \end{itemize}
+    \end{itemize} \pause
+    \item SQL = DDL + DML
+\end{itemize}
 \end{frame}
 
 
@@ -151,26 +157,9 @@
 
 \subsection{Architecture}
 
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
 
 
 \subsection{Implementation}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
 
 
 
@@ -178,28 +167,6 @@
 
 \begin{frame}{Summary}
 
-  % Keep the summary *very short*.
-  \begin{itemize}
-  \item
-    The \alert{first main message} of your talk in one or two lines.
-  \item
-    The \alert{second main message} of your talk in one or two lines.
-  \item
-    Perhaps a \alert{third message}, but not more than that.
-  \end{itemize}
-  
-  % The following outlook is optional.
-  \vskip0pt plus.5fill
-  \begin{itemize}
-  \item
-    Outlook
-    \begin{itemize}
-    \item
-      Something you haven't solved.
-    \item
-      Something else you haven't solved.
-    \end{itemize}
-  \end{itemize}
 \end{frame}
 
 
@@ -211,8 +178,8 @@
 
 \begin{frame}[allowframebreaks]
         \frametitle{References}
-        \bibliography{assets/final}
-        \bibliographystyle{plain}
+\bibliography{assets/final}{}
+\bibliographystyle{plain}
 \end{frame}
 
 \end{document}

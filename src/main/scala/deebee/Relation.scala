@@ -53,15 +53,17 @@ trait Relation {
       ),
     attributes.filter(names contains _.name.name)
   )
-  def filter(predicate: Row => Boolean): Relation = new View(
+  def filter(predicate: Row => Boolean): Relation with Selectable with Modifyable = new View(
     rows.filter(predicate),
     attributes
-  )
-  protected def filterNot(predicate: Row => Boolean): Relation = new View(
+  ) with Selectable with Modifyable
+
+  protected def filterNot(predicate: Row => Boolean): Relation with Selectable with Modifyable = new View(
     rows.filterNot(predicate),
     attributes
-  )
-  protected def drop(n: Int): Try[Relation with Modifyable]
+  ) with Selectable with Modifyable
+
+  protected def drop(n: Int): Try[Relation with Selectable with Modifyable]
 
   def iterator = rows.toIterator
 
@@ -107,7 +109,7 @@ trait Modifyable extends Relation with Selectable {
   }
   def process(delete: DeleteStmt): Try[Relation with Selectable with Modifyable] = delete match {
     case DeleteStmt(_, None, None) => drop(rows.size)
-    case DeleteStmt(_, Some(comp), None) => (for (pred <- comp.emit(this)) yield filterNot(pred)).flatten
+    case DeleteStmt(_, Some(comp), None) => for (pred <- comp.emit(this)) yield filterNot(pred)
     case DeleteStmt(_, None, Some(limit)) => (for (n <- limit.emit(this)) yield drop(n)).flatten
     case DeleteStmt(_, Some(comp), Some(limit)) => ??? //TODO: Implement
   }
@@ -141,11 +143,11 @@ class View(
   override protected def add(row: Row): Try[Relation with Selectable with Modifyable] = Success(
     new View(rows + row, attributes)
   )
-
+/*
   override protected def filterNot(predicate: (Row) => Boolean): Try[Relation with Selectable with Modifyable] = Success(
     new View(rows.filterNot(predicate), attributes)with Selectable with Modifyable
   )
-
+*/
   override protected def drop(n: Int): Try[Relation with Selectable with Modifyable] = Success(
     new View(rows.drop(n), attributes) with Modifyable
   )

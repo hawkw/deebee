@@ -178,10 +178,9 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     ) ^^ {
     case lhs ~ op ~ rhs => Comparison(lhs, op.toUpperCase, rhs)
   }
-  lazy val intExpr: P[Expr[Int]] = (
-    int ^^{ Const(_) }
+  lazy val intExpr: P[Expr[Int]] = int ^^{ Const(_) }
     // | term // TODO: insert math here
-    )
+
   lazy val expression: P[Expr[_]] = (
     ("(" ~> comparison <~ ")") ^^{case c: Comparison => new ParenComparison(c)}
       | comparison

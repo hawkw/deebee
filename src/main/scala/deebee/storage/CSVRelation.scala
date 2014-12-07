@@ -33,15 +33,15 @@ class CSVRelation(
     reader
       .all()
       .toSet
-      .map( row: Row =>
+      .map { row: List[String] =>
         for {
-         i <- 0 until row.length
+          i <- 0 until row.length
         } yield {
           attributes(i)
             .apply(SQLParser.parseLit(row(i)))
             .get
-        }
-      )
+      }
+    }
 
 
   /**

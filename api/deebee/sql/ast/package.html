@@ -197,6 +197,23 @@ Created by hawk on 11/21/14.</p>
       </a>
     </span>
       
+    </li><li name="deebee.sql.ast.DMLStmt" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="DMLStmtextendsStmt"></a>
+      <a id="DMLStmt:DMLStmt"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="DMLStmt.html"><span class="name">DMLStmt</span></a><span class="result"> extends <a href="Stmt.html" class="extype" name="deebee.sql.ast.Stmt">Stmt</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.package@DMLStmtextendsStmt" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      
     </li><li name="deebee.sql.ast.DecimalType" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="DecimalTypeextendsTypewithProductwithSerializable"></a>
       <a id="DecimalType:DecimalType"></a>
@@ -215,7 +232,7 @@ Created by hawk on 11/21/14.</p>
     </span>
       
     </li><li name="deebee.sql.ast.DeleteStmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DeleteStmtextendsStmtwithProductwithSerializable"></a>
+      <a id="DeleteStmtextendsDMLStmtwithProductwithSerializable"></a>
       <a id="DeleteStmt:DeleteStmt"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -223,16 +240,16 @@ Created by hawk on 11/21/14.</p>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="DeleteStmt.html"><span class="name">DeleteStmt</span></a><span class="params">(<span name="from">from: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="where">where: <span class="extype" name="scala.Option">Option</span>[<a href="Comparison.html" class="extype" name="deebee.sql.ast.Comparison">Comparison</a>] = <span class="symbol">None</span></span>, <span name="limit">limit: <span class="extype" name="scala.Option">Option</span>[<a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[<span class="extype" name="scala.Int">Int</span>]] = <span class="symbol">None</span></span>)</span><span class="result"> extends <a href="Stmt.html" class="extype" name="deebee.sql.ast.Stmt">Stmt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="DeleteStmt.html"><span class="name">DeleteStmt</span></a><span class="params">(<span name="from">from: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="where">where: <span class="extype" name="scala.Option">Option</span>[<a href="Comparison.html" class="extype" name="deebee.sql.ast.Comparison">Comparison</a>] = <span class="symbol">None</span></span>, <span name="limit">limit: <span class="extype" name="scala.Option">Option</span>[<a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[<span class="extype" name="scala.Int">Int</span>]] = <span class="symbol">None</span></span>)</span><span class="result"> extends <a href="DMLStmt.html" class="extype" name="deebee.sql.ast.DMLStmt">DMLStmt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.package@DeleteStmtextendsStmtwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.package@DeleteStmtextendsDMLStmtwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
       
     </li><li name="deebee.sql.ast.DropStmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="DropStmtextendsNodewithProductwithSerializable"></a>
+      <a id="DropStmtextendsDMLStmtwithProductwithSerializable"></a>
       <a id="DropStmt:DropStmt"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -240,10 +257,10 @@ Created by hawk on 11/21/14.</p>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="DropStmt.html"><span class="name">DropStmt</span></a><span class="params">(<span name="name">name: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>)</span><span class="result"> extends <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="DropStmt.html"><span class="name">DropStmt</span></a><span class="params">(<span name="name">name: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>)</span><span class="result"> extends <a href="DMLStmt.html" class="extype" name="deebee.sql.ast.DMLStmt">DMLStmt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.package@DropStmtextendsNodewithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.package@DropStmtextendsDMLStmtwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -301,7 +318,7 @@ Created by hawk on 11/21/14.</p>
     </span>
       
     </li><li name="deebee.sql.ast.InsertStmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="InsertStmtextendsNodewithProductwithSerializable"></a>
+      <a id="InsertStmtextendsDMLStmtwithProductwithSerializable"></a>
       <a id="InsertStmt:InsertStmt"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -309,10 +326,10 @@ Created by hawk on 11/21/14.</p>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="InsertStmt.html"><span class="name">InsertStmt</span></a><span class="params">(<span name="into">into: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="values">values: <span class="extype" name="scala.List">List</span>[<a href="Const.html" class="extype" name="deebee.sql.ast.Const">Const</a>[_]]</span>)</span><span class="result"> extends <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="InsertStmt.html"><span class="name">InsertStmt</span></a><span class="params">(<span name="into">into: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="values">values: <span class="extype" name="scala.List">List</span>[<a href="Const.html" class="extype" name="deebee.sql.ast.Const">Const</a>[_]]</span>)</span><span class="result"> extends <a href="DMLStmt.html" class="extype" name="deebee.sql.ast.DMLStmt">DMLStmt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.package@InsertStmtextendsNodewithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.package@InsertStmtextendsDMLStmtwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -406,7 +423,7 @@ Created by hawk on 11/21/14.</p>
     </span>
       <p class="shortcomment cmt">Created by hawk on 11/21/14.</p>
     </li><li name="deebee.sql.ast.SelectStmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="SelectStmtextendsStmtwithProductwithSerializable"></a>
+      <a id="SelectStmtextendsDMLStmtwithProductwithSerializable"></a>
       <a id="SelectStmt:SelectStmt"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -414,10 +431,10 @@ Created by hawk on 11/21/14.</p>
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <a href="SelectStmt.html"><span class="name">SelectStmt</span></a><span class="params">(<span name="projections">projections: <span class="extype" name="scala.List">List</span>[<a href="Proj.html" class="extype" name="deebee.sql.ast.Proj">Proj</a>] = <span class="symbol"><span class="name"><a href="GlobProj$.html">GlobProj :: Nil</a></span></span></span>, <span name="from">from: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="where">where: <span class="extype" name="scala.Option">Option</span>[<a href="Comparison.html" class="extype" name="deebee.sql.ast.Comparison">Comparison</a>] = <span class="symbol">None</span></span>, <span name="limit">limit: <span class="extype" name="scala.Option">Option</span>[<a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[<span class="extype" name="scala.Int">Int</span>]] = <span class="symbol">None</span></span>)</span><span class="result"> extends <a href="Stmt.html" class="extype" name="deebee.sql.ast.Stmt">Stmt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <a href="SelectStmt.html"><span class="name">SelectStmt</span></a><span class="params">(<span name="projections">projections: <span class="extype" name="scala.List">List</span>[<a href="Proj.html" class="extype" name="deebee.sql.ast.Proj">Proj</a>] = <span class="symbol"><span class="name"><a href="GlobProj$.html">GlobProj :: Nil</a></span></span></span>, <span name="from">from: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="where">where: <span class="extype" name="scala.Option">Option</span>[<a href="Comparison.html" class="extype" name="deebee.sql.ast.Comparison">Comparison</a>] = <span class="symbol">None</span></span>, <span name="limit">limit: <span class="extype" name="scala.Option">Option</span>[<a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[<span class="extype" name="scala.Int">Int</span>]] = <span class="symbol">None</span></span>)</span><span class="result"> extends <a href="DMLStmt.html" class="extype" name="deebee.sql.ast.DMLStmt">DMLStmt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.package@SelectStmtextendsStmtwithProductwithSerializable" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.package@SelectStmtextendsDMLStmtwithProductwithSerializable" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>

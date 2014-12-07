@@ -1,9 +1,9 @@
 <!DOCTYPE html >
 <html>
         <head>
-          <title>InsertStmt - deebee.sql.ast.InsertStmt</title>
-          <meta name="description" content="InsertStmt - deebee.sql.ast.InsertStmt" />
-          <meta name="keywords" content="InsertStmt deebee.sql.ast.InsertStmt" />
+          <title>DMLStmt - deebee.sql.ast.DMLStmt</title>
+          <meta name="description" content="DMLStmt - deebee.sql.ast.DMLStmt" />
+          <meta name="keywords" content="DMLStmt deebee.sql.ast.DMLStmt" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
           
       <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
@@ -16,7 +16,7 @@
       <script type="text/javascript">
          if(top === self) {
             var url = '../../../index.html';
-            var hash = 'deebee.sql.ast.InsertStmt';
+            var hash = 'deebee.sql.ast.DMLStmt';
             var anchor = window.location.hash;
             var anchor_opt = '';
             if (anchor.length >= 1)
@@ -30,8 +30,8 @@
       <div id="definition">
         <img src="../../../lib/class_big.png" />
         <p id="owner"><a href="../../package.html" class="extype" name="deebee">deebee</a>.<a href="../package.html" class="extype" name="deebee.sql">sql</a>.<a href="package.html" class="extype" name="deebee.sql.ast">ast</a></p>
-        <h1>InsertStmt</h1> <span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt" title="Permalink" target="_top">
+        <h1>DMLStmt</h1> <span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -39,18 +39,21 @@
 
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
+        <span class="modifier">sealed abstract </span>
+        <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">InsertStmt</span><span class="params">(<span name="into">into: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="values">values: <span class="extype" name="scala.List">List</span>[<a href="Const.html" class="extype" name="deebee.sql.ast.Const">Const</a>[_]]</span>)</span><span class="result"> extends <a href="DMLStmt.html" class="extype" name="deebee.sql.ast.DMLStmt">DMLStmt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">DMLStmt</span><span class="result"> extends <a href="Stmt.html" class="extype" name="deebee.sql.ast.Stmt">Stmt</a></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="DMLStmt.html" class="extype" name="deebee.sql.ast.DMLStmt">DMLStmt</a>, <a href="Stmt.html" class="extype" name="deebee.sql.ast.Stmt">Stmt</a>, <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div></div>
+          <div class="superTypes hiddenContent"><a href="Stmt.html" class="extype" name="deebee.sql.ast.Stmt">Stmt</a>, <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">Known Subclasses</span>
+            <div class="subClasses hiddenContent"><a href="DeleteStmt.html" class="extype" name="deebee.sql.ast.DeleteStmt">DeleteStmt</a>, <a href="DropStmt.html" class="extype" name="deebee.sql.ast.DropStmt">DropStmt</a>, <a href="InsertStmt.html" class="extype" name="deebee.sql.ast.InsertStmt">InsertStmt</a>, <a href="SelectStmt.html" class="extype" name="deebee.sql.ast.SelectStmt">SelectStmt</a></div>
+          </div></div>
         
 
       <div id="mbrsel">
@@ -67,7 +70,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="deebee.sql.ast.InsertStmt"><span>InsertStmt</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="deebee.sql.ast.DMLStmt"><span>DMLStmt</span></li><li class="in" name="deebee.sql.ast.Stmt"><span>Stmt</span></li><li class="in" name="deebee.sql.ast.Node"><span>Node</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="deebee.sql.ast.DMLStmt"><span>DMLStmt</span></li><li class="in" name="deebee.sql.ast.Stmt"><span>Stmt</span></li><li class="in" name="deebee.sql.ast.Node"><span>Node</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -87,19 +90,19 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="deebee.sql.ast.InsertStmt#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(into:deebee.sql.ast.Ident,values:List[deebee.sql.ast.Const[_]]):deebee.sql.ast.InsertStmt"></a>
-      <a id="&lt;init&gt;:InsertStmt"></a>
+              <ol><li name="deebee.sql.ast.DMLStmt#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="&lt;init&gt;(table:deebee.sql.ast.Ident):deebee.sql.ast.DMLStmt"></a>
+      <a id="&lt;init&gt;:DMLStmt"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">new</span>
       </span>
       <span class="symbol">
-        <span class="name">InsertStmt</span><span class="params">(<span name="into">into: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="values">values: <span class="extype" name="scala.List">List</span>[<a href="Const.html" class="extype" name="deebee.sql.ast.Const">Const</a>[_]]</span>)</span>
+        <span class="name">DMLStmt</span><span class="params">(<span name="table">table: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>)</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@&lt;init&gt;(into:deebee.sql.ast.Ident,values:List[deebee.sql.ast.Const[_]]):deebee.sql.ast.InsertStmt" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@&lt;init&gt;(table:deebee.sql.ast.Ident):deebee.sql.ast.DMLStmt" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -125,7 +128,7 @@
         <span title="gt4s: $bang$eq" class="name">!=</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@!=(x$1:Any):Boolean" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@!=(x$1:Any):Boolean" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -142,7 +145,7 @@
         <span title="gt4s: $hash$hash" class="name">##</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@##():Int" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@##():Int" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -159,7 +162,7 @@
         <span title="gt4s: $eq$eq" class="name">==</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@==(x$1:Any):Boolean" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@==(x$1:Any):Boolean" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -176,7 +179,7 @@
         <span class="name">asInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Any.asInstanceOf.T0">T0</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@asInstanceOf[T0]:T0" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@asInstanceOf[T0]:T0" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -193,7 +196,7 @@
         <span class="name">clone</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@clone():Object" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@clone():Object" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -204,7 +207,7 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="deebee.sql.ast.InsertStmt#emitSQL" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="deebee.sql.ast.Node#emitSQL" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="emitSQL:String"></a>
       <a id="emitSQL:String"></a>
       <h4 class="signature">
@@ -216,12 +219,12 @@
         <span class="name">emitSQL</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@emitSQL:String" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@emitSQL:String" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <p class="shortcomment cmt">Re-emit the SQL statement(s) corresponding to this node</p><div class="fullcomment"><div class="comment cmt"><p>Re-emit the SQL statement(s) corresponding to this node</p></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>
-</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.sql.ast.InsertStmt">InsertStmt</a> → <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a></dd></dl></div>
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -234,11 +237,28 @@
         <span class="name">eq</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@eq(x$1:AnyRef):Boolean" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="scala.AnyRef#equals" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="equals(x$1:Any):Boolean"></a>
+      <a id="equals(Any):Boolean"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">equals</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Any">Any</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@equals(x$1:Any):Boolean" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -251,7 +271,7 @@
         <span class="name">finalize</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@finalize():Unit" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@finalize():Unit" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -274,28 +294,28 @@
         <span class="name">getClass</span><span class="params">()</span><span class="result">: <span class="extype" name="java.lang.Class">Class</span>[_]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@getClass():Class[_]" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@getClass():Class[_]" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="deebee.sql.ast.InsertStmt#into" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="into:deebee.sql.ast.Ident"></a>
-      <a id="into:Ident"></a>
+    </li><li name="scala.AnyRef#hashCode" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="hashCode():Int"></a>
+      <a id="hashCode():Int"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">val</span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">into</span><span class="result">: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>
+        <span class="name">hashCode</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@into:deebee.sql.ast.Ident" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@hashCode():Int" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
-      
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -308,7 +328,7 @@
         <span class="name">isInstanceOf</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@isInstanceOf[T0]:Boolean" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -325,7 +345,7 @@
         <span class="name">ne</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.AnyRef">AnyRef</span></span>)</span><span class="result">: <span class="extype" name="scala.Boolean">Boolean</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@ne(x$1:AnyRef):Boolean" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -342,7 +362,7 @@
         <span class="name">notify</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@notify():Unit" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@notify():Unit" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -359,7 +379,7 @@
         <span class="name">notifyAll</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@notifyAll():Unit" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@notifyAll():Unit" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -376,12 +396,12 @@
         <span class="name">synchronized</span><span class="tparams">[<span name="T0">T0</span>]</span><span class="params">(<span name="arg0">arg0: ⇒ <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>)</span><span class="result">: <span class="extype" name="java.lang.AnyRef.synchronized.T0">T0</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@synchronized[T0](x$1:=&gt;T0):T0" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="deebee.sql.ast.DMLStmt#table" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+    </li><li name="deebee.sql.ast.DMLStmt#table" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="table:deebee.sql.ast.Ident"></a>
       <a id="table:Ident"></a>
       <h4 class="signature">
@@ -393,11 +413,11 @@
         <span class="name">table</span><span class="result">: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@table:deebee.sql.ast.Ident" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@table:deebee.sql.ast.Ident" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DMLStmt.html" class="extype" name="deebee.sql.ast.DMLStmt">DMLStmt</a></dd></dl></div>
+      
     </li><li name="deebee.sql.ast.Node#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -410,28 +430,11 @@
         <span class="name">toString</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Predef.String">String</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@toString():String" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@toString():String" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a> → AnyRef → Any</dd></dl></div>
-    </li><li name="deebee.sql.ast.InsertStmt#values" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="values:List[deebee.sql.ast.Const[_]]"></a>
-      <a id="values:List[Const[_]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">values</span><span class="result">: <span class="extype" name="scala.List">List</span>[<a href="Const.html" class="extype" name="deebee.sql.ast.Const">Const</a>[_]]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@values:List[deebee.sql.ast.Const[_]]" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" />
-      </a>
-    </span>
-      
     </li><li name="scala.AnyRef#wait" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="wait():Unit"></a>
       <a id="wait():Unit"></a>
@@ -444,7 +447,7 @@
         <span class="name">wait</span><span class="params">()</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@wait():Unit" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@wait():Unit" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -467,7 +470,7 @@
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>, <span name="arg1">arg1: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@wait(x$1:Long,x$2:Int):Unit" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -490,7 +493,7 @@
         <span class="name">wait</span><span class="params">(<span name="arg0">arg0: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.InsertStmt@wait(x$1:Long):Unit" title="Permalink" target="_top">
+      <a href="../../../index.html#deebee.sql.ast.DMLStmt@wait(x$1:Long):Unit" title="Permalink" target="_top">
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
@@ -510,17 +513,7 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.Serializable">
-              <h3>Inherited from <span class="extype" name="scala.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="java.io.Serializable">
-              <h3>Inherited from <span class="extype" name="java.io.Serializable">Serializable</span></h3>
-            </div><div class="parent" name="scala.Product">
-              <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
-            </div><div class="parent" name="scala.Equals">
-              <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
-            </div><div class="parent" name="deebee.sql.ast.DMLStmt">
-              <h3>Inherited from <a href="DMLStmt.html" class="extype" name="deebee.sql.ast.DMLStmt">DMLStmt</a></h3>
-            </div><div class="parent" name="deebee.sql.ast.Stmt">
+        <div class="parent" name="deebee.sql.ast.Stmt">
               <h3>Inherited from <a href="Stmt.html" class="extype" name="deebee.sql.ast.Stmt">Stmt</a></h3>
             </div><div class="parent" name="deebee.sql.ast.Node">
               <h3>Inherited from <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a></h3>

@@ -43,13 +43,13 @@
         <span class="kind">case class</span>
       </span>
       <span class="symbol">
-        <span class="name">SelectStmt</span><span class="params">(<span name="projections">projections: <span class="extype" name="scala.List">List</span>[<a href="Proj.html" class="extype" name="deebee.sql.ast.Proj">Proj</a>] = <span class="symbol"><span class="name"><a href="GlobProj$.html">GlobProj :: Nil</a></span></span></span>, <span name="from">from: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="where">where: <span class="extype" name="scala.Option">Option</span>[<a href="Comparison.html" class="extype" name="deebee.sql.ast.Comparison">Comparison</a>] = <span class="symbol">None</span></span>, <span name="limit">limit: <span class="extype" name="scala.Option">Option</span>[<a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[<span class="extype" name="scala.Int">Int</span>]] = <span class="symbol">None</span></span>)</span><span class="result"> extends <a href="Stmt.html" class="extype" name="deebee.sql.ast.Stmt">Stmt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+        <span class="name">SelectStmt</span><span class="params">(<span name="projections">projections: <span class="extype" name="scala.List">List</span>[<a href="Proj.html" class="extype" name="deebee.sql.ast.Proj">Proj</a>] = <span class="symbol"><span class="name"><a href="GlobProj$.html">GlobProj :: Nil</a></span></span></span>, <span name="from">from: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>, <span name="where">where: <span class="extype" name="scala.Option">Option</span>[<a href="Comparison.html" class="extype" name="deebee.sql.ast.Comparison">Comparison</a>] = <span class="symbol">None</span></span>, <span name="limit">limit: <span class="extype" name="scala.Option">Option</span>[<a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[<span class="extype" name="scala.Int">Int</span>]] = <span class="symbol">None</span></span>)</span><span class="result"> extends <a href="DMLStmt.html" class="extype" name="deebee.sql.ast.DMLStmt">DMLStmt</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="Stmt.html" class="extype" name="deebee.sql.ast.Stmt">Stmt</a>, <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.Product">Product</span>, <span class="extype" name="scala.Equals">Equals</span>, <a href="DMLStmt.html" class="extype" name="deebee.sql.ast.DMLStmt">DMLStmt</a>, <a href="Stmt.html" class="extype" name="deebee.sql.ast.Stmt">Stmt</a>, <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -67,7 +67,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="deebee.sql.ast.SelectStmt"><span>SelectStmt</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="deebee.sql.ast.Stmt"><span>Stmt</span></li><li class="in" name="deebee.sql.ast.Node"><span>Node</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="deebee.sql.ast.SelectStmt"><span>SelectStmt</span></li><li class="in" name="scala.Serializable"><span>Serializable</span></li><li class="in" name="java.io.Serializable"><span>Serializable</span></li><li class="in" name="scala.Product"><span>Product</span></li><li class="in" name="scala.Equals"><span>Equals</span></li><li class="in" name="deebee.sql.ast.DMLStmt"><span>DMLStmt</span></li><li class="in" name="deebee.sql.ast.Stmt"><span>Stmt</span></li><li class="in" name="deebee.sql.ast.Node"><span>Node</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -415,6 +415,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="deebee.sql.ast.DMLStmt#table" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="table:deebee.sql.ast.Ident"></a>
+      <a id="table:Ident"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">table</span><span class="result">: <a href="Ident.html" class="extype" name="deebee.sql.ast.Ident">Ident</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#deebee.sql.ast.SelectStmt@table:deebee.sql.ast.Ident" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="DMLStmt.html" class="extype" name="deebee.sql.ast.DMLStmt">DMLStmt</a></dd></dl></div>
     </li><li name="deebee.sql.ast.Node#toString" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="toString():String"></a>
       <a id="toString():String"></a>
@@ -535,6 +552,8 @@
               <h3>Inherited from <span class="extype" name="scala.Product">Product</span></h3>
             </div><div class="parent" name="scala.Equals">
               <h3>Inherited from <span class="extype" name="scala.Equals">Equals</span></h3>
+            </div><div class="parent" name="deebee.sql.ast.DMLStmt">
+              <h3>Inherited from <a href="DMLStmt.html" class="extype" name="deebee.sql.ast.DMLStmt">DMLStmt</a></h3>
             </div><div class="parent" name="deebee.sql.ast.Stmt">
               <h3>Inherited from <a href="Stmt.html" class="extype" name="deebee.sql.ast.Stmt">Stmt</a></h3>
             </div><div class="parent" name="deebee.sql.ast.Node">

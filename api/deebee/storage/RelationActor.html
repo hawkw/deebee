@@ -43,14 +43,14 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">RelationActor</span><span class="result"> extends <span class="extype" name="akka.actor.Actor">Actor</span> with <span class="extype" name="akka.actor.ActorLogging">ActorLogging</span> with <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></span>
+        <span class="name">RelationActor</span><span class="result"> extends <span class="extype" name="akka.actor.Actor">Actor</span> with <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a> with <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Definition for the table API.</p><p>Created by hawk on 11/19/14.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>, <span class="extype" name="akka.actor.ActorLogging">ActorLogging</span>, <span class="extype" name="akka.actor.Actor">Actor</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a>, <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a>, <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>, <span class="extype" name="akka.actor.Actor">Actor</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">
             <span class="toggle">Known Subclasses</span>
             <div class="subClasses hiddenContent"><a href="CSVRelation.html" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a></div>
@@ -71,7 +71,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="deebee.storage.RelationActor"><span>RelationActor</span></li><li class="in" name="deebee.Relation"><span>Relation</span></li><li class="in" name="akka.actor.ActorLogging"><span>ActorLogging</span></li><li class="in" name="akka.actor.Actor"><span>Actor</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="deebee.storage.RelationActor"><span>RelationActor</span></li><li class="in" name="deebee.Modifyable"><span>Modifyable</span></li><li class="in" name="deebee.Selectable"><span>Selectable</span></li><li class="in" name="deebee.Relation"><span>Relation</span></li><li class="in" name="akka.actor.Actor"><span>Actor</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -160,35 +160,18 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
 </p></div><dl class="paramcmts block"><dt class="param">row</dt><dd class="cmt"><p>the row to add</p></dd><dt>returns</dt><dd class="cmt"><p>a <span class="extype" name="Try">Try</span> on a reference to a <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with the row appended
 </p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
     </li><li name="deebee.Relation#drop" visbl="prt" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="drop(n:Int):scala.util.Try[deebee.Relationwithdeebee.Modifyable]"></a>
-      <a id="drop(Int):Try[RelationwithModifyable]"></a>
+      <a id="drop(n:Int):scala.util.Try[deebee.Relationwithdeebee.Selectablewithdeebee.Modifyable]"></a>
+      <a id="drop(Int):Try[RelationwithSelectablewithModifyable]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier">abstract </span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">drop</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a>]</span>
+        <span class="name">drop</span><span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a> with <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#deebee.storage.RelationActor@drop(n:Int):scala.util.Try[deebee.Relationwithdeebee.Modifyable]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
-    </li><li name="deebee.Relation#filterNot" visbl="prt" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="filterNot(predicate:deebee.Row=&gt;Boolean):scala.util.Try[deebee.Relationwithdeebee.Modifyable]"></a>
-      <a id="filterNot((Row)⇒Boolean):Try[RelationwithModifyable]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">filterNot</span><span class="params">(<span name="predicate">predicate: (<a href="../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a>]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#deebee.storage.RelationActor@filterNot(predicate:deebee.Row=&gt;Boolean):scala.util.Try[deebee.Relationwithdeebee.Modifyable]" title="Permalink" target="_top">
+      <a href="../../index.html#deebee.storage.RelationActor@drop(n:Int):scala.util.Try[deebee.Relationwithdeebee.Selectablewithdeebee.Modifyable]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" />
       </a>
     </span>
@@ -478,22 +461,39 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
     </li><li name="deebee.Relation#filter" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="filter(predicate:deebee.Row=&gt;Boolean):deebee.Relation"></a>
-      <a id="filter((Row)⇒Boolean):Relation"></a>
+      <a id="filter(predicate:deebee.Row=&gt;Boolean):deebee.Relationwithdeebee.Selectablewithdeebee.Modifyable"></a>
+      <a id="filter((Row)⇒Boolean):RelationwithSelectablewithModifyable"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">filter</span><span class="params">(<span name="predicate">predicate: (<a href="../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></span>
+        <span class="name">filter</span><span class="params">(<span name="predicate">predicate: (<a href="../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a> with <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#deebee.storage.RelationActor@filter(predicate:deebee.Row=&gt;Boolean):deebee.Relation" title="Permalink" target="_top">
+      <a href="../../index.html#deebee.storage.RelationActor@filter(predicate:deebee.Row=&gt;Boolean):deebee.Relationwithdeebee.Selectablewithdeebee.Modifyable" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" />
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
+    </li><li name="deebee.Relation#filterNot" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="filterNot(predicate:deebee.Row=&gt;Boolean):deebee.Relationwithdeebee.Selectablewithdeebee.Modifyable"></a>
+      <a id="filterNot((Row)⇒Boolean):RelationwithSelectablewithModifyable"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">filterNot</span><span class="params">(<span name="predicate">predicate: (<a href="../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span></span>)</span><span class="result">: <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a> with <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.storage.RelationActor@filterNot(predicate:deebee.Row=&gt;Boolean):deebee.Relationwithdeebee.Selectablewithdeebee.Modifyable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -585,23 +585,6 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
-    </li><li name="akka.actor.ActorLogging#log" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="log:akka.event.LoggingAdapter"></a>
-      <a id="log:LoggingAdapter"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">log</span><span class="result">: <span class="extype" name="akka.event.LoggingAdapter">LoggingAdapter</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#deebee.storage.RelationActor@log:akka.event.LoggingAdapter" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>ActorLogging</dd></dl></div>
     </li><li name="deebee.storage.RelationActor#name" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="name:String"></a>
       <a id="name:String"></a>
@@ -762,6 +745,57 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
     </span>)</span>
               
         </dd></dl></div>
+    </li><li name="deebee.Modifyable#process" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="process(delete:deebee.sql.ast.DeleteStmt):scala.util.Try[deebee.Relationwithdeebee.Selectablewithdeebee.Modifyable]"></a>
+      <a id="process(DeleteStmt):Try[RelationwithSelectablewithModifyable]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">process</span><span class="params">(<span name="delete">delete: <a href="../sql/ast/DeleteStmt.html" class="extype" name="deebee.sql.ast.DeleteStmt">DeleteStmt</a></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a> with <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.storage.RelationActor@process(delete:deebee.sql.ast.DeleteStmt):scala.util.Try[deebee.Relationwithdeebee.Selectablewithdeebee.Modifyable]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></dd></dl></div>
+    </li><li name="deebee.Modifyable#process" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="process(insert:deebee.sql.ast.InsertStmt):scala.util.Try[deebee.Relationwithdeebee.Selectablewithdeebee.Modifyable]"></a>
+      <a id="process(InsertStmt):Try[RelationwithSelectablewithModifyable]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">process</span><span class="params">(<span name="insert">insert: <a href="../sql/ast/InsertStmt.html" class="extype" name="deebee.sql.ast.InsertStmt">InsertStmt</a></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a> with <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.storage.RelationActor@process(insert:deebee.sql.ast.InsertStmt):scala.util.Try[deebee.Relationwithdeebee.Selectablewithdeebee.Modifyable]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></dd></dl></div>
+    </li><li name="deebee.Selectable#process" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="process(select:deebee.sql.ast.SelectStmt):scala.util.Try[deebee.Relation]"></a>
+      <a id="process(SelectStmt):Try[Relation]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">process</span><span class="params">(<span name="select">select: <a href="../sql/ast/SelectStmt.html" class="extype" name="deebee.sql.ast.SelectStmt">SelectStmt</a></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.storage.RelationActor@process(select:deebee.sql.ast.SelectStmt):scala.util.Try[deebee.Relation]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a></dd></dl></div>
     </li><li name="deebee.Relation#project" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="project(names:Seq[String]):deebee.Relationwithdeebee.Selectable"></a>
       <a id="project(Seq[String]):RelationwithSelectable"></a>
@@ -1001,10 +1035,12 @@ query processing, and must only provide the internal API for providing columns a
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="deebee.Relation">
+        <div class="parent" name="deebee.Modifyable">
+              <h3>Inherited from <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></h3>
+            </div><div class="parent" name="deebee.Selectable">
+              <h3>Inherited from <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a></h3>
+            </div><div class="parent" name="deebee.Relation">
               <h3>Inherited from <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></h3>
-            </div><div class="parent" name="akka.actor.ActorLogging">
-              <h3>Inherited from <span class="extype" name="akka.actor.ActorLogging">ActorLogging</span></h3>
             </div><div class="parent" name="akka.actor.Actor">
               <h3>Inherited from <span class="extype" name="akka.actor.Actor">Actor</span></h3>
             </div><div class="parent" name="scala.AnyRef">

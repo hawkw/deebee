@@ -33,7 +33,7 @@ class CSVRelation(
     reader
       .all()
       .toSet
-      .map( row =>
+      .map( row: Row =>
         for {
          i <- 0 until row.length
         } yield {

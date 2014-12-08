@@ -127,23 +127,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Actor</dd></dl></div>
-    </li><li name="deebee.storage.CSVDatabase.Table" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="Table=deebee.storage.CSVRelation"></a>
+    </li><li name="deebee.Database.Table" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="Table&lt;:deebee.storage.RelationActor"></a>
       <a id="Table:Table"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
+        <span class="modifier">abstract </span>
         <span class="kind">type</span>
       </span>
       <span class="symbol">
-        <span class="name">Table</span><span class="result"> = <a href="CSVRelation.html" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a></span>
+        <span class="name">Table</span><span class="result"> &lt;: <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#deebee.storage.CSVDatabase@Table=deebee.storage.CSVRelation" title="Permalink" target="_top">
+      <a href="../../index.html#deebee.storage.CSVDatabase@Table&lt;:deebee.storage.RelationActor" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.storage.CSVDatabase">CSVDatabase</a> → <a href="../Database.html" class="extype" name="deebee.Database">Database</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Database.html" class="extype" name="deebee.Database">Database</a></dd></dl></div>
     </li></ol>
             </div>
 
@@ -353,7 +353,7 @@
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">create</span><span class="params">(<span name="c">c: <a href="../sql/ast/CreateStmt.html" class="extype" name="deebee.sql.ast.CreateStmt">CreateStmt</a></span>)</span><span class="result">: <a href="#Table=deebee.storage.CSVRelation" class="extmbr" name="deebee.storage.CSVDatabase.Table">Table</a></span>
+        <span class="name">create</span><span class="params">(<span name="c">c: <a href="../sql/ast/CreateStmt.html" class="extype" name="deebee.sql.ast.CreateStmt">CreateStmt</a></span>)</span><span class="result">: <a href="#Table&lt;:deebee.storage.RelationActor" class="extmbr" name="deebee.storage.CSVDatabase.Table">Table</a></span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#deebee.storage.CSVDatabase@create(c:deebee.sql.ast.CreateStmt):CSVDatabase.this.Table" title="Permalink" target="_top">
@@ -759,7 +759,7 @@ This adds actors to the actor system.</p></div><dl class="paramcmts block"><dt>r
         <span class="kind">var</span>
       </span>
       <span class="symbol">
-        <span class="name">tables</span><span class="result">: <span class="extype" name="scala.collection.immutable.Map">Map</span>[<span class="extype" name="java.lang.String">String</span>, <a href="#Table=deebee.storage.CSVRelation" class="extmbr" name="deebee.storage.CSVDatabase.Table">Table</a>]</span>
+        <span class="name">tables</span><span class="result">: <span class="extype" name="scala.collection.immutable.Map">Map</span>[<span class="extype" name="java.lang.String">String</span>, <a href="#Table&lt;:deebee.storage.RelationActor" class="extmbr" name="deebee.storage.CSVDatabase.Table">Table</a>]</span>
       </span>
       </h4><span class="permalink">
       <a href="../../index.html#deebee.storage.CSVDatabase@tables:scala.collection.immutable.Map[String,Database.this.Table]" title="Permalink" target="_top">

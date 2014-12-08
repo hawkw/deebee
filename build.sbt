@@ -4,8 +4,6 @@ org.scoverage.coveralls.CoverallsPlugin.coverallsSettings
 
 name := "deebee"
 
-version := "0.1"
-
 scalaVersion := "2.11.4"
 
 resolvers ++= Seq(
@@ -41,3 +39,7 @@ ScoverageKeys.highlighting := {
 publishArtifact in Test := false
 
 parallelExecution in Test := false
+
+mainClass in assembly := Some("deebee.DemoShell")
+
+assemblyJarName in assembly := s"${name.value}-demo-${version.value}"

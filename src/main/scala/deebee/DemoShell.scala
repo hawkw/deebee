@@ -56,8 +56,8 @@ object DemoShell {
    * @param args any command-line args passed to the REPL. Currently none are supported.
    */
   def main(args: Array[String]): Unit = {
-    args(0) match {
-      case "--parse" => SQLParser.main(args)
+    args match {
+      case Array("--parse") => SQLParser.main(args)
       case _ => doDemo()
     }
   }

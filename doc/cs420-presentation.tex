@@ -102,7 +102,7 @@
     \item A very small relational database (\textless 1500 LoC) \pause
     \item Implements a subset of the Structured Query Language  \pause
     \item For educational purposes only (don't use this in production)  \pause
-    \item Written in the Scala programming language  \pause
+    \item Written in the Scala programming language 
   \end{itemize}
   \end{itemize}
 \end{frame}
@@ -113,7 +113,7 @@
 
 \begin{frame}{What is a relational database?}
 \begin{itemize}
- 	 \item ``The primary data model for commercial data-processing applications.''~\citep[39]{silberschatz2010database}
+ 	 \item ``The primary data model for commercial data-processing applications.''~\citep[39]{silberschatz2010database} \pause
  	 \item A database consists of multiple tables of values, called \alert{relations}~\citep{silberschatz2010database,harrington2009relational,garcia2000database} \pause
  	 \item A relation consists of:~\citep{silberschatz2010database,harrington2009relational,garcia2000database} \pause
   \begin{itemize}
@@ -247,7 +247,7 @@
       \item \texttt{CREATE TABLE} and \texttt{DROP TABLE} statements  \pause
       \begin{itemize}
         \item No \texttt{CHECK} constraints  \pause
-        \item No \texttt{TRIGGER}s  \pause
+        \item No \texttt{TRIGGER}s 
       \end{itemize}
     \end{itemize}
   \end{itemize}
@@ -298,7 +298,7 @@
     \begin{itemize}
       \item recieving queries  \pause
       \item (possibly) updating its' state  \pause
-      \item responding with query results or errors  \pause
+      \item responding with query results or errors 
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -312,7 +312,7 @@
       \item processes DDL queries by creating/deleting tables  \pause
       \item dispatches DML queries to the target child table  \pause
     \end{itemize}
-    \item Queries are \alert{interpreted} (not compiled) against a context  \pause
+    \item Queries are \alert{interpreted} (not compiled) against a context 
 \end{itemize}
 \end{frame}
 
@@ -325,8 +325,7 @@
   \begin{itemize}
     \item A \alert{parser} is a function which accepts some strings and rejects others  \pause
     \item A \alert{parser-combinator} is a higher-order function which takes as input two or more parsers and returns combined parser  \pause
-    \item By repeatedly combining simpler parsers into more complex ones, a \alert{recursive-descent parser} can be created  \pause
-  \end{itemize}
+    \item By repeatedly combining simpler parsers into more complex ones, a \alert{recursive-descent parser} can be created  \end{itemize}
   \end{itemize}
 \end{frame}
 

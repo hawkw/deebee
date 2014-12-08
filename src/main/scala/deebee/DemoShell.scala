@@ -28,7 +28,7 @@ object DemoShell {
     )
   )
 
-  def doDemo: Unit = {
+  def doDemo(): Unit = {
     var line = ""
     println("Welcome to the DeeBee Interactive Demo!\nEnter SQL commands at the prompt, or type `.exit` to exit.")
     while(line != ".exit") {
@@ -58,7 +58,7 @@ object DemoShell {
   def main(args: Array[String]): Unit = {
     args(0) match {
       case "--parse" => SQLParser.main(args)
-      case _ => doDemo
+      case _ => doDemo()
     }
   }
 

@@ -47,6 +47,6 @@ publishArtifact in Test := false
 
 parallelExecution in Test := false
 
-AssemblyKeys.mainClass in AssemblyKeys.assembly := Some("deebee.DemoShell")
+mainClass := Some("deebee.DemoShell")
 
 AssemblyKeys.assemblyJarName in AssemblyKeys.assembly := s"deebee.jar"

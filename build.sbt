@@ -1,5 +1,5 @@
 import com.typesafe.sbt.SbtGit._
-import sbtassembly.AssemblyKeys._
+import sbtassembly.AssemblyKeys
 
 versionWithGit
 
@@ -47,6 +47,6 @@ publishArtifact in Test := false
 
 parallelExecution in Test := false
 
-mainClass in assembly := Some("deebee.DemoShell")
+mainClass in AssemblyKeys.assembly := Some("deebee.DemoShell")
 
-assemblyJarName in assembly := s"deebee.jar"
+assemblyJarName in AssemblyKeys.assembly := s"deebee.jar"

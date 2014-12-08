@@ -42,4 +42,4 @@ parallelExecution in Test := false
 
 mainClass in assembly := Some("deebee.DemoShell")
 
-assemblyJarName in assembly := s"${name.value}-demo-${version.value}"
+assemblyJarName in assembly := s"deebee.jar"

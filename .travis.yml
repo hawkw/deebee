@@ -1,13 +1,24 @@
 language: scala
 scala:
-   - 2.10.4
-   - 2.11.2
-   - 2.11.4
-script: "sbt test"
+- 2.10.4
+- 2.11.2
+- 2.11.4
+script: sbt test
 after_success:
-   - "sbt coveralls"
-   - "sbt doc"
-   - ".travis/publish.sh"
+- sbt coveralls
+- sbt doc
+- .travis/publish.sh
 env:
-   global:
-      secure: "exn9JRP3/A/2WVrlkselkIMj8dSgz9J6sPx3Zg92pSQq0QOURLinWMaNf1eD8gz8g9jZ/HQDxdFMihlkjeh58q2/fyNBonqAzF3gSXKkJwg/uF8gjis+wqdb10y04xxzF24jWE4fy408H0deRFe7QFvMZmnextqrenlWeN4W1zo="
+  global:
+    secure: exn9JRP3/A/2WVrlkselkIMj8dSgz9J6sPx3Zg92pSQq0QOURLinWMaNf1eD8gz8g9jZ/HQDxdFMihlkjeh58q2/fyNBonqAzF3gSXKkJwg/uF8gjis+wqdb10y04xxzF24jWE4fy408H0deRFe7QFvMZmnextqrenlWeN4W1zo=
+before_deploy: sbt assembly
+deploy:
+  provider: releases
+  api_key:
+    secure: CFGEZjci7oOf1Orltnn2VyOu4B8feroKOCuUkYps2X1GcAcfB2zc7MWeBidc5BaxsT9zU86tOlIB6lSI5WqM+HNf/9bDR/u2uehbNwpNJQjnTAQSmJjGlKdU98v0+Ahj+O4GW2hm3yAPrghuSI30FjLMV4q8ods/aawcsjrML/k=
+  file: target/scala-2.11/deebee.jar
+  skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true
+    scala: 2.11.4

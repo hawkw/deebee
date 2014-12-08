@@ -1,3 +1,9 @@
+import com.typesafe.sbt.SbtGit._
+
+versionWithGit
+
+git.baseVersion := "0.1"
+
 scoverage.ScoverageSbtPlugin.instrumentSettings
 
 org.scoverage.coveralls.CoverallsPlugin.coverallsSettings

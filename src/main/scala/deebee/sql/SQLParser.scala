@@ -188,9 +188,9 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     | identifier ^^{ case i => i.asInstanceOf[Expr[_]] }
     )
   lazy val literal: P[Const[_]] = (
-    stringLit
-    | int
-    | double
+      int
+        | double
+        | stringLit
     ) ^^{ Const(_) }
   /**
    * Quick REPL for debugging. `.exit` exits.

@@ -4,8 +4,10 @@ package storage
 import java.io.File
 import com.github.tototoshi.csv.{CSVWriter, CSVReader}
 import deebee.sql.SQLParser
+import deebee.sql.ast._
 
 import scala.util.{Try, Success, Failure}
+import scala.io.Source
 import deebee.sql.ast.{CreateStmt, Attribute, Constraint}
 
 /**
@@ -14,14 +16,33 @@ import deebee.sql.ast.{CreateStmt, Attribute, Constraint}
  * Created by hawk on 11/19/14.
  */
 class CSVRelation(
-                   name: String,
-                   attributes: List[Attribute],
-                   constraints: List[Constraint],
+                   schema: CreateStmt,
                    path: String
-                   ) extends RelationActor(name, attributes, constraints) {
-  def this(c: CreateStmt, path: String) = this (c.name,c.attributes, c.constraints, path)
+                   ) extends Relation with Selectable with Modifyable {
+  def this(name: String, path: String) = this(
+    SQLParser.parse(
+      Source
+        .fromFile(s"$path/$name/schema.sql")
+        .mkString
+    )
+      .get
+      .asInstanceOf[CreateStmt],
+    path)
 
-  lazy val back = new File(s"$path/$name.csv")
+  val name = schema.name
+  val attributes = schema.attributes
+  val constraints = schema.constraints
+
+  val back = new File(s"$path/$name/$name.csv")
+  if (!back.exists()) back.mkdirs()
+
+  // ugly hack for persisting schemas
+  val schemaBack = new File(s"$path/$name/schema.sql")
+  if (!schemaBack.exists()) {
+    val pw = new java.io.PrintWriter(schemaBack)
+    try pw.write(schema.emitSQL) finally pw.close()
+  }
+
   def reader = CSVReader.open(back)
   def writer = CSVWriter.open(back, append = true)
 
@@ -38,7 +59,7 @@ class CSVRelation(
           i <- 0 until row.length
         } yield {
           attributes(i)
-            .apply(SQLParser.parseLit(row(i)))
+            .apply(SQLParser.parseLit(row(i)).get)
             .get
       }
     }
@@ -65,5 +86,10 @@ class CSVRelation(
     Success(this)
   }
 
-  override protected def drop(n: Int): Try[Relation with Modifyable] = ???
+  override protected def drop(n: Int): Try[Relation with Modifyable] = {
+    //todo: make this not awful
+    val writer = CSVWriter.open(back)
+    rows.drop(n).foreach(r => writer.writeRow(r))
+    Success(this)
+  }
 }

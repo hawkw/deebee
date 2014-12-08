@@ -99,7 +99,7 @@ trait Selectable extends Relation {
 }
 trait Modifyable extends Relation with Selectable {
   def process(insert: InsertStmt): Try[Relation with Selectable with Modifyable] = insert match {
-    case InsertStmt(_, vals: List[Const[_]]) if vals.length == attributes.length => add(Try(
+    case InsertStmt(_, vals: List[Const[_] @unchecked]) if vals.length == attributes.length => add(Try(
       (for { i <- 0 until vals.length } yield {
         attributes(i).apply(vals(i).emit(this).get)
       }).map{t: Try[Entry[_]] => t.get}

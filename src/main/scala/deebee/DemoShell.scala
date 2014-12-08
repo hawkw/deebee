@@ -28,11 +28,7 @@ object DemoShell {
     )
   )
 
-  /**
-   * Quick REPL for debugging. `.exit` exits.
-   * @param args any command-line args passed to the REPL. Currently none are supported.
-   */
-  def main(args: Array[String]): Unit = {
+  def doDemo: Unit = {
     var line = ""
     println("Welcome to the DeeBee Interactive Demo!\nEnter SQL commands at the prompt, or type `.exit` to exit.")
     while(line != ".exit") {
@@ -40,7 +36,7 @@ object DemoShell {
       line = Console.in.readLine()
       println(
         SQLParser.parse(line) match {
-        case util.Success(t) => try {
+          case util.Success(t) => try {
             t match {
               case s: SelectStmt if s.from.name == "faculty" => println(faculty.process(s).get)
               case i: InsertStmt if i.into.name == "faculty" => faculty = faculty.process(i).get
@@ -50,8 +46,19 @@ object DemoShell {
           } catch {
             case qe: QueryException => println(qe.getMessage)
           }
-        case util.Failure(e) => e
-      })
+          case util.Failure(e) => e
+        })
+    }
+    System.exit(0)
+  }
+  /**
+   * Quick REPL for debugging. `.exit` exits.
+   * @param args any command-line args passed to the REPL. Currently none are supported.
+   */
+  def main(args: Array[String]): Unit = {
+    args(0) match {
+      case "--parse" => SQLParser.main(args)
+      case _ => doDemo
     }
   }
 

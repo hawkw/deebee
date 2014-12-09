@@ -69,7 +69,7 @@ class QueryProcessingSpec extends TestKit(ActorSystem()) with WordSpecLike with 
       }
     }
   }
-
+/* // Eclipsed by a test in Integration?
   "A relation actor" when {
     "backed by a CSV" should {
       "return the correct results for a basic SELECT" in {
@@ -86,4 +86,5 @@ class QueryProcessingSpec extends TestKit(ActorSystem()) with WordSpecLike with 
       }
     }
   }
+  */
 }

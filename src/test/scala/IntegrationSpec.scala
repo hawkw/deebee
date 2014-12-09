@@ -4,6 +4,7 @@ import deebee.sql.SQLParser
 import deebee.sql.ast._
 import deebee.storage._
 import org.scalatest.{GivenWhenThen, Matchers, FeatureSpec}
+import scala.Some
 import scala.concurrent.Await
 import scala.util.{Success, Failure}
 
@@ -366,13 +367,17 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen {
       val target = new CSVDatabase("testdb", path)
       val conn = target.connectTo
       When("the relation is queried")
-      val result = conn.statement("SELECT * FROM writers;").get
+      val tried = conn.statement("SELECT * FROM writers;")
       Then("the result should contain all the rows from the table")
-      result.rows should have size 3
+      tried should be a 'success
+      val result = tried.get
+      result should be 'defined
+
+      result.get.rows should have size 3
       And("the result should contain the correct rows")
-      result.rows.toString should include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")
-      result.rows.toString should include("|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA")
-      result.rows.toString should include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA'")
+      result.get.rows.toString should include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")
+      result.get.rows.toString should include("|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA")
+      result.get.rows.toString should include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA'")
 
     }
   }

@@ -1,6 +1,6 @@
 package deebee
 
-import akka.actor.{Actor, ActorLogging, ActorSystem}
+import akka.actor.{TypedActor, Actor, ActorLogging, ActorSystem}
 import deebee.sql.ast._
 import deebee.storage.RelationActor
 
@@ -15,8 +15,8 @@ import deebee.storage.RelationActor
 abstract class Database(val name: String) extends Actor with ActorLogging {
 
   type Table <: RelationActor
-  val system = ActorSystem("Database: " + name)
-  var tables = Map[String, Table]()
+  protected val system = ActorSystem("Database: " + name)
+  private var tables = Map[String, Table]()
 
   override def receive: Receive = {
     case c: CreateStmt => if (tables contains c.name) {
@@ -27,12 +27,15 @@ abstract class Database(val name: String) extends Actor with ActorLogging {
       log.info(s"Created table ${c.name}")
     }
     case DropStmt(which) => if (tables contains which) {
+      TypedActor(system).stop(tables(which))
       tables -= which
       log.info(s"Dropped table $which")
     } else {
       log.warning(s"Could not drop table $which, no relation by that name exists")
     }
-    case s: SelectStmt => sender ! (for (target <- tables get s.from) yield ())
+    case s: SelectStmt => sender ! (for (target <- tables get s.from; result <- target.select(s)) yield result)
+    case i: InsertStmt => sender ! (for (target <- tables get i.into; result <- target.insert(i)) yield result)
+    case d: DeleteStmt => sender ! (for (target <- tables get d.from; result <- target.delete(d)) yield result)
   }
 
   /**

@@ -17,7 +17,7 @@ class CSVDatabase(name: String, val path: String) extends Database(name) {
   // init logic
   if ((back exists) && (back isDirectory)) {
     // if the database already exists, re-initialize
-    log.info(s"Database $name already existed on dissc, reinitializing.")
+    logger.info(s"Database $name already existed on dissc, reinitializing.")
     for (dir <- back.listFiles if dir isDirectory) {
       val code = new File(dir, "schema.sql")
       if (code exists) {
@@ -25,12 +25,12 @@ class CSVDatabase(name: String, val path: String) extends Database(name) {
           .get // todo: ew
           .asInstanceOf[CreateStmt]
         tables += (schema.name.toString -> create(schema))
-        log.info(s"Created table ${schema.name}")
+        logger.info(s"Created table ${schema.name}")
       }
     }
   } else {
     // this is a new database
-    log.info(s"Database $name did not exist on disc, initializing.")
+    logger.info(s"Database $name did not exist on disc, initializing.")
     back.mkdirs()
   }
 

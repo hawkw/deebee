@@ -1,9 +1,16 @@
 package deebee
 
-import akka.actor.{TypedActor, Actor, ActorLogging, ActorSystem}
+import akka.actor.{TypedActor, ActorSystem}
+
+import com.typesafe.scalalogging.slf4j.LazyLogging
 import deebee.frontends.Connection
-import deebee.sql.ast._
-import deebee.storage.RelationActor
+
+import sql.ast._
+import storage.RelationActor
+
+import scala.util.{Try, Success, Failure}
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 
 /**
  * Represents the top level of a database, responsible for sending queries
@@ -13,33 +20,12 @@ import deebee.storage.RelationActor
  * Eventually, this will also probably manage joins, when that happens.
  * @author Hawk Weisman
  */
-abstract class Database(val name: String) extends Actor with ActorLogging {
+abstract class Database(val name: String) extends LazyLogging {
 
   type Table <: RelationActor
-  protected val system = ActorSystem("Database: " + name)
+  protected val system = ActorSystem("Database-" + name)
   protected var tables = Map[String, Table]()
 
-  def connectTo: Connection = new Connection(self)
-
-  override def receive: Receive = {
-    case c: CreateStmt => if (tables contains c.name) {
-      //TODO: eventually support the "IF NOT EXISTS" statement here
-      log.warning(s"Could not create table ${c.name}, relation already exists")
-    } else {
-      tables += (c.name.toString -> create(c))
-      log.info(s"Created table ${c.name}")
-    }
-    case DropStmt(which) => if (tables contains which) {
-      TypedActor(system).stop(tables(which))
-      tables -= which
-      log.info(s"Dropped table $which")
-    } else {
-      log.warning(s"Could not drop table $which, no relation by that name exists")
-    }
-    case s: SelectStmt => sender ! (for (result <- tables.get(s.from).get.select(s)) yield result)
-    case i: InsertStmt => sender ! tables.get(i.into).get.insert(i)
-    case d: DeleteStmt => sender ! tables.get(d.from).get.delete(d)
-  }
 
   /**
    * Generate the correct type of relation for this type of database.
@@ -47,5 +33,41 @@ abstract class Database(val name: String) extends Actor with ActorLogging {
    * @return
    */
   protected def create(c: CreateStmt): Table
+
+  def connectTo = new Connection(this)
+  def query(stmt: Node): Option[Try[Relation]] = stmt match {
+      case c: CreateStmt => if (tables contains c.name) {
+        //TODO: eventually support the "IF NOT EXISTS" statement here
+        logger.warn(s"Could not create table ${c.name}, relation already exists")
+        None
+      } else {
+        tables += (c.name.toString -> create(c))
+        logger.info(s"Created table ${c.name}")
+        None
+      }
+      case DropStmt(which) => tables get which match {
+        case Some(table) =>
+          TypedActor(system).stop(table)
+          tables -= which
+          logger.info(s"Dropped table $which")
+          None
+        case None =>
+          logger.warn(s"Could not drop table $which, no relation by that name exists")
+          None
+      }
+      case s: SelectStmt => tables get s.from match {
+        case Some(table) => Some(table.select(s))
+        case None => logger.warn(s"Could not select from ${s.from}, no relation by that name exists"); None
+      }
+      case d: DeleteStmt => tables get d.from match {
+        case Some(table) => table.delete(d); None
+        case None => logger.warn(s"Could not delete from ${d.from}, no relation by that name exists"); None
+      }
+      case i: InsertStmt => tables get i.into match {
+        case Some(table) => table.insert(i); None
+        case None => logger.warn(s"Could not insert into from ${i.into}, no relation by that name exists"); None
+      }
+    }
+
 }
 

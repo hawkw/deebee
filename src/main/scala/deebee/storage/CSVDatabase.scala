@@ -6,8 +6,8 @@ import deebee.sql.ast.CreateStmt
 /**
  * Created by hawk on 11/24/14.
  */
-class CSVDatabase(name: String) extends Database(name) {
-  //override type Table = CSVRelationActor
+class CSVDatabase(name: String, val path: String) extends Database(name) {
+  override type Table = CSVRelation with RelationActor
 
   /**
    * Generate the correct type of relation for this type of database.

@@ -18,7 +18,7 @@ import deebee.sql.ast.{CreateStmt, Attribute, Constraint}
 class CSVRelation(
                    schema: CreateStmt,
                    path: String
-                   ) extends Relation with Selectable with Modifyable {
+                   ) extends RelationActor with Relation with Selectable with Modifyable {
   def this(name: String, path: String) = this(
     SQLParser.parse(
       Source
@@ -92,4 +92,10 @@ class CSVRelation(
     rows.drop(n).foreach(r => writer.writeRow(r))
     Success(this)
   }
+
+  override def select(statement: SelectStmt): Try[Relation] = this.process(statement)
+
+  override def insert(statement: InsertStmt): Unit = this.process(statement)
+
+  override def delete(statement: DeleteStmt): Unit = this.process(statement)
 }

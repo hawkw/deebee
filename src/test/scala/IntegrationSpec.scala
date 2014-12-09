@@ -371,8 +371,7 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen {
       Then("the result should contain all the rows from the table")
       tried should be a 'success
       val result = tried.get
-      result should be 'defined
-
+      result should be a 'defined
       result.get.rows should have size 3
       And("the result should contain the correct rows")
       result.get.rows.toString should include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")

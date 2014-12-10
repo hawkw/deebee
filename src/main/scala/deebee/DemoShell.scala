@@ -36,9 +36,15 @@ object DemoShell {
         SQLParser.parse(line) match {
           case util.Success(t) => Try(
             t match {
-              case s: SelectStmt if s.from.name == "faculty" => println(faculty.process(s).get)
-              case i: InsertStmt if i.into.name == "faculty" => faculty = faculty.process(i).get
-              case d: DeleteStmt if d.from.name == "faculty" => faculty = faculty.process(d).get
+              case s: SelectStmt if s.from.name == "faculty" => faculty.process(s).foreach(println _)
+              case i: InsertStmt if i.into.name == "faculty" => faculty.process(i) match {
+                case Success(r) => faculty = r
+                case Failure(why) => println(why)
+              }
+              case d: DeleteStmt if d.from.name == "faculty" => faculty.process(d) match {
+                case Success(r) => faculty = r
+                case Failure(why) => println(why)
+              }
               case _ => t
             }
           ) match {

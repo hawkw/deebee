@@ -5,7 +5,10 @@ import java.io.File
 import java.nio.file.{Paths, Files}
 import java.nio.charset.StandardCharsets
 
+import akka.actor.TypedActor
+
 import com.github.tototoshi.csv.{CSVWriter, CSVReader}
+import com.typesafe.scalalogging.slf4j.LazyLogging
 import deebee.sql.SQLParser
 import deebee.sql.ast._
 
@@ -21,7 +24,7 @@ import deebee.sql.ast.{CreateStmt, Attribute, Constraint}
 class CSVRelation(
                    schema: CreateStmt,
                    path: String
-                   ) extends RelationActor with Relation with Selectable with Modifyable {
+                   ) extends RelationActor with Relation with Selectable with Modifyable with LazyLogging {
   def this(name: String, path: String) = this(
     SQLParser.parse(
       Source
@@ -110,9 +113,10 @@ class CSVRelation(
 
   override def insert(statement: InsertStmt): Unit = this.process(statement)
 
-  override def delete(statement: DeleteStmt): Unit = {
-    val newRows = this.process(statement).get.rows
-    val writer = CSVWriter.open(back)
-    newRows.foreach(r => writer.writeRow(outFmt(r)))
+  override def delete(statement: DeleteStmt): Unit = this.process(statement) match {
+    case Success(newRows: Relation) =>
+      val writer = CSVWriter.open(back)
+      newRows.rows.foreach(r => writer.writeRow(outFmt(r)))
+    case Failure(why) => logger.warn(s"Could not execute delete statement `$statement`:\n$why")
   }
 }

@@ -416,6 +416,29 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
         "3,'Arthur','Charles','Clarke','12/16/1917','3/19/2008','USA'\n" +
         "4,'Ray','Douglas','Bradbury','8/22/1920','6/5/2012','USA'")
     }
+
+    scenario("a CSV database receives a `DELETE` statement") {
+      Given("a CSV database")
+      val conn = target.connectTo
+      When("the relation is queried")
+      val tried = conn.statement("DELETE FROM Writers WHERE id > 2;")
+      Then("the query result should be successful")
+      tried should be a 'success
+      val result = tried.get
+      result should not be 'defined
+      And("SELECTing from the database should contain the correct rows")
+      val table = conn.statement("SELECT * FROM Writers;").get.get
+      table.rows should have size 2
+      val tableString = table.toString
+      tableString should include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")
+      tableString should include("|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA")
+      tableString should not include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA")
+      tableString should not include("|4|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA")
+      And("the CSV file on disk should contain the correct contents")
+      val back = Source.fromFile( testdb + "/Writers/Writers.csv"). mkString
+      back should not include ("3,'Arthur','Charles','Clarke','12/16/1917','3/19/2008','USA'\n" +
+        "4,'Ray','Douglas','Bradbury','8/22/1920','6/5/2012','USA'")
+    }
   }
   feature("CREATE TABLE statements are processed correctly.") {
     pending

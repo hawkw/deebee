@@ -378,7 +378,6 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
     val target = new CSVDatabase("testdb", testdb)
 
     scenario("a CSV database recieves a `SELECT` statement") {
-
       Given("a CSV database")
       val conn = target.connectTo
       When("the relation is queried")
@@ -411,11 +410,11 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
       tableString should include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA")
       tableString should include("|4|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA")
       And("the CSV file on disk should contain the correct contents")
-      val back = Source.fromFile( testdb + "Writers/Writers.csv"). mkString
-      back should equal ("1,'Isaac','Yudovich','Asimov','1/20/1920','4/6/1992','Russian SFSR'\n" +
+      val back = Source.fromFile( testdb + "/Writers/Writers.csv"). mkString
+      back should include ("1,'Isaac','Yudovich','Asimov','1/20/1920','4/6/1992','Russian SFSR'\n" +
         "2,'Robert','Anson','Heinlein','7/7/1902','5/8/1988','USA'\n" +
         "3,'Arthur','Charles','Clarke','12/16/1917','3/19/2008','USA'\n" +
-        "4,'Ray','Douglas','Bradbury','8/22/1920','6/5/2012','USA''")
+        "4,'Ray','Douglas','Bradbury','8/22/1920','6/5/2012','USA'")
     }
   }
   feature("CREATE TABLE statements are processed correctly.") {

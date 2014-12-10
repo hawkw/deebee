@@ -25,6 +25,7 @@ libraryDependencies ++= Seq(
 	"com.typesafe.akka"          	%%	"akka-actor"             			% "2.3.2",
 	"com.typesafe.akka"          	%%	"akka-actor-tests"       			% "2.3.2",
 	"com.typesafe.akka"          	%%	"akka-testkit"       					% "2.3.2",
+	"ch.qos.logback" 							% 	"logback-classic" 						% "1.0.9",
 	"org.scala-lang.modules" 			%%	"scala-parser-combinators"		% "1.0.2",
 	"org.scalatest" 							%		"scalatest_2.11" 							% "2.2.1" % "test",
 	"org.scalamock" 							%%	"scalamock-scalatest-support"	% "3.2" 	% "test"

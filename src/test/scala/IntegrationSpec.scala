@@ -3,15 +3,33 @@ import deebee.exceptions.QueryException
 import deebee.sql.SQLParser
 import deebee.sql.ast._
 import deebee.storage._
-import org.scalatest.{GivenWhenThen, Matchers, FeatureSpec}
+import org.scalatest.{BeforeAndAfterEach, GivenWhenThen, Matchers, FeatureSpec}
 import scala.util.Success
+import scala.io.Source
+import java.nio.file.{Paths, Files}
+import java.nio.charset.StandardCharsets
 
 /**
  * Integration tests for the whole system.
  *
  * Created by hawk on 12/2/14.
  */
-class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen {
+class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with BeforeAndAfterEach {
+
+  val testdb = getClass
+    .getResource("testdb")
+    .getPath
+
+  // reset the DB contents before each test
+  override def beforeEach() {
+    Files.write(
+      Paths.get(testdb + "/Writers/Writers.csv"),
+      ("1,'Isaac','Yudovich','Asimov','1/20/1920','4/6/1992','Russian SFSR'\n" +
+        "2,'Robert','Anson','Heinlein','7/7/1902','5/8/1988','USA'\n" +
+        "3,'Arthur','Charles','Clarke','12/16/1917','3/19/2008','USA'\n"
+        ).getBytes(StandardCharsets.UTF_8)
+    )
+  }
 
   feature("SELECT statements are processed correctly.") {
     scenario("an in-memory relation receives a simple `SELECT * FROM` statement") {
@@ -356,27 +374,48 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen {
 
     }
   }
-  feature("Queries are dispatched correctly at the database level.") {
+  feature("Queries are handled correctly at the database level.") {
+    val target = new CSVDatabase("testdb", testdb)
+
     scenario("a CSV database recieves a `SELECT` statement") {
+
       Given("a CSV database")
-      val path = getClass
-        .getResource("testdb")
-        .getPath
-      val target = new CSVDatabase("testdb", path)
       val conn = target.connectTo
       When("the relation is queried")
       val tried = conn.statement("SELECT * FROM Writers;")
       Then("the result should contain all the rows from the table")
       tried should be a 'success
       val result = tried.get
-      result should be a 'defined
+      result should be ('defined)
       result.get.rows should have size 3
       And("the result should contain the correct rows")
       val tableString = result.toString
       tableString should include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")
       tableString should include("|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA")
       tableString should include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA")
+    }
 
+    scenario("a CSV database receives an `INSERT` statement") {
+      Given("a CSV database")
+      val conn = target.connectTo
+      When("the relation is queried")
+      val tried = conn.statement("INSERT INTO Writers VALUES(4, 'Ray', 'Douglas', 'Bradbury', '8/22/1920', '6/5/2012', 'USA');")
+      Then("the query result should be successful")
+      tried should be a 'success
+      val result = tried.get
+      result should not be 'defined
+      And("SELECTing from the database should contain the correct rows")
+      val tableString = conn.statement("SELECT * FROM Writers;").get.toString
+      tableString should include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")
+      tableString should include("|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA")
+      tableString should include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA")
+      tableString should include("|4|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA")
+      And("the CSV file on disk should contain the correct contents")
+      val back = Source.fromFile( testdb + "Writers/Writers.csv"). mkString
+      back should equal ("1,'Isaac','Yudovich','Asimov','1/20/1920','4/6/1992','Russian SFSR'\n" +
+        "2,'Robert','Anson','Heinlein','7/7/1902','5/8/1988','USA'\n" +
+        "3,'Arthur','Charles','Clarke','12/16/1917','3/19/2008','USA'\n" +
+        "4,'Ray','Douglas','Bradbury','8/22/1920','6/5/2012','USA''")
     }
   }
   feature("CREATE TABLE statements are processed correctly.") {

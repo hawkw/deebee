@@ -33,18 +33,24 @@ class CSVRelation(
   val attributes = schema.attributes
   val constraints = schema.constraints
 
-  val back = new File(s"$path/$name/$name.csv")
+  private val back = new File(s"$path/$name/$name.csv")
   if (!back.exists()) back.mkdirs()
 
   // ugly hack for persisting schemas
-  val schemaBack = new File(s"$path/$name/schema.sql")
+  private val schemaBack = new File(s"$path/$name/schema.sql")
   if (!schemaBack.exists()) {
     val pw = new java.io.PrintWriter(schemaBack)
     try pw.write(schema.emitSQL) finally pw.close()
   }
 
-  def reader = CSVReader.open(back)
-  def writer = CSVWriter.open(back, append = true)
+  private def reader = CSVReader.open(back)
+  private def writer = CSVWriter.open(back, append = true)
+
+  private def outFmt(r: Row): Seq[String] = r.map {
+    case v: VarcharEntry => s"'$v'"
+    case c: CharEntry => s"'$c'"
+    case e: Entry[_] => e.toString
+  }
 
   /**
    * Selects the whole table (unordered)
@@ -81,7 +87,7 @@ class CSVRelation(
    * @return a [[Try]] on a reference to a [[Relation]] with the row appended
    */
   override protected def add(row: deebee.Row): Try[Relation with Modifyable] = {
-    writer.writeRow(row)
+    writer.writeRow(outFmt(row))
     writer.close()
     Success(this)
   }
@@ -89,7 +95,7 @@ class CSVRelation(
   override protected def drop(n: Int): Try[Relation with Modifyable] = {
     //todo: make this not awful
     val writer = CSVWriter.open(back)
-    rows.drop(n).foreach(r => writer.writeRow(r))
+    rows.drop(n).foreach(r => writer.writeRow(outFmt(r)))
     Success(this)
   }
 

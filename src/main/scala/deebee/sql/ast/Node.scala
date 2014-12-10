@@ -14,6 +14,6 @@ trait Node {
    * Re-emit the SQL statement(s) corresponding to this node
    * @return
    */
-  def emitSQL: String = ???
+  def emitSQL: String
   override def toString = emitSQL
 }

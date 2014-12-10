@@ -2,6 +2,9 @@ package deebee
 package storage
 
 import java.io.File
+import java.nio.file.{Paths, Files}
+import java.nio.charset.StandardCharsets
+
 import com.github.tototoshi.csv.{CSVWriter, CSVReader}
 import deebee.sql.SQLParser
 import deebee.sql.ast._
@@ -39,8 +42,12 @@ class CSVRelation(
   // ugly hack for persisting schemas
   private val schemaBack = new File(s"$path/$name/schema.sql")
   if (!schemaBack.exists()) {
-    val pw = new java.io.PrintWriter(schemaBack)
-    try pw.write(schema.emitSQL) finally pw.close()
+    Files.write(
+      Paths.get(schemaBack.getAbsolutePath),
+      schema
+        .emitSQL
+        .getBytes(StandardCharsets.UTF_8)
+    )
   }
 
   private def reader = CSVReader.open(back)

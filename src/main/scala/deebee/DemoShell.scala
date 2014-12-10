@@ -5,7 +5,7 @@ import deebee.sql.ast._
 import deebee.sql.SQLParser
 import deebee.exceptions._
 
-import scala.util.{Failure, Success}
+import scala.util.{Try, Failure, Success}
 
 /**
  * A quick shell for demoing DML queries when DDL is not implemented.
@@ -29,25 +29,25 @@ object DemoShell {
   )
 
   def doDemo(): Unit = {
-    var line = ""
     println("Welcome to the DeeBee Interactive Demo!\nEnter SQL commands at the prompt, or type `.exit` to exit.")
-    while(line != ".exit") {
-      print("> ")
-      line = Console.in.readLine()
+    print("> ")
+    for {line <- io.Source.stdin.getLines() if line != ".exit"}{
       println(
         SQLParser.parse(line) match {
-          case util.Success(t) => try {
+          case util.Success(t) => Try(
             t match {
               case s: SelectStmt if s.from.name == "faculty" => println(faculty.process(s).get)
               case i: InsertStmt if i.into.name == "faculty" => faculty = faculty.process(i).get
               case d: DeleteStmt if d.from.name == "faculty" => faculty = faculty.process(d).get
               case _ => t
             }
-          } catch {
-            case qe: QueryException => println(qe.getMessage)
+          ) match {
+            case Success(fully) => println(fully)
+            case Failure(qe: QueryException) => println(qe.getMessage)
           }
           case util.Failure(e) => e
         })
+      print("> ")
     }
     System.exit(0)
   }

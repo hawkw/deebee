@@ -98,10 +98,10 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
   )
 
   // parser for ints
-  protected var intParser: NumericParser[Int] = {
+  protected val intParser: NumericParser[Int] = {
     _.toInt
   }
-  protected var doubleParser: NumericParser[Double] = {
+  protected val doubleParser: NumericParser[Double] = {
     _.toDouble
   }
 
@@ -197,15 +197,14 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
    * @param args
    */
   def main(args: Array[String]): Unit = {
-    var line = ""
-    while(line != ".exit") {
-      print("> ")
-      line = Console.in.readLine()
+    print("> ")
+    for {line <- io.Source.stdin.getLines() if line != ".exit"}{
       println(">>> " + (parse(line) match {
           case util.Success(t) => t
           case util.Failure(e) => e
         })
       )
+      print("> ")
     }
   }
 

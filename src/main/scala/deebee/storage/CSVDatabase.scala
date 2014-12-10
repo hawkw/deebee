@@ -3,6 +3,7 @@ package deebee.storage
 import java.io.File
 import scala.io.Source
 import scala.language.postfixOps
+import scala.util.Success
 
 import akka.actor.TypedProps
 import akka.actor.TypedActor
@@ -25,11 +26,12 @@ class CSVDatabase(name: String, val path: String) extends Database(name) {
     for (dir <- back.listFiles if dir isDirectory) {
       val code = new File(dir, "schema.sql")
       if (code exists) {
-        val schema: CreateStmt = SQLParser.parse(Source fromFile code mkString)
-          .get // todo: ew
-          .asInstanceOf[CreateStmt]
-        tables += (schema.name.toString -> create(schema))
-        logger.info(s"Created table ${schema.name}")
+        SQLParser.parse(Source fromFile code mkString) match {
+          case Success(schema: CreateStmt) =>
+            tables += (schema.name.toString -> create(schema))
+            logger.info(s"Created table ${schema.name}")
+          case _ => logger.warn(s"Schema file $code did not contain a valid SQL schema.")
+        }
       }
     }
   } else {

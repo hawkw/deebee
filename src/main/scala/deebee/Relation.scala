@@ -77,19 +77,21 @@ trait Selectable extends Relation {
     val predicate = select.where
       .map(clause => clause.emit(this))
     (select.projections match {
-      case GlobProj :: Nil => Success(if (predicate.isDefined) {
-        this.filter(predicate.get.get)
-      } else this)
+      case GlobProj :: Nil => Success(predicate match {
+        case Some(Success(pred)) => this.filter(pred)
+        case _ => this
+      })
       case Nil => Failure(new QueryException("Received a SELECT statement with no projections."))
-      case p: Seq[Proj] if p.length > 0 => Success((if (predicate.isDefined) {
-        this.filter(predicate.get.get)
-      } else this).project(p.map(_.emit)))
+      case p: Seq[Proj] if p.length > 0 => Success((predicate match {
+        case Some(Success(pred)) => this.filter(pred)
+        case _ => this
+      }).project(p.map(_.emit)))
     }).map(results =>
       results.take(
         select.limit
           .map(_
-          .emit(this)
-          .get // this will be Success because it's a constant.
+            .emit(this)
+            .getOrElse(results.rows.size) // this will be Success because it's a constant.
           )
           .getOrElse(results.rows.size)
       )

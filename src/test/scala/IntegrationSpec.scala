@@ -441,7 +441,9 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
     }
   }
   feature("CREATE TABLE statements are processed correctly.") {
-    pending
+    scenario("a CSV database recieves a `CREATE` statement") {
+      pending
+    }
   }
 
 }

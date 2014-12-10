@@ -103,5 +103,9 @@ class CSVRelation(
 
   override def insert(statement: InsertStmt): Unit = this.process(statement)
 
-  override def delete(statement: DeleteStmt): Unit = this.process(statement)
+  override def delete(statement: DeleteStmt): Unit = {
+    val newRows = this.process(statement).get.rows
+    val writer = CSVWriter.open(back)
+    newRows.foreach(r => writer.writeRow(outFmt(r)))
+  }
 }

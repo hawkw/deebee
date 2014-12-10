@@ -106,9 +106,10 @@
         <img src="../../lib/permalink.png" />
       </a>
     </span>
-      <p class="shortcomment cmt">Created by hawk on 11/24/14.</p>
+      <p class="shortcomment cmt">A database backed by CSVs on disk
+Created by hawk on 11/24/14.</p>
     </li><li name="deebee.storage.CSVRelation" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="CSVRelationextendsRelationwithSelectablewithModifyable"></a>
+      <a id="CSVRelationextendsRelationActorwithRelationwithSelectablewithModifyable"></a>
       <a id="CSVRelation:CSVRelation"></a>
       <h4 class="signature">
       <span class="modifier_kind">
@@ -116,10 +117,10 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <a href="CSVRelation.html"><span class="name">CSVRelation</span></a><span class="result"> extends <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a> with <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></span>
+        <a href="CSVRelation.html"><span class="name">CSVRelation</span></a><span class="result"> extends <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a> with <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a> with <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#deebee.storage.package@CSVRelationextendsRelationwithSelectablewithModifyable" title="Permalink" target="_top">
+      <a href="../../index.html#deebee.storage.package@CSVRelationextendsRelationActorwithRelationwithSelectablewithModifyable" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" />
       </a>
     </span>
@@ -211,40 +212,29 @@
     </span>
       
     </li><li name="deebee.storage.RelationActor" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="RelationActorextendsActorwithRelationwithSelectablewithModifyable"></a>
+      <a id="RelationActorextendsAnyRef"></a>
       <a id="RelationActor:RelationActor"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier">abstract </span>
-        <span class="kind">class</span>
-      </span>
-      <span class="symbol">
-        <a href="RelationActor.html"><span class="name">RelationActor</span></a><span class="result"> extends <span class="extype" name="akka.actor.Actor">Actor</span> with <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a> with <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#deebee.storage.package@RelationActorextendsActorwithRelationwithSelectablewithModifyable" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Definition for the table API.</p><div class="fullcomment"><div class="comment cmt"><p>Definition for the table API.</p><p>Created by hawk on 11/19/14.
-</p></div></div>
-    </li><li name="deebee.storage.StorageManager" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
-      <a id="StorageManagerextendsAnyRef"></a>
-      <a id="StorageManager:StorageManager"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">trait</span>
       </span>
       <span class="symbol">
-        <a href="StorageManager.html"><span class="name">StorageManager</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+        <a href="RelationActor.html"><span class="name">RelationActor</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#deebee.storage.package@StorageManagerextendsAnyRef" title="Permalink" target="_top">
+      <a href="../../index.html#deebee.storage.package@RelationActorextendsAnyRef" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" />
       </a>
     </span>
-      <p class="shortcomment cmt">Definition for the storage manager API.</p><div class="fullcomment"><div class="comment cmt"><p>Definition for the storage manager API.</p><p>Created by hawk on 11/19/14.
+      <p class="shortcomment cmt">Process <code>SELECT</code>, <code>INSERT</code>, and <code>DELETE</code> statements when sent by the supervising <a href="../Database.html" class="extype" name="deebee.Database">Database</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Process <code>SELECT</code>, <code>INSERT</code>, and <code>DELETE</code> statements when sent by the supervising <a href="../Database.html" class="extype" name="deebee.Database">Database</a>.
+This will also handle <code>UPDATE</code> statements when they are implemented.</p><p>The supervising database will send these messages as <span class="extype" name="Stmt">Stmt</span>s from the <a href="../sql/ast/package.html" class="extype" name="deebee.sql.ast">deebee.sql.ast</a> package when it
+receives them from the frontend (either an API connection or a SQL console). The database is responsible for
+dispatching these queries to the appropriate child table's actor. Query results (if any) will be sent back to
+the sender.</p><p>These queries should be able to be handled at this level of abstraction using the database's internal API
+(<span class="extype" name="Relation.project()">Relation.project()</span>, <span class="extype" name="Relation.filter()">Relation.filter()</span>, <span class="extype" name="Relation.rows(">)</span>) and filtering them by the received
+<span class="extype" name="Stmt">Stmt</span>'s predicates (if any). This means that the concrete <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> implementations need not deal with
+query processing, and must only provide the internal API for providing columns and rows.
 </p></div></div>
     </li><li name="deebee.storage.VarcharEntry" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="VarcharEntryextendsEntry[String]"></a>

@@ -43,14 +43,14 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">CSVRelation</span><span class="result"> extends <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a> with <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></span>
+        <span class="name">CSVRelation</span><span class="result"> extends <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a> with <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a> with <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Implementation for a <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> backed by a comma-separated values file.</p><p>Created by hawk on 11/19/14.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a>, <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a>, <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a>, <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a>, <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>, <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -68,7 +68,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="deebee.storage.CSVRelation"><span>CSVRelation</span></li><li class="in" name="deebee.Modifyable"><span>Modifyable</span></li><li class="in" name="deebee.Selectable"><span>Selectable</span></li><li class="in" name="deebee.Relation"><span>Relation</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="deebee.storage.CSVRelation"><span>CSVRelation</span></li><li class="in" name="deebee.Modifyable"><span>Modifyable</span></li><li class="in" name="deebee.Selectable"><span>Selectable</span></li><li class="in" name="deebee.Relation"><span>Relation</span></li><li class="in" name="deebee.storage.RelationActor"><span>RelationActor</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -297,6 +297,23 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
       </a>
     </span>
       
+    </li><li name="deebee.storage.CSVRelation#delete" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="delete(statement:deebee.sql.ast.DeleteStmt):Unit"></a>
+      <a id="delete(DeleteStmt):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">delete</span><span class="params">(<span name="statement">statement: <a href="../sql/ast/DeleteStmt.html" class="extype" name="deebee.sql.ast.DeleteStmt">DeleteStmt</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.storage.CSVRelation@delete(statement:deebee.sql.ast.DeleteStmt):Unit" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a> → <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a></dd></dl></div>
     </li><li name="deebee.storage.CSVRelation#drop" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="drop(n:Int):scala.util.Try[deebee.Relationwithdeebee.Modifyable]"></a>
       <a id="drop(Int):Try[RelationwithModifyable]"></a>
@@ -439,6 +456,23 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
+    </li><li name="deebee.storage.CSVRelation#insert" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="insert(statement:deebee.sql.ast.InsertStmt):Unit"></a>
+      <a id="insert(InsertStmt):Unit"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">insert</span><span class="params">(<span name="statement">statement: <a href="../sql/ast/InsertStmt.html" class="extype" name="deebee.sql.ast.InsertStmt">InsertStmt</a></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.storage.CSVRelation@insert(statement:deebee.sql.ast.InsertStmt):Unit" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a> → <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a></dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -661,6 +695,23 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
       </a>
     </span>
       
+    </li><li name="deebee.storage.CSVRelation#select" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="select(statement:deebee.sql.ast.SelectStmt):scala.util.Try[deebee.Relation]"></a>
+      <a id="select(SelectStmt):Try[Relation]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">select</span><span class="params">(<span name="statement">statement: <a href="../sql/ast/SelectStmt.html" class="extype" name="deebee.sql.ast.SelectStmt">SelectStmt</a></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.storage.CSVRelation@select(statement:deebee.sql.ast.SelectStmt):scala.util.Try[deebee.Relation]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a> → <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -813,6 +864,8 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
               <h3>Inherited from <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a></h3>
             </div><div class="parent" name="deebee.Relation">
               <h3>Inherited from <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></h3>
+            </div><div class="parent" name="deebee.storage.RelationActor">
+              <h3>Inherited from <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a></h3>
             </div><div class="parent" name="scala.AnyRef">
               <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
             </div><div class="parent" name="scala.Any">

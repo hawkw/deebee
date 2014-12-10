@@ -367,7 +367,7 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen {
       val target = new CSVDatabase("testdb", path)
       val conn = target.connectTo
       When("the relation is queried")
-      val tried = conn.statement("SELECT * FROM writers;")
+      val tried = conn.statement("SELECT * FROM Writers;")
       Then("the result should contain all the rows from the table")
       tried should be a 'success
       val result = tried.get

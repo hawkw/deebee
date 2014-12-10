@@ -1,7 +1,7 @@
 deebee
 ======
 
-[![Build Status](https://travis-ci.org/hawkw/deebee.svg)](https://travis-ci.org/hawkw/deebee) [![Coverage Status](https://img.shields.io/coveralls/hawkw/deebee.svg)](https://coveralls.io/r/hawkw/deebee) [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org) [![Latest API ScalaDoc](http://img.shields.io/badge/API-latest-blue.svg)](http://hawkw.github.io/deebee/api/index.html)
+[![Build Status](https://travis-ci.org/hawkw/deebee.svg)](https://travis-ci.org/hawkw/deebee) [![Coverage Status](https://img.shields.io/coveralls/hawkw/deebee.svg)](https://coveralls.io/r/hawkw/deebee) [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org) [![Latest API ScalaDoc](http://img.shields.io/badge/API-latest-brightgreen.svg)](http://hawkw.github.io/deebee/api/index.html)
 
 [Latest API ScalaDoc](http://hawkw.github.io/deebee/api/index.html)
 

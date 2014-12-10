@@ -374,9 +374,10 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen {
       result should be a 'defined
       result.get.rows should have size 3
       And("the result should contain the correct rows")
-      result.get.rows.toString should include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")
-      result.get.rows.toString should include("|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA")
-      result.get.rows.toString should include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA'")
+      val tableString = result.toString
+      tableString should include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")
+      tableString should include("|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA")
+      tableString should include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA")
 
     }
   }

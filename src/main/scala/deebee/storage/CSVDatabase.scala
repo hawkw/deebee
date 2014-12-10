@@ -2,13 +2,17 @@ package deebee.storage
 
 import java.io.File
 import scala.io.Source
+import scala.language.postfixOps
+
 import akka.actor.TypedProps
 import akka.actor.TypedActor
+
 import deebee.Database
 import deebee.sql.SQLParser
 import deebee.sql.ast._
 
 /**
+ * A database backed by CSVs on disk
  * Created by hawk on 11/24/14.
  */
 class CSVDatabase(name: String, val path: String) extends Database(name) {

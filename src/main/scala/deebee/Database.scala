@@ -8,9 +8,8 @@ import deebee.frontends.Connection
 import sql.ast._
 import storage.RelationActor
 
-import scala.util.{Try, Success, Failure}
+import scala.util.Try
 import scala.concurrent._
-import ExecutionContext.Implicits.global
 
 /**
  * Represents the top level of a database, responsible for sending queries

@@ -4,9 +4,7 @@ import deebee.sql.SQLParser
 import deebee.sql.ast._
 import deebee.storage._
 import org.scalatest.{GivenWhenThen, Matchers, FeatureSpec}
-import scala.Some
-import scala.concurrent.Await
-import scala.util.{Success, Failure}
+import scala.util.Success
 
 /**
  * Integration tests for the whole system.
@@ -229,7 +227,7 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen {
       And("the relation should not contain rows matching the predicate.")
       faculty = result.get
       faculty.rows should have size 2
-      faculty.toString should not include("|3|Janyl|Jumadinova|Alden 107\n|4|John|Wenskovitch|Alden 108")
+      faculty.toString should not include "|3|Janyl|Jumadinova|Alden 107\n|4|John|Wenskovitch|Alden 108"
     }
     scenario("an in-memory relation receives a `DELETE` statement with a `LIMIT` clause") {
       Given("a simple in-memory modifyable relation")
@@ -353,7 +351,7 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen {
       faculty.rows should have size 3
 
       And("the relation should not contain the added row")
-      faculty.toString should not include ("|4|John|Wenskovitch|Alden 108")
+      faculty.toString should not include "|4|John|Wenskovitch|Alden 108"
 
 
     }
@@ -374,9 +372,10 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen {
       result should be a 'defined
       result.get.rows should have size 3
       And("the result should contain the correct rows")
-      result.get.rows.toString should include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")
-      result.get.rows.toString should include("|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA")
-      result.get.rows.toString should include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA'")
+      val tableString = result.toString
+      tableString should include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")
+      tableString should include("|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA")
+      tableString should include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA")
 
     }
   }

@@ -15,9 +15,8 @@ import scala.util.Try
  */
 trait Connection {
   def statement(queryString: String): Try[Option[Relation]]
+  def name: String
 }
-
-
 object Connection {
 
   private val cache = collection.mutable.Map[String,Database]()
@@ -52,8 +51,8 @@ object Connection {
  * @param into The database this is a connection into
  */
 class BlockingConnection(protected val into: Database) extends Connection {
-
-  def statement(queryString: String): Try[Option[Relation]] = (SQLParser parse queryString).flatMap{
+  override lazy val name = into.name
+  override def statement(queryString: String): Try[Option[Relation]] = (SQLParser parse queryString).flatMap{
     query: Node => into.query(query)
   }
 }

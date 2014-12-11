@@ -43,14 +43,14 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">CSVRelation</span><span class="result"> extends <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a> with <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a> with <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></span>
+        <span class="name">CSVRelation</span><span class="result"> extends <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a> with <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> with <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a> with <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a> with <span class="extype" name="com.typesafe.scalalogging.slf4j.LazyLogging">LazyLogging</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Implementation for a <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> backed by a comma-separated values file.</p><p>Created by hawk on 11/19/14.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a>, <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a>, <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>, <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="com.typesafe.scalalogging.slf4j.LazyLogging">LazyLogging</span>, <span class="extype" name="com.typesafe.scalalogging.Logging">Logging</span>, <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a>, <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a>, <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>, <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -68,7 +68,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="deebee.storage.CSVRelation"><span>CSVRelation</span></li><li class="in" name="deebee.Modifyable"><span>Modifyable</span></li><li class="in" name="deebee.Selectable"><span>Selectable</span></li><li class="in" name="deebee.Relation"><span>Relation</span></li><li class="in" name="deebee.storage.RelationActor"><span>RelationActor</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="deebee.storage.CSVRelation"><span>CSVRelation</span></li><li class="in" name="com.typesafe.scalalogging.slf4j.LazyLogging"><span>LazyLogging</span></li><li class="in" name="com.typesafe.scalalogging.Logging"><span>Logging</span></li><li class="in" name="deebee.Modifyable"><span>Modifyable</span></li><li class="in" name="deebee.Selectable"><span>Selectable</span></li><li class="in" name="deebee.Relation"><span>Relation</span></li><li class="in" name="deebee.storage.RelationActor"><span>RelationActor</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -296,7 +296,13 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
         <img src="../../lib/permalink.png" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a> → <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a> → <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">&quot;If somethign went wrong&quot;</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="deebee.storage.CSVRelation#drop" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="drop(n:Int):scala.util.Try[deebee.Relationwithdeebee.Modifyable]"></a>
       <a id="drop(Int):Try[RelationwithModifyable]"></a>
@@ -455,7 +461,13 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
         <img src="../../lib/permalink.png" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a> → <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a></dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a> → <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a></dd><dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="symbol">&quot;If something went wrong&quot;</span>
+    </span>)</span>
+              
+        </dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -490,6 +502,23 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
+    </li><li name="com.typesafe.scalalogging.slf4j.LazyLogging#logger" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="logger:com.typesafe.scalalogging.slf4j.Logger"></a>
+      <a id="logger:Logger"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">logger</span><span class="result">: <span class="extype" name="com.typesafe.scalalogging.slf4j.Logger">Logger</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.storage.CSVRelation@logger:com.typesafe.scalalogging.slf4j.Logger" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>LazyLogging → Logging</dd></dl></div>
     </li><li name="deebee.storage.CSVRelation#name" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="name:deebee.sql.ast.Ident"></a>
       <a id="name:Ident"></a>
@@ -678,6 +707,23 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
+    </li><li name="deebee.Relation#table" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="table:deebee.Relation"></a>
+      <a id="table:Relation"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">lazy val</span>
+      </span>
+      <span class="symbol">
+        <span class="name">table</span><span class="result">: <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.storage.CSVRelation@table:deebee.Relation" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
     </li><li name="deebee.Relation#take" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="take(n:Int):deebee.View"></a>
       <a id="take(Int):View"></a>
@@ -790,7 +836,11 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="deebee.Modifyable">
+        <div class="parent" name="com.typesafe.scalalogging.slf4j.LazyLogging">
+              <h3>Inherited from <span class="extype" name="com.typesafe.scalalogging.slf4j.LazyLogging">LazyLogging</span></h3>
+            </div><div class="parent" name="com.typesafe.scalalogging.Logging">
+              <h3>Inherited from <span class="extype" name="com.typesafe.scalalogging.Logging">Logging</span></h3>
+            </div><div class="parent" name="deebee.Modifyable">
               <h3>Inherited from <a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></h3>
             </div><div class="parent" name="deebee.Selectable">
               <h3>Inherited from <a href="../Selectable.html" class="extype" name="deebee.Selectable">Selectable</a></h3>

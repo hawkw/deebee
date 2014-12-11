@@ -28,9 +28,9 @@
         </head>
         <body class="type">
       <div id="definition">
-        <img src="../../lib/class_big.png" />
+        <a href="Connection$.html" title="Go to companion"><img src="../../lib/trait_to_object_big.png" /></a>
         <p id="owner"><a href="../package.html" class="extype" name="deebee">deebee</a>.<a href="package.html" class="extype" name="deebee.frontends">frontends</a></p>
-        <h1>Connection</h1> <span class="permalink">
+        <h1><a href="Connection$.html" title="Go to companion">Connection</a></h1> <span class="permalink">
       <a href="../../index.html#deebee.frontends.Connection" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" />
       </a>
@@ -40,18 +40,21 @@
       <h4 id="signature" class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
-        <span class="kind">class</span>
+        <span class="kind">trait</span>
       </span>
       <span class="symbol">
         <span class="name">Connection</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Created by hawk on 12/9/14.
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Common interface for connections into a DeeBee database.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
-        </div></div>
+        </div><div class="toggleContainer block">
+            <span class="toggle">Known Subclasses</span>
+            <div class="subClasses hiddenContent"><a href="BlockingConnection.html" class="extype" name="deebee.frontends.BlockingConnection">BlockingConnection</a></div>
+          </div></div>
         
 
       <div id="mbrsel">
@@ -86,21 +89,25 @@
 
       <div id="template">
         <div id="allMembers">
-        <div id="constructors" class="members">
-              <h3>Instance Constructors</h3>
-              <ol><li name="deebee.frontends.Connection#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="&lt;init&gt;(into:deebee.Database):deebee.frontends.Connection"></a>
-      <a id="&lt;init&gt;:Connection"></a>
+        
+
+        
+
+        <div id="values" class="values members">
+              <h3>Abstract Value Members</h3>
+              <ol><li name="deebee.frontends.Connection#statement" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="statement(queryString:String):scala.util.Try[Option[deebee.Relation]]"></a>
+      <a id="statement(String):Try[Option[Relation]]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">new</span>
+        <span class="modifier">abstract </span>
+        <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">Connection</span><span class="params">(<span name="into">into: <a href="../Database.html" class="extype" name="deebee.Database">Database</a></span>)</span>
+        <span class="name">statement</span><span class="params">(<span name="queryString">queryString: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="scala.Option">Option</span>[<a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>]]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#deebee.frontends.Connection@&lt;init&gt;(into:deebee.Database):deebee.frontends.Connection" title="Permalink" target="_top">
+      <a href="../../index.html#deebee.frontends.Connection@statement(queryString:String):scala.util.Try[Option[deebee.Relation]]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" />
       </a>
     </span>
@@ -108,12 +115,8 @@
     </li></ol>
             </div>
 
-        
-
-        
-
         <div id="values" class="values members">
-              <h3>Value Members</h3>
+              <h3>Concrete Value Members</h3>
               <ol><li name="scala.AnyRef#!=" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="!=(x$1:Any):Boolean"></a>
       <a id="!=(Any):Boolean"></a>
@@ -296,23 +299,6 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef → Any</dd></dl></div>
-    </li><li name="deebee.frontends.Connection#into" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="into:deebee.Database"></a>
-      <a id="into:Database"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">val</span>
-      </span>
-      <span class="symbol">
-        <span class="name">into</span><span class="result">: <a href="../Database.html" class="extype" name="deebee.Database">Database</a></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#deebee.frontends.Connection@into:deebee.Database" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
-      </a>
-    </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd></dl></div>
     </li><li name="scala.Any#isInstanceOf" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="isInstanceOf[T0]:Boolean"></a>
       <a id="isInstanceOf[T0]:Boolean"></a>
@@ -381,23 +367,6 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>AnyRef</dd></dl></div>
-    </li><li name="deebee.frontends.Connection#statement" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
-      <a id="statement(queryString:String):scala.util.Try[Option[deebee.Relation]]"></a>
-      <a id="statement(String):Try[Option[Relation]]"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">def</span>
-      </span>
-      <span class="symbol">
-        <span class="name">statement</span><span class="params">(<span name="queryString">queryString: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="scala.Option">Option</span>[<a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>]]</span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../index.html#deebee.frontends.Connection@statement(queryString:String):scala.util.Try[Option[deebee.Relation]]" title="Permalink" target="_top">
-        <img src="../../lib/permalink.png" />
-      </a>
-    </span>
-      
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

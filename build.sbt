@@ -22,12 +22,12 @@ libraryDependencies ++= Seq(
 	"com.chuusai" 								%%	"shapeless" 									% "2.0.0",
 	"com.github.tototoshi" 				%%	"scala-csv" 									% "1.1.2",
 	"com.typesafe.scala-logging" 	%%	"scala-logging-slf4j"   			% "2.1.2",
+	"ch.qos.logback" 							% 	"logback-classic" 						% "1.0.9",
 	"com.github.scopt" 						%% 	"scopt" 											% "3.2.0",
 	"com.typesafe.akka"          	%%	"akka-actor"             			% "2.3.2",
-	"com.typesafe.akka"          	%%	"akka-actor-tests"       			% "2.3.2",
-	"com.typesafe.akka"          	%%	"akka-testkit"       					% "2.3.2",
-	"ch.qos.logback" 							% 	"logback-classic" 						% "1.0.9",
 	"org.scala-lang.modules" 			%%	"scala-parser-combinators"		% "1.0.2",
+	"com.typesafe.akka"          	%%	"akka-actor-tests"       			% "2.3.2" % "test",
+	"com.typesafe.akka"          	%%	"akka-testkit"       					% "2.3.2" % "test",
 	"org.scalatest" 							%		"scalatest_2.11" 							% "2.2.1" % "test",
 	"org.scalamock" 							%%	"scalamock-scalatest-support"	% "3.2" 	% "test"
 )

@@ -458,8 +458,23 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
     }
   }
   feature("CREATE TABLE statements are processed correctly.") {
+    val target = new CSVDatabase("testdb", testdb)
     scenario("a CSV database recieves a `CREATE` statement") {
-      pending
+     Given("a CSV database without a specific table")
+      val conn = target.connectTo
+      conn.statement("DROP TABLE createme;")
+      When("the relation recieves a CREATE statement")
+      val result = conn.statement("CREATE TABLE createme (" +
+        "testPK INTEGER PRIMARY KEY," +
+        "testvarchar VARCHAR(15)," +
+        "testdec DECIMAL(5,4)" +
+        ");")
+      Then("the result should be a success")
+      result should be a 'success
+      And("INSERTing values into the table should be successful")
+      conn.statement("INSERT INTO createme VALUES(4,'i am a string',55555.44444);") should be a 'success
+      And("The table should contain the inserted values")
+      conn.statement("SELECT * FROM createme;").get.get.toString should include ("|4|i am a string|55555.4444")
     }
   }
 

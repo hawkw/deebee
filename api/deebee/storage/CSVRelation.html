@@ -319,7 +319,9 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
         <img src="../../lib/permalink.png" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a> → <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
+      <p class="shortcomment cmt">Return a copy of the relation with the first <code>n</code> rows dropped.</p><div class="fullcomment"><div class="comment cmt"><p>Return a copy of the relation with the first <code>n</code> rows dropped.
+</p></div><dl class="paramcmts block"><dt class="param">n</dt><dd class="cmt"><p>the number of rows to drop</p></dd><dt>returns</dt><dd class="cmt"><p>a copy of the relation with the first <code>n</code> rows dropped.
+</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a> → <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a></dd></dl></div>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -519,6 +521,30 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd>LazyLogging → Logging</dd></dl></div>
+    </li><li name="deebee.Modifyable#mkEntry" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="mkEntry(value:deebee.sql.ast.Const[_],attr:deebee.sql.ast.Attribute):scala.util.Try[deebee.storage.Entry[_]]"></a>
+      <a id="mkEntry(Const[_],Attribute):Try[Entry[_]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">mkEntry</span><span class="params">(<span name="value">value: <a href="../sql/ast/Const.html" class="extype" name="deebee.sql.ast.Const">Const</a>[_]</span>, <span name="attr">attr: <a href="../sql/ast/Attribute.html" class="extype" name="deebee.sql.ast.Attribute">Attribute</a></span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<a href="Entry.html" class="extype" name="deebee.storage.Entry">Entry</a>[_]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.storage.CSVRelation@mkEntry(value:deebee.sql.ast.Const[_],attr:deebee.sql.ast.Attribute):scala.util.Try[deebee.storage.Entry[_]]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Attempt to constrain a value against an <span class="extype" name="Attribute">Attribute</span>
+and create an <span class="extype" name="Entry">Entry</span>, returning either a Success
+containing the created <span class="extype" name="Entry">Entry</span> or a Failure containing
+a <span class="extype" name="QueryException">QueryException</span> representing the constraints violation.</p><div class="fullcomment"><div class="comment cmt"><p>Attempt to constrain a value against an <span class="extype" name="Attribute">Attribute</span>
+and create an <span class="extype" name="Entry">Entry</span>, returning either a Success
+containing the created <span class="extype" name="Entry">Entry</span> or a Failure containing
+a <span class="extype" name="QueryException">QueryException</span> representing the constraints violation.</p></div><dl class="paramcmts block"><dt class="param">value</dt><dd class="cmt"><p>the value to make into an entry</p></dd><dt class="param">attr</dt><dd class="cmt"><p>the attribute against which to make the entry</p></dd><dt>returns</dt><dd class="cmt"><p>the results, either a <code>Success(Entry)</code> or a <code>Failure(QueryException)</code>
+</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></dd></dl></div>
     </li><li name="deebee.storage.CSVRelation#name" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="name:deebee.sql.ast.Ident"></a>
       <a id="name:Ident"></a>
@@ -603,7 +629,12 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
         <img src="../../lib/permalink.png" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></dd></dl></div>
+      <p class="shortcomment cmt">Processes a  <code>DELETE</code> statement, returning the result relation.</p><div class="fullcomment"><div class="comment cmt"><p>Processes a  <code>DELETE</code> statement, returning the result relation.
+The returned relation is either a pointer to this relation
+(in the case of mutable relations) or a new copy with the
+changes (in the case of immutable relations).</p></div><dl class="paramcmts block"><dt class="param">delete</dt><dd class="cmt"><p>the AST of the delete statement to process</p></dd><dt>returns</dt><dd class="cmt"><p>A <code>Try[Relation]</code> containing either the result or
+        any <span class="extype" name="QueryException">QueryException</span> that occurred during processing.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></dd></dl></div>
     </li><li name="deebee.Modifyable#process" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="process(insert:deebee.sql.ast.InsertStmt):scala.util.Try[deebee.Relationwithdeebee.Selectablewithdeebee.Modifyable]"></a>
       <a id="process(InsertStmt):Try[RelationwithSelectablewithModifyable]"></a>
@@ -620,7 +651,12 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
         <img src="../../lib/permalink.png" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></dd></dl></div>
+      <p class="shortcomment cmt">Processes an <code>INSERT</code> statement, returning the result relation.</p><div class="fullcomment"><div class="comment cmt"><p>Processes an <code>INSERT</code> statement, returning the result relation.
+The returned relation is either a pointer to this relation
+(in the case of mutable relations) or a new copy with the
+changes (in the case of immutable relations).</p></div><dl class="paramcmts block"><dt class="param">insert</dt><dd class="cmt"><p>the AST of the insert statement to process</p></dd><dt>returns</dt><dd class="cmt"><p>A <code>Try[Relation]</code> containing either the result or
+        any <span class="extype" name="QueryException">QueryException</span> that occurred during processing.
+</p></dd></dl><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></dd></dl></div>
     </li><li name="deebee.Selectable#process" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="process(select:deebee.sql.ast.SelectStmt):scala.util.Try[deebee.Relation]"></a>
       <a id="process(SelectStmt):Try[Relation]"></a>
@@ -690,6 +726,25 @@ across mutable and immutable <a href="../Relation.html" class="extype" name="dee
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd><a href="" class="extype" name="deebee.storage.CSVRelation">CSVRelation</a> → <a href="RelationActor.html" class="extype" name="deebee.storage.RelationActor">RelationActor</a></dd></dl></div>
+    </li><li name="deebee.Modifyable#sequence" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="sequence[T](xs:Seq[scala.util.Try[T]]):scala.util.Try[Seq[T]]"></a>
+      <a id="sequence[T](Seq[Try[T]]):Try[Seq[T]]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">sequence</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="xs">xs: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="deebee.Modifyable.sequence.T">T</span>]]</span>)</span><span class="result">: <span class="extype" name="scala.util.Try">Try</span>[<span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="deebee.Modifyable.sequence.T">T</span>]]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.storage.CSVRelation@sequence[T](xs:Seq[scala.util.Try[T]]):scala.util.Try[Seq[T]]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Join a <code>Seq[Try[T]]</code> into a <code>Try[Seq[T]]</code>.</p><div class="fullcomment"><div class="comment cmt"><p>Join a <code>Seq[Try[T]]</code> into a <code>Try[Seq[T]]</code>.</p><p>This really should be in the stdlib.</p></div><dl class="paramcmts block"><dt class="tparam">T</dt><dd class="cmt"><p>the type which the Try wraps</p></dd><dt class="param">xs</dt><dd class="cmt"><p>a Sequence of Try[T]s</p></dd><dt>returns</dt><dd class="cmt"><p>a <code>Try[Seq[T]]</code> containing either the values or
+        the first exception of the failure encountered
+</p></dd></dl><dl class="attributes block"> <dt>Attributes</dt><dd>protected </dd><dt>Definition Classes</dt><dd><a href="../Modifyable.html" class="extype" name="deebee.Modifyable">Modifyable</a></dd></dl></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>

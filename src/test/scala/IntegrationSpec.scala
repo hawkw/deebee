@@ -462,10 +462,10 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
   }
   feature("CREATE TABLE statements are processed correctly.") {
     val target = new CSVDatabase("testdb", testdb)
+    val conn = target.connectTo
+    conn.statement("DROP TABLE createme;")
     scenario("a CSV database recieves a `CREATE` statement") {
      Given("a CSV database without a specific table")
-      val conn = target.connectTo
-      conn.statement("DROP TABLE createme;")
       When("the relation recieves a CREATE statement")
       val result = conn.statement("CREATE TABLE createme (" +
         "testPK INTEGER PRIMARY KEY," +

@@ -477,17 +477,41 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
       val tableString = conn.statement("SELECT * FROM Writers;").get.toString
       tableString should not include "|null|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA"
     }
+    scenario("a CSV database receives a number of null values") {
+      Given("a CSV database")
+      val conn = target.connectTo
+      conn.statement("DROP TABLE createme;")
+      conn.statement("CREATE TABLE createme (" +
+        "testint INTEGER NOT NULL," +
+        "testchar CHAR(10) NOT NULL," +
+        "testvarchar VARCHAR(15) NOT NULL," +
+        "testdec DECIMAL(3,2) NOT NULL" +
+        ");")
+
+      When("the database recieves INSERT statements with nulls")
+      conn.statement("INSERT INTO createme VALUES(null,'a ten-char', 'valid string',333.22);")
+      conn.statement("INSERT INTO createme VALUES(1, null, 'valid string',333.22);")
+      conn.statement("INSERT INTO createme VALUES(1,'a ten-char',null,333.22);")
+      conn.statement("INSERT INTO createme VALUES(1,'a ten-char', 'valid string',null);")
+
+      Then("none of the INSERT statements should be inserted")
+      val result = conn.statement("SELECT * FROM createme;")
+      result should be a 'success
+      result.map(o => o.map(r => r.rows should have size 0))
+    }
   }
+
   feature("CREATE TABLE statements are processed correctly.") {
     val target = new CSVDatabase("testdb", testdb)
     val conn = target.connectTo
     conn.statement("DROP TABLE createme;")
+
     scenario("a CSV database recieves a `CREATE` statement") {
      Given("a CSV database without a specific table")
       When("the relation recieves a CREATE statement")
       val result = conn.statement("CREATE TABLE createme (" +
         "testPK INTEGER PRIMARY KEY," +
-        "testvarchar VARCHAR(15)," +
+        "testchar VARCHAR(15)," +
         "testdec DECIMAL(5,4)" +
         ");")
       Then("the result should be a success")

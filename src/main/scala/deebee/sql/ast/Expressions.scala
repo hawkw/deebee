@@ -9,6 +9,8 @@ import scala.util.{Failure, Success, Try}
 /**
  * Trait for SQL exceptions.
  *
+ * @author Hawk Weisman <hawk@meteorcodelabs.com>
+ *           
  * Created by hawk on 11/23/14.
  */
 sealed trait Expr[T] extends Node {
@@ -77,8 +79,8 @@ case class Comparison(left: Expr[_], op: String, right: Expr[_]) extends Expr[Ro
     rightside <- right.emit(context)
   } yield {
     (leftside, op, rightside) match {
-      case (l: (Row => Boolean), "AND", r: (Row => Boolean)) => Success(l && r)
-      case (l: (Row => Boolean), "OR", r: (Row => Boolean)) => Success(l || r)
+      case (l: Predicate, "AND", r: Predicate) => Success(l && r)
+      case (l: Predicate, "OR", r: Predicate) => Success(l || r)
       case (l: Int, "=" | "==", value) => Success({ x: Row =>
         x(l).value == value
       })

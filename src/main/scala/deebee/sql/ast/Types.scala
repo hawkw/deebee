@@ -58,5 +58,9 @@ case class DecimalType(p: Const[Int], s: Const[Int]) extends Type {
   }
 }
 case object DateType extends Type {
-  override def entry(a: Any): Entry[_] = ???
+  override def entry(a: Any): Entry[_] = a match {
+    case Const(a: Date) => new DateEntry(a)
+    case _: NullConst[_] => new NullEntry
+    case _ => throw new QueryException(s"TypeError when creating Date entry")
+  }
 }

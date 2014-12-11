@@ -64,6 +64,13 @@ trait Relation {
     attributes
   ) with Selectable with Modifyable
 
+  /**
+   * Return a copy of the relation with the first `n` rows dropped.
+   *
+   * @param n the number of rows to drop
+   * @return a copy of the relation with the first `n` rows dropped.
+   */
+  //TODO: this should return a row set (so as to avoid the overhead of creating a whole new Relation)
   protected def drop(n: Int): Try[Relation with Selectable with Modifyable]
 
   def iterator = rows.toIterator
@@ -101,51 +108,98 @@ trait Selectable extends Relation {
 
 }
 trait Modifyable extends Relation with Selectable {
+  /**
+   * Join a `Seq[Try[T]]` into a `Try[Seq[T]]`.
+   *
+   * This really should be in the stdlib.
+   * @param xs a Sequence of Try[T]s
+   * @tparam T the type which the Try wraps
+   * @return a `Try[Seq[T]]` containing either the values or
+   *         the first exception of the failure encountered
+   */
+  protected def sequence[T](xs : Seq[Try[T]]) : Try[Seq[T]] = (Try(Seq[T]()) /: xs) {
+        // TODO: rewrite this as eta expansion on Seq[Try]
+    (a, b) => a flatMap (c => b map (d => c :+ d))
+  }
+  /**
+   * Attempt to constrain a value against an [[Attribute]]
+   * and create an [[Entry]], returning either a Success
+   * containing the created [[Entry]] or a Failure containing
+   * a [[QueryException]] representing the constraints violation.
+   * @param value the value to make into an entry
+   * @param attr the attribute against which to make the entry
+   * @return the results, either a `Success(Entry)` or a `Failure(QueryException)`
+   */
+  protected def mkEntry (value: Const[_], attr: Attribute): Try[Entry[_]] = {
+    if (
+      ((attr.constraints contains Not_Null) || (attr.constraints contains Primary_Key))
+        && value.isInstanceOf[NullConst[_]]) {
+      Failure(new QueryException("Could not insert, violation of NOT NULL constraint"))
+    } else if (
+      ((attr.constraints contains Unique) || (attr.constraints contains Primary_Key))
+        && project(Seq(attr.name))
+          .rows
+          .exists(r =>
+            r.exists(_.value == value.x)
+        )
+    ) {
+        Failure(new QueryException("Could not insert, violation of UNIQUE constraint"))
+      } else {
+        attr(value).emit(this).flatten
+    }
+  }
 
+  /**
+   * Processes an `INSERT` statement, returning the result relation.
+   * The returned relation is either a pointer to this relation
+   * (in the case of mutable relations) or a new copy with the
+   * changes (in the case of immutable relations).
+   * @param insert the AST of the insert statement to process
+   * @return A `Try[Relation]` containing either the result or
+   *         any [[QueryException]] that occurred during processing.
+   */
   def process(insert: InsertStmt): Try[Relation with Selectable with Modifyable] = insert match {
-    case InsertStmt(_, vals: List[Const[_] @unchecked]) if vals.length == attributes.length => Try(
-      (for { i <- 0 until vals.length } yield {
-        val attr = attributes(i)
-        if (
-          ((attr.constraints contains Not_Null) || (attr.constraints contains Primary_Key))
-            && vals(i).isInstanceOf[NullConst[_]]) {
-          throw new QueryException("Could not insert, violation of NOT NULL constraint")
+    case InsertStmt(_, vals: List[Const[_] @unchecked]) if vals.length == attributes.length =>
+      sequence(
+        for { i <- 0 until vals.length } yield {
+          mkEntry(vals(i), attributes(i))
         }
-        if ((attr.constraints contains Unique) || (attr.constraints contains Primary_Key)) {
-          if (project(Seq(attr.name))
-                .rows
-                .exists(r => r.exists(_.value == vals(i).x))) {
-            throw new QueryException("Could not insert, violation of UNIQUE constraint")
-          }
-        }
-          attributes(i).apply(vals(i).emit(this).get)
-      }).map{t: Try[Entry[_]] => t.get}
-    ).flatMap(add(_))
+      ).flatMap(add)
     case InsertStmt(_, vals) => Failure(new QueryException(s"Could not insert (${vals.mkString(", ")}):\n" +
       s"Expected ${attributes.length} values, but received ${vals.length}."))
   }
+
+  /**
+   * Processes a  `DELETE` statement, returning the result relation.
+   * The returned relation is either a pointer to this relation
+   * (in the case of mutable relations) or a new copy with the
+   * changes (in the case of immutable relations).
+   * @param delete the AST of the delete statement to process
+   * @return A `Try[Relation]` containing either the result or
+   *         any [[QueryException]] that occurred during processing.
+   */
   def process(delete: DeleteStmt): Try[Relation with Selectable with Modifyable] = delete match {
     case DeleteStmt(_, None, None) => drop(rows.size)
     case DeleteStmt(_, Some(comp), None) => for (pred <- comp.emit(this)) yield filterNot(pred)
     case DeleteStmt(_, None, Some(limit)) => (for (n <- limit.emit(this)) yield drop(n)).flatten
-    case DeleteStmt(_, Some(comp), Some(limit)) => (for {
+    case DeleteStmt(_, Some(comp), Some(limit)) => for {
       pred <- comp.emit(this)
       n <- limit.emit(this)
     } yield {
       var count = 0
-      rows.filterNot{ r =>
+      filterNot{ r =>
         if(pred(r))  count = count +1
         pred(r) && count != n
      }
-    }).flatten
+    }
   }
 
 }
 
 /**
  * An immutable, in-memory [[Relation]].
- * @param rows
- * @param attributes
+ * @param rows the rows that make up this relation
+ * @param attributes the attributes of the relation
  */
 class View(
             val rows: Set[Row],

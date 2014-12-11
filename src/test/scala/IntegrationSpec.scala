@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets
 /**
  * Integration tests for the whole system.
  *
+ * @author Hawk Weisman <hawk@meteorcodelabs.com>
+ *
  * Created by hawk on 12/2/14.
  */
 class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with BeforeAndAfterEach {
@@ -432,8 +434,8 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
       val tableString = table.toString
       tableString should include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")
       tableString should include("|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA")
-      tableString should not include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA")
-      tableString should not include("|4|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA")
+      tableString should not include "|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA"
+      tableString should not include "|4|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA"
       And("the CSV file on disk should contain the correct contents")
       val back = Source.fromFile( testdb + "/Writers/Writers.csv"). mkString
       back should not include ("3,'Arthur','Charles','Clarke','12/16/1917','3/19/2008','USA'\n" +
@@ -457,7 +459,7 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
       */
       Then("SELECTing from the database should not contain the inserted row")
       val tableString = conn.statement("SELECT * FROM Writers;").get.toString
-      tableString should not include("|1|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA")
+      tableString should not include "|1|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA"
     }
 
     scenario("a CSV database receives an `INSERT` statement that violates a NOT NULL constraint") {
@@ -473,7 +475,7 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
             */
       Then("SELECTing from the database should not contain the inserted row")
       val tableString = conn.statement("SELECT * FROM Writers;").get.toString
-      tableString should not include("|null|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA")
+      tableString should not include "|null|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA"
     }
   }
   feature("CREATE TABLE statements are processed correctly.") {

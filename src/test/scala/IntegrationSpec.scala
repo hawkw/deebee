@@ -314,9 +314,6 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
       And("the relation should contain the added row")
       faculty.toString should include ("|4|John|Wenskovitch|Alden 108")
     }
-    scenario("an in-memory relation recieves an `INSERT INTO` statement that violates its' integrity constraints") {
-      pending
-    }
     scenario("an in-memory relation recieves an `INSERT INTO` statement that violates its' type constraints") {
       Given("a simple in-memory modifyable relation")
       var faculty: Relation with Modifyable = new View(
@@ -388,7 +385,7 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
       Then("the result should contain all the rows from the table")
       tried should be a 'success
       val result = tried.get
-      result should be ('defined)
+      result should be('defined)
       result.get.rows should have size 3
       And("the result should contain the correct rows")
       val tableString = result.toString
@@ -413,28 +410,11 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
       tableString should include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA")
       tableString should include("|4|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA")
       And("the CSV file on disk should contain the correct contents")
-      val back = Source.fromFile( testdb + "/Writers/Writers.csv"). mkString
-      back should include ("1,'Isaac','Yudovich','Asimov','1/20/1920','4/6/1992','Russian SFSR'\n" +
+      val back = Source.fromFile(testdb + "/Writers/Writers.csv").mkString
+      back should include("1,'Isaac','Yudovich','Asimov','1/20/1920','4/6/1992','Russian SFSR'\n" +
         "2,'Robert','Anson','Heinlein','7/7/1902','5/8/1988','USA'\n" +
         "3,'Arthur','Charles','Clarke','12/16/1917','3/19/2008','USA'\n" +
         "4,'Ray','Douglas','Bradbury','8/22/1920','6/5/2012','USA'")
-    }
-
-    scenario("a CSV database receives an `INSERT` statement that violates its' integrity constraints") {
-      Given("a CSV database")
-      val conn = target.connectTo
-      When("the relation is queried with an INSERT statement that violates a PRIMARY KEY constraint")
-
-      val tried = conn.statement("INSERT INTO Writers VALUES(1, 'Ray', 'Douglas', 'Bradbury', '8/22/1920', '6/5/2012', 'USA');")
-/*
-      Then("the query result should be a failure")
-      tried should be a 'failure
-      And("it should have the correct query exception")
-      the [QueryException] thrownBy tried.get should have message "Could not insert, violation of UNIQUE constraint"
-      */
-      And("SELECTing from the database should not contain the correct rows")
-      val tableString = conn.statement("SELECT * FROM Writers;").get.toString
-      tableString should not include("|1|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA")
     }
 
     scenario("a CSV database receives a `DELETE` statement") {
@@ -458,6 +438,42 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
       val back = Source.fromFile( testdb + "/Writers/Writers.csv"). mkString
       back should not include ("3,'Arthur','Charles','Clarke','12/16/1917','3/19/2008','USA'\n" +
         "4,'Ray','Douglas','Bradbury','8/22/1920','6/5/2012','USA'")
+    }
+
+  }
+  feature("Constraints are enforced correctly at the database level") {
+    val target = new CSVDatabase("testdb", testdb)
+
+    scenario("a CSV database receives an `INSERT` statement that violates a PRIMARY KEY constraint") {
+      Given("a CSV database")
+      val conn = target.connectTo
+      When("a non-unique value violates a PRIMARY KEY constraint")
+      val tried = conn.statement("INSERT INTO Writers VALUES(1, 'Ray', 'Douglas', 'Bradbury', '8/22/1920', '6/5/2012', 'USA');")
+/*
+      Then("the query result should be a failure")
+      tried should be a 'failure
+      And("it should have the correct query exception")
+      the [QueryException] thrownBy tried.get should have message "Could not insert, violation of UNIQUE constraint"
+      */
+      Then("SELECTing from the database should not contain the inserted row")
+      val tableString = conn.statement("SELECT * FROM Writers;").get.toString
+      tableString should not include("|1|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA")
+    }
+
+    scenario("a CSV database receives an `INSERT` statement that violates a NOT NULL constraint") {
+      Given("a CSV database")
+      val conn = target.connectTo
+      When("a null value violates a PRIMARY KEY constraint")
+      val tried = conn.statement("INSERT INTO Writers VALUES(null, 'Ray', 'Douglas', 'Bradbury', '8/22/1920', '6/5/2012', 'USA');")
+      /*
+            Then("the query result should be a failure")
+            tried should be a 'failure
+            And("it should have the correct query exception")
+            the [QueryException] thrownBy tried.get should have message "Could not insert, violation of UNIQUE constraint"
+            */
+      Then("SELECTing from the database should not contain the inserted row")
+      val tableString = conn.statement("SELECT * FROM Writers;").get.toString
+      tableString should not include("|null|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA")
     }
   }
   feature("CREATE TABLE statements are processed correctly.") {

@@ -46,8 +46,7 @@ class CSVDatabase(name: String, val path: String) extends Database(name) {
    * @return
    */
   override protected def create(c: CreateStmt): Table =
-    TypedActor(system)
-      .typedActorOf(
+    TypedActor(system).typedActorOf(
         TypedProps(classOf[RelationActor],
           new CSVRelation(c, path)),
           name = c.name

@@ -186,11 +186,17 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
      | literal
     | identifier ^^{ case i => i.asInstanceOf[Expr[_]] }
     )
+  lazy val nullLit: P[Const[_]] = "null" ^^^ new NullConst
   lazy val literal: P[Const[_]] = (
+    (
       int
         ||| double
         | stringLit
     ) ^^{ Const(_) }
+      | nullLit
+    )
+
+
   /**
    * Quick REPL for debugging. `.exit` exits.
    * @param args
@@ -207,6 +213,14 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     }
   }
 
+  /**
+   * Parse a SQL query into the corresponding AST
+   * @param source A string containing the query
+   * @return either a Success([[Node]]) with the root node of the AST
+   *         for the query, or a Failure containing any
+   *         [[QueryParsingException]]s that occurred.
+   * @see [[sql.ast]]
+   */
   def parse(source: String): Try[Node] = {
     phrase(query)(new lexical.Scanner(source)) match {
       case Success(result: Node, _) => util.Success(result)
@@ -214,6 +228,17 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
       case x: Error => util.Failure(new QueryParsingException(x.toString()))
     }
   }
+  /**
+   * Parse a data literal into a corresponding constant.
+   * This is used primarily for the CSV backend reading from persisted
+   * files on disk.
+   * @param lit A string containing the SQL literal
+   * @return either a Success([[Const]]) with the root node of the AST
+   *         for the query, or a Failure containing any
+   *         [[QueryParsingException]]s that occurred.
+   * @see [[sql.ast.Const]]
+   * @see [[storage.CSVRelation.rows]]
+   */
   def parseLit(lit: String): Try[Const[_]] = phrase(literal)(new lexical.Scanner(lit)) match {
     case Success(result: Const[_], _) => util.Success(result)
     case x: Failure => util.Failure(new QueryParsingException(x.toString()))

@@ -37,6 +37,10 @@ case class Const[T](x: T) extends Expr[T] {
   }
   override def emit(context: Relation) = Success(x)
 }
+class NullConst[T] extends Const(None) {
+  override val emitSQL = "null"
+}
+
 case class Ident(name: String) extends Expr[Int] {
   override val emitSQL = name
   override def emit(context: Relation): Try[Int] = context.attributes.indexWhere(_.name.name == name) match {

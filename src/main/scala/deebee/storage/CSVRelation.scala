@@ -123,7 +123,7 @@ class CSVRelation(
     }
   }
 
-  @throws[QueryException]("If somethign went wrong")
+  @throws[QueryException]("If something went wrong")
   override def delete(statement: DeleteStmt): Unit = this.process(statement) match {
     case Success(newRows: Relation) =>
       val writer = CSVWriter.open(back)

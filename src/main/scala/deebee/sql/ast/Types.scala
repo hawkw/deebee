@@ -24,6 +24,7 @@ case object IntegerType extends Type {
   override def entry(a: Any) = a match {
     case _: Int => new IntegerEntry(a.asInstanceOf[Int])
     case Const(a: Int) => new IntegerEntry(a)
+    case _: NullConst[_] => new NullEntry
     case _ => throw new QueryException(s"TypeError when creating Integer entry")
   }
 }
@@ -34,6 +35,7 @@ case class CharType(n: Const[Int]) extends Type {
   override def entry(a: Any) = a match {
     case _: String => new CharEntry(a.asInstanceOf[String], n)
     case Const(a: String) => new CharEntry(a,n)
+    case _: NullConst[_] => new NullEntry
     case _ => throw new QueryException(s"TypeError when creating Char entry")
   }
 }
@@ -42,6 +44,7 @@ case class VarcharType(n: Const[Int]) extends Type {
   override def entry(a: Any) = a match {
     case _: String => new VarcharEntry(a.asInstanceOf[String], n)
     case Const(a: String) => new VarcharEntry(a,n)
+    case _: NullConst[_] => new NullEntry
     case _ => throw new QueryException(s"TypeError when creating Varchar entry")
   }
 }
@@ -50,6 +53,7 @@ case class DecimalType(p: Const[Int], s: Const[Int]) extends Type {
   override def entry(a: Any) = a match {
     case _: Double => new DecimalEntry(a.asInstanceOf[Double], p, s)
     case Const(a: Double) => new DecimalEntry(a,p,s)
+    case _: NullConst[_] => new NullEntry
     case _ => throw new QueryException(s"TypeError when creating Decimal entry")
   }
 }

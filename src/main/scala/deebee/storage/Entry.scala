@@ -33,3 +33,5 @@ class IntegerEntry(value: Int) extends Entry[Int](value)
 class DecimalEntry(value: Double, val p: Int, val d: Int) extends Entry[Double](value)
 
 class DateEntry(value: Date) extends Entry[Date](value)
+
+class NullEntry extends Entry[Any](None)

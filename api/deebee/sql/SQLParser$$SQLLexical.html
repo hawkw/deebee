@@ -43,13 +43,13 @@
         <span class="kind">class</span>
       </span>
       <span class="symbol">
-        <span class="name">SQLLexical</span><span class="result"> extends <span class="extype" name="scala.util.parsing.combinator.lexical.StdLexical">StdLexical</span></span>
+        <span class="name">SQLLexical</span><span class="result"> extends <span class="extype" name="scala.util.parsing.combinator.lexical.StdLexical">StdLexical</span> with <span class="extype" name="scala.util.parsing.combinator.PackratParsers">PackratParsers</span></span>
       </span>
       </h4>
       
           <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
-          <div class="superTypes hiddenContent"><span class="extype" name="scala.util.parsing.combinator.lexical.StdLexical">StdLexical</span>, <span class="extype" name="scala.util.parsing.combinator.token.StdTokens">StdTokens</span>, <span class="extype" name="scala.util.parsing.combinator.lexical.Lexical">Lexical</span>, <span class="extype" name="scala.util.parsing.combinator.token.Tokens">scala.util.parsing.combinator.token.Tokens</span>, <span class="extype" name="scala.util.parsing.combinator.lexical.Scanners">Scanners</span>, <span class="extype" name="scala.util.parsing.combinator.Parsers">Parsers</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.util.parsing.combinator.PackratParsers">PackratParsers</span>, <span class="extype" name="scala.util.parsing.combinator.lexical.StdLexical">StdLexical</span>, <span class="extype" name="scala.util.parsing.combinator.token.StdTokens">StdTokens</span>, <span class="extype" name="scala.util.parsing.combinator.lexical.Lexical">Lexical</span>, <span class="extype" name="scala.util.parsing.combinator.token.Tokens">scala.util.parsing.combinator.token.Tokens</span>, <span class="extype" name="scala.util.parsing.combinator.lexical.Scanners">Scanners</span>, <span class="extype" name="scala.util.parsing.combinator.Parsers">Parsers</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
         
 
@@ -67,7 +67,7 @@
                 <span class="filtertype">Inherited<br />
                 </span>
                 <ol id="linearization">
-                  <li class="in" name="deebee.sql.SQLParser.SQLLexical"><span>SQLLexical</span></li><li class="in" name="scala.util.parsing.combinator.lexical.StdLexical"><span>StdLexical</span></li><li class="in" name="scala.util.parsing.combinator.token.StdTokens"><span>StdTokens</span></li><li class="in" name="scala.util.parsing.combinator.lexical.Lexical"><span>Lexical</span></li><li class="in" name="scala.util.parsing.combinator.token.Tokens"><span>Tokens</span></li><li class="in" name="scala.util.parsing.combinator.lexical.Scanners"><span>Scanners</span></li><li class="in" name="scala.util.parsing.combinator.Parsers"><span>Parsers</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                  <li class="in" name="deebee.sql.SQLParser.SQLLexical"><span>SQLLexical</span></li><li class="in" name="scala.util.parsing.combinator.PackratParsers"><span>PackratParsers</span></li><li class="in" name="scala.util.parsing.combinator.lexical.StdLexical"><span>StdLexical</span></li><li class="in" name="scala.util.parsing.combinator.token.StdTokens"><span>StdTokens</span></li><li class="in" name="scala.util.parsing.combinator.lexical.Lexical"><span>Lexical</span></li><li class="in" name="scala.util.parsing.combinator.token.Tokens"><span>Tokens</span></li><li class="in" name="scala.util.parsing.combinator.lexical.Scanners"><span>Scanners</span></li><li class="in" name="scala.util.parsing.combinator.Parsers"><span>Parsers</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
                 </ol>
               </div><div id="ancestors">
             <span class="filtertype"></span>
@@ -279,6 +279,40 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Parsers</dd></dl></div>
+    </li><li name="scala.util.parsing.combinator.PackratParsers.PackratParser" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="PackratParser[+T]extendsPackratParsers.this.Parser[T]"></a>
+      <a id="PackratParser[+T]:PackratParser[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">PackratParser</span><span class="tparams">[<span name="T">+T</span>]</span><span class="result"> extends <span class="extype" name="scala.util.parsing.combinator.Parsers.Parser">scala.util.parsing.combinator.PackratParsers.Parser</span>[<span class="extype" name="scala.util.parsing.combinator.PackratParsers.PackratParser.T">T</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.sql.SQLParser$$SQLLexical@PackratParser[+T]extendsPackratParsers.this.Parser[T]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>PackratParsers</dd></dl></div>
+    </li><li name="scala.util.parsing.combinator.PackratParsers.PackratReader" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="PackratReader[+T]extendsReader[T]"></a>
+      <a id="PackratReader[+T]:PackratReader[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <span class="name">PackratReader</span><span class="tparams">[<span name="T">+T</span>]</span><span class="result"> extends <span class="extype" name="scala.util.parsing.input.Reader">Reader</span>[<span class="extype" name="scala.util.parsing.combinator.PackratParsers.PackratReader.T">T</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.sql.SQLParser$$SQLLexical@PackratReader[+T]extendsReader[T]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>PackratParsers</dd></dl></div>
     </li><li name="scala.util.parsing.combinator.Parsers.ParseResult" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="ParseResult[+T]extendsAnyRef"></a>
       <a id="ParseResult[+T]:ParseResult[T]"></a>
@@ -1046,6 +1080,23 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Parsers</dd></dl></div>
+    </li><li name="scala.util.parsing.combinator.PackratParsers#memo" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="memo[T](p:PackratParsers.this.Parser[T]):PackratParsers.this.PackratParser[T]"></a>
+      <a id="memo[T](Parser[T]):PackratParser[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">memo</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="p">p: <a href="#Parser[+T]extendsParsers.this.Input=&gt;Parsers.this.ParseResult[T]" class="extmbr" name="deebee.sql.SQLParser.SQLLexical.Parser">Parser</a>[<span class="extype" name="scala.util.parsing.combinator.PackratParsers.memo.T">T</span>]</span>)</span><span class="result">: <a href="#PackratParser[+T]extendsPackratParsers.this.Parser[T]" class="extmbr" name="deebee.sql.SQLParser.SQLLexical.PackratParser">PackratParser</a>[<span class="extype" name="scala.util.parsing.combinator.PackratParsers.memo.T">T</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.sql.SQLParser$$SQLLexical@memo[T](p:PackratParsers.this.Parser[T]):PackratParsers.this.PackratParser[T]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>PackratParsers</dd></dl></div>
     </li><li name="scala.util.parsing.combinator.Parsers#mkList" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="mkList[T]:Parsers.this.~[T,List[T]]=&gt;List[T]"></a>
       <a id="mkList[T]:(~[T,List[T]])⇒List[T]"></a>
@@ -1148,23 +1199,40 @@
       </a>
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Parsers</dd></dl></div>
-    </li><li name="scala.util.parsing.combinator.Parsers#phrase" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="phrase[T](p:Parsers.this.Parser[T]):Parsers.this.Parser[T]"></a>
-      <a id="phrase[T](Parser[T]):Parser[T]"></a>
+    </li><li name="scala.util.parsing.combinator.PackratParsers#parser2packrat" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="parser2packrat[T](p:=&gt;PackratParsers.this.Parser[T]):PackratParsers.this.PackratParser[T]"></a>
+      <a id="parser2packrat[T](⇒Parser[T]):PackratParser[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">implicit </span>
+        <span class="kind">def</span>
+      </span>
+      <span class="symbol">
+        <span class="name">parser2packrat</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="p">p: ⇒ <a href="#Parser[+T]extendsParsers.this.Input=&gt;Parsers.this.ParseResult[T]" class="extmbr" name="deebee.sql.SQLParser.SQLLexical.Parser">Parser</a>[<span class="extype" name="scala.util.parsing.combinator.PackratParsers.parser2packrat.T">T</span>]</span>)</span><span class="result">: <a href="#PackratParser[+T]extendsPackratParsers.this.Parser[T]" class="extmbr" name="deebee.sql.SQLParser.SQLLexical.PackratParser">PackratParser</a>[<span class="extype" name="scala.util.parsing.combinator.PackratParsers.parser2packrat.T">T</span>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#deebee.sql.SQLParser$$SQLLexical@parser2packrat[T](p:=&gt;PackratParsers.this.Parser[T]):PackratParsers.this.PackratParser[T]" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" />
+      </a>
+    </span>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>PackratParsers</dd></dl></div>
+    </li><li name="scala.util.parsing.combinator.PackratParsers#phrase" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="phrase[T](p:PackratParsers.this.Parser[T]):PackratParsers.this.PackratParser[T]"></a>
+      <a id="phrase[T](Parser[T]):PackratParser[T]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">phrase</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="p">p: <a href="#Parser[+T]extendsParsers.this.Input=&gt;Parsers.this.ParseResult[T]" class="extmbr" name="deebee.sql.SQLParser.SQLLexical.Parser">Parser</a>[<span class="extype" name="scala.util.parsing.combinator.Parsers.phrase.T">T</span>]</span>)</span><span class="result">: <a href="#Parser[+T]extendsParsers.this.Input=&gt;Parsers.this.ParseResult[T]" class="extmbr" name="deebee.sql.SQLParser.SQLLexical.Parser">Parser</a>[<span class="extype" name="scala.util.parsing.combinator.Parsers.phrase.T">T</span>]</span>
+        <span class="name">phrase</span><span class="tparams">[<span name="T">T</span>]</span><span class="params">(<span name="p">p: <a href="#Parser[+T]extendsParsers.this.Input=&gt;Parsers.this.ParseResult[T]" class="extmbr" name="deebee.sql.SQLParser.SQLLexical.Parser">Parser</a>[<span class="extype" name="scala.util.parsing.combinator.PackratParsers.phrase.T">T</span>]</span>)</span><span class="result">: <a href="#PackratParser[+T]extendsPackratParsers.this.Parser[T]" class="extmbr" name="deebee.sql.SQLParser.SQLLexical.PackratParser">PackratParser</a>[<span class="extype" name="scala.util.parsing.combinator.PackratParsers.phrase.T">T</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../index.html#deebee.sql.SQLParser$$SQLLexical@phrase[T](p:Parsers.this.Parser[T]):Parsers.this.Parser[T]" title="Permalink" target="_top">
+      <a href="../../index.html#deebee.sql.SQLParser$$SQLLexical@phrase[T](p:PackratParsers.this.Parser[T]):PackratParsers.this.PackratParser[T]" title="Permalink" target="_top">
         <img src="../../lib/permalink.png" />
       </a>
     </span>
-      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Parsers</dd></dl></div>
+      <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>PackratParsers → Parsers</dd></dl></div>
     </li><li name="scala.util.parsing.combinator.Parsers#positioned" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="positioned[T&lt;:scala.util.parsing.input.Positional](p:=&gt;Parsers.this.Parser[T]):Parsers.this.Parser[T]"></a>
       <a id="positioned[T&lt;:Positional](⇒Parser[T]):Parser[T]"></a>
@@ -1501,7 +1569,9 @@
         </div>
 
         <div id="inheritedMembers">
-        <div class="parent" name="scala.util.parsing.combinator.lexical.StdLexical">
+        <div class="parent" name="scala.util.parsing.combinator.PackratParsers">
+              <h3>Inherited from <span class="extype" name="scala.util.parsing.combinator.PackratParsers">PackratParsers</span></h3>
+            </div><div class="parent" name="scala.util.parsing.combinator.lexical.StdLexical">
               <h3>Inherited from <span class="extype" name="scala.util.parsing.combinator.lexical.StdLexical">StdLexical</span></h3>
             </div><div class="parent" name="scala.util.parsing.combinator.token.StdTokens">
               <h3>Inherited from <span class="extype" name="scala.util.parsing.combinator.token.StdTokens">StdTokens</span></h3>

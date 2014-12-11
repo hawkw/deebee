@@ -106,7 +106,7 @@ trait Modifyable extends Relation with Selectable {
     case InsertStmt(_, vals: List[Const[_] @unchecked]) if vals.length == attributes.length => Try(
       (for { i <- 0 until vals.length } yield {
         val attr = attributes(i)
-        if ((attr.constraints contains Not_Null )&& vals(i) == null) {
+        if ((attr.constraints contains Not_Null )&& vals(i).x == "null") {
           throw new QueryException("Could not insert, violation of NOT NULL constraint")
         }
         if ((attr.constraints contains Unique) || (attr.constraints contains Primary_Key)) {

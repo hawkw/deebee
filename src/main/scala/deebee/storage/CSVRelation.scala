@@ -38,8 +38,11 @@ class CSVRelation(
   val attributes = schema.attributes
   val constraints = schema.constraints
 
-  private val back = new File(s"$path/$name/$name.csv")
-  if (!back.exists()) back.mkdirs()
+  private val dir = new File(s"$path/$name/")
+  if (!dir.exists()) dir.mkdirs()
+
+  private val back = new File(dir + s"/$name.csv")
+  if (!back.exists()) back.createNewFile()
 
   // ugly hack for persisting schemas
   private val schemaBack = new File(s"$path/$name/schema.sql")

@@ -104,10 +104,9 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
   protected val doubleParser: NumericParser[Double] = {
     _.toDouble
   }
-
   def int = accept("integer", { case lexical.NumericLit(n) => intParser.apply(n)})
 
-  def double = accept("double", { case lexical.NumericLit(n) => doubleParser.apply(n)})
+  def double = numericLit ~ "." ~ numericLit ^^{ case first ~ "." ~ last => doubleParser.apply(first + "." +last)}
 
   def string = accept("string", { case lexical.StringLit(n) => n})
 

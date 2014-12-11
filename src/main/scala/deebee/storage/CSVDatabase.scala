@@ -50,6 +50,6 @@ class CSVDatabase(name: String, val path: String) extends Database(name) {
       .typedActorOf(
         TypedProps(classOf[RelationActor],
           new CSVRelation(c, path)),
-          c.name
+          name = c.name
       )
 }

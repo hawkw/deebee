@@ -188,7 +188,7 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
     )
   lazy val literal: P[Const[_]] = (
       int
-        | double
+        ||| double
         | stringLit
     ) ^^{ Const(_) }
   /**

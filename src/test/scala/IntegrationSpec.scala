@@ -333,7 +333,7 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
       val query = SQLParser.parse("INSERT INTO faculty VALUES('this is a bad place for a string to be', 'John', 'Wenskovitch', 'Alden 108');").get
 
       Then("it should throw a QueryException with the correct message")
-      the [QueryException] thrownBy faculty.process(query.asInstanceOf[InsertStmt]) should have message "TypeError when creating Integer entry"
+      the [QueryException] thrownBy faculty.process(query.asInstanceOf[InsertStmt]).get should have message "TypeError when creating Integer entry"
 
     }
     scenario("an in-memory relation recieves an `INSERT INTO` statement that contains the wrong number of values") {
@@ -415,6 +415,23 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
         "2,'Robert','Anson','Heinlein','7/7/1902','5/8/1988','USA'\n" +
         "3,'Arthur','Charles','Clarke','12/16/1917','3/19/2008','USA'\n" +
         "4,'Ray','Douglas','Bradbury','8/22/1920','6/5/2012','USA'")
+    }
+
+    scenario("a CSV database receives an `INSERT` statement that violates its' integrity constraints") {
+      Given("a CSV database")
+      val conn = target.connectTo
+      When("the relation is queried with an INSERT statement that violates a PRIMARY KEY constraint")
+
+      val tried = conn.statement("INSERT INTO Writers VALUES(1, 'Ray', 'Douglas', 'Bradbury', '8/22/1920', '6/5/2012', 'USA');")
+/*
+      Then("the query result should be a failure")
+      tried should be a 'failure
+      And("it should have the correct query exception")
+      the [QueryException] thrownBy tried.get should have message "Could not insert, violation of UNIQUE constraint"
+      */
+      And("SELECTing from the database should not contain the correct rows")
+      val tableString = conn.statement("SELECT * FROM Writers;").get.toString
+      tableString should not include("|1|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA")
     }
 
     scenario("a CSV database receives a `DELETE` statement") {

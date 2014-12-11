@@ -62,7 +62,7 @@ import scala.util.parsing.combinator.syntactical.StandardTokenParsers
 
 object SQLParser extends StandardTokenParsers with PackratParsers {
 
-  class SQLLexical extends StdLexical {
+  class SQLLexical extends StdLexical with PackratParsers {
 
     import scala.util.parsing.input.CharArrayReader.EofCh
 

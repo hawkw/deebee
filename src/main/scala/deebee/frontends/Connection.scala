@@ -18,6 +18,6 @@ import scala.util.Try
 class Connection(protected val into: Database) {
 
   def statement(queryString: String): Try[Option[Relation]] = (SQLParser parse queryString).flatMap{
-    query: Node => Try(into.query(query).map(_.get))
+    query: Node => into.query(query)
   }
 }

@@ -5,10 +5,9 @@ import java.io.File
 import java.nio.file.{Paths, Files}
 import java.nio.charset.StandardCharsets
 
-import akka.actor.TypedActor
-
 import com.github.tototoshi.csv.{CSVWriter, CSVReader}
 import com.typesafe.scalalogging.slf4j.LazyLogging
+import deebee.exceptions.QueryException
 import deebee.sql.SQLParser
 import deebee.sql.ast._
 
@@ -111,12 +110,21 @@ class CSVRelation(
 
   override def select(statement: SelectStmt): Try[Relation] = this.process(statement)
 
-  override def insert(statement: InsertStmt): Unit = this.process(statement)
 
+  @throws[QueryException]("If something went wrong")
+  override def insert(statement: InsertStmt): Unit = {
+    val result = this.process(statement)
+    result match {
+      case Failure (why) => throw why
+      case Success (_) => {}
+    }
+  }
+
+  @throws[QueryException]("If somethign went wrong")
   override def delete(statement: DeleteStmt): Unit = this.process(statement) match {
     case Success(newRows: Relation) =>
       val writer = CSVWriter.open(back)
       newRows.rows.foreach(r => writer.writeRow(outFmt(r)))
-    case Failure(why) => logger.warn(s"Could not execute delete statement `$statement`:\n$why")
+    case Failure(why) => throw why
   }
 }

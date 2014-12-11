@@ -3,12 +3,13 @@ package deebee
 import akka.actor.{TypedActor, ActorSystem}
 
 import com.typesafe.scalalogging.slf4j.LazyLogging
+import deebee.exceptions.QueryException
 import deebee.frontends.Connection
 
 import sql.ast._
 import storage.RelationActor
 
-import scala.util.Try
+import scala.util.{Try, Success, Failure}
 import scala.concurrent._
 
 /**
@@ -34,37 +35,43 @@ abstract class Database(val name: String) extends LazyLogging {
   protected def create(c: CreateStmt): Table
 
   def connectTo = new Connection(this)
-  def query(stmt: Node): Option[Try[Relation]] = stmt match {
+  def query(stmt: Node): Try[Option[Relation]] = stmt match {
       case c: CreateStmt => if (tables contains c.name) {
         //TODO: eventually support the "IF NOT EXISTS" statement here
         logger.warn(s"Could not create table ${c.name}, relation already exists")
-        None
+        Success(None)
       } else {
         tables += (c.name.toString -> create(c))
         logger.info(s"Created table ${c.name}")
-        None
+        Success(None)
       }
       case DropStmt(which) => tables get which match {
         case Some(table) =>
           TypedActor(system).stop(table)
           tables -= which
           logger.info(s"Dropped table $which")
-          None
+          Success(None)
         case None =>
           logger.warn(s"Could not drop table $which, no relation by that name exists")
-          None
+          Success(None)
       }
       case s: SelectStmt => tables get s.from match {
-        case Some(table) => Some(table.select(s))
-        case None => logger.warn(s"Could not select from ${s.from}, no relation by that name exists"); None
+        case Some(table) => table.select(s).map(Some(_))
+        case None => logger.warn(s"Could not select from ${s.from}, no relation by that name exists")
+          Failure(new QueryException(s"Could not select from ${s.from}, no relation by that name exists"))
       }
       case d: DeleteStmt => tables get d.from match {
-        case Some(table) => table.delete(d); None
-        case None => logger.warn(s"Could not delete from ${d.from}, no relation by that name exists"); None
+        case Some(table) => Try(table.delete(d)).map(_ => None)
+        case None => logger.warn(s"Could not delete from ${d.from}, no relation by that name exists")
+          Failure(new QueryException(s"Could not delete from ${d.from}, no relation by that name exists"))
       }
       case i: InsertStmt => tables get i.into match {
-        case Some(table) => table.insert(i); None
-        case None => logger.warn(s"Could not insert into from ${i.into}, no relation by that name exists"); None
+        case Some(table) => Try(table.insert(i)) match {
+          case Failure(why) => Failure(why)
+          case Success(_) => Success(None)
+        }
+        case None => logger.warn(s"Could not insert into from ${i.into}, no relation by that name exists")
+          Failure(new QueryException(s"Could not insert into from ${i.into}, no relation by that name exists"))
       }
     }
 

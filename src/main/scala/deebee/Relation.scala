@@ -14,6 +14,7 @@ import scala.util.{Try, Failure, Success}
  * Created by hawk on 11/29/14.
  */
 trait Relation {
+  protected implicit lazy val table = this
 
   /**
    * Selects the whole table (unordered)
@@ -100,12 +101,24 @@ trait Selectable extends Relation {
 
 }
 trait Modifyable extends Relation with Selectable {
+
   def process(insert: InsertStmt): Try[Relation with Selectable with Modifyable] = insert match {
-    case InsertStmt(_, vals: List[Const[_] @unchecked]) if vals.length == attributes.length => add(Try(
+    case InsertStmt(_, vals: List[Const[_] @unchecked]) if vals.length == attributes.length => Try(
       (for { i <- 0 until vals.length } yield {
-        attributes(i).apply(vals(i).emit(this).get)
+        val attr = attributes(i)
+        if ((attr.constraints contains Not_Null )&& vals(i) == null) {
+          throw new QueryException("Could not insert, violation of NOT NULL constraint")
+        }
+        if ((attr.constraints contains Unique) || (attr.constraints contains Primary_Key)) {
+          if (project(Seq(attr.name))
+                .rows
+              .exists(r => r.exists(_.value == vals(i).x))) {
+            throw new QueryException("Could not insert, violation of UNIQUE constraint")
+          }
+        }
+          attributes(i).apply(vals(i).emit(this).get)
       }).map{t: Try[Entry[_]] => t.get}
-    ).get)
+    ).flatMap(add(_))
     case InsertStmt(_, vals) => Failure(new QueryException(s"Could not insert (${vals.mkString(", ")}):\n" +
       s"Expected ${attributes.length} values, but received ${vals.length}."))
   }

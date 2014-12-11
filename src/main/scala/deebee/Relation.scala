@@ -128,7 +128,16 @@ trait Modifyable extends Relation with Selectable {
     case DeleteStmt(_, None, None) => drop(rows.size)
     case DeleteStmt(_, Some(comp), None) => for (pred <- comp.emit(this)) yield filterNot(pred)
     case DeleteStmt(_, None, Some(limit)) => (for (n <- limit.emit(this)) yield drop(n)).flatten
-    case DeleteStmt(_, Some(comp), Some(limit)) => ??? //TODO: Implement
+    case DeleteStmt(_, Some(comp), Some(limit)) => (for {
+      pred <- comp.emit(this)
+      n <- limit.emit(this)
+    } yield {
+      var count = 0
+      rows.filterNot{ r =>
+        if(pred(r))  count = count +1
+        pred(r) && count != n
+     }
+    }).flatten
   }
 
 }

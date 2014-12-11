@@ -29,6 +29,9 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
         "3,'Arthur','Charles','Clarke','12/16/1917','3/19/2008','USA'\n"
         ).getBytes(StandardCharsets.UTF_8)
     )
+    Files.deleteIfExists(Paths.get(testdb + "/createme/createme.csv"))
+    Files.deleteIfExists(Paths.get(testdb + "/createme/schema.sql"))
+    Files.deleteIfExists(Paths.get(testdb + "/createme"))
   }
 
   feature("SELECT statements are processed correctly.") {

@@ -34,7 +34,7 @@ abstract class Database(val name: String) extends LazyLogging {
    */
   protected def create(c: CreateStmt): Table
 
-  def connectTo = new Connection(this)
+  def connectTo = Connection.connect(this)
   def query(stmt: Node): Try[Option[Relation]] = stmt match {
       case c: CreateStmt => if (tables contains c.name) {
         //TODO: eventually support the "IF NOT EXISTS" statement here
@@ -74,6 +74,5 @@ abstract class Database(val name: String) extends LazyLogging {
           Failure(new QueryException(s"Could not insert into from ${i.into}, no relation by that name exists"))
       }
     }
-
 }
 

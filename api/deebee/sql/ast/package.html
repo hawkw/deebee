@@ -384,26 +384,6 @@ Created by hawk on 11/21/14.</p>
       </a>
     </span>
       
-    </li><li name="deebee.sql.ast.ParenComparison" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="ParenComparisonextendsExpr[deebee.Row=&gt;Boolean]withProductwithSerializable"></a>
-      <a id="ParenComparison:ParenComparison"></a>
-      <h4 class="signature">
-      <span class="modifier_kind">
-        <span class="modifier"></span>
-        <span class="kind">case class</span>
-      </span>
-      <span class="symbol">
-        <a href="ParenComparison.html"><span class="name">ParenComparison</span></a><span class="params">(<span name="left">left: <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[_]</span>, <span name="op">op: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="right">right: <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[_]</span>)</span><span class="result"> extends <a href="Expr.html" class="extype" name="deebee.sql.ast.Expr">Expr</a>[(<a href="../../package.html#Row=Seq[deebee.storage.Entry[_]]" class="extmbr" name="deebee.Row">Row</a>) ⇒ <span class="extype" name="scala.Boolean">Boolean</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
-      </span>
-      </h4><span class="permalink">
-      <a href="../../../index.html#deebee.sql.ast.package@ParenComparisonextendsExpr[deebee.Row=&gt;Boolean]withProductwithSerializable" title="Permalink" target="_top">
-        <img src="../../../lib/permalink.png" />
-      </a>
-    </span>
-      <p class="shortcomment cmt">Wraps a parenthesized comparison.</p><div class="fullcomment"><div class="comment cmt"><p>Wraps a parenthesized comparison. Basically, this just farms out to
-<a href="Comparison.html" class="extype" name="deebee.sql.ast.Comparison">Comparison</a> for all the heavy-lifting.
-</p></div><dl class="paramcmts block"><dt class="param">left</dt><dd class="cmt"><p>the left-hand side of the predicate. Currently this is either a row name or another predicate</p></dd><dt class="param">op</dt><dd class="cmt"><p>the operator</p></dd><dt class="param">right</dt><dd class="cmt"><p>the right-hand side of the predicate
-</p></dd></dl></div>
     </li><li name="deebee.sql.ast.Predicate" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="Predicate=deebee.sql.ast.Expr[Boolean]"></a>
       <a id="Predicate:Predicate"></a>

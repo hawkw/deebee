@@ -1,0 +1,8403 @@
+%!PS-Adobe-3.0
+%%Title: Database.scala, Relation.scala, exceptions, frontends, package.scala, sql, storage, DeeBeeException.scala, InternalStateException.scala, QueryException.scala
+%%For: Hawk Weisman
+%%Creator: a2ps version 4.14
+%%CreationDate: Fri Dec 12 16:38:25 2014
+%%BoundingBox: 24 24 571 818
+%%DocumentData: Clean7Bit
+%%Orientation: Portrait
+%%Pages: 53
+%%PageOrder: Ascend
+%%DocumentMedia: A4 595 842 0 () ()
+%%DocumentNeededResources: font Courier
+%%+ font Courier-Bold
+%%+ font Helvetica
+%%+ font Helvetica-Bold
+%%+ font Symbol
+%%+ font Times-Bold
+%%+ font Times-Roman
+%%DocumentProcessColors: Black Blue Green Red 
+%%DocumentSuppliedResources: procset a2ps-color-prolog
+%%+ encoding ISO-8859-1Encoding
+%%EndComments
+/a2psdict 200 dict def
+a2psdict begin
+%%BeginProlog
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Check PostScript language level.
+/languagelevel where {
+  pop /gs_languagelevel languagelevel def
+} {
+  /gs_languagelevel 1 def
+} ifelse
+
+% EPSF import as in the Red Book
+/BeginInclude {
+  /b4_Inc_state save def    		% Save state for cleanup
+  /dict_count countdictstack def	% Count objects on dict stack
+  /op_count count 1 sub def		% Count objects on operand stack 
+  userdict begin
+    0 setgray 0 setlinecap
+    1 setlinewidth 0 setlinejoin
+    10 setmiterlimit [ ] 0 setdash newpath
+    gs_languagelevel 1 ne {
+      false setstrokeadjust false setoverprint 
+    } if
+} bind def
+
+/EndInclude {
+  count op_count sub { pos } repeat	% Clean up stacks
+  countdictstack dict_count sub { end } repeat
+  b4_Inc_state restore
+} bind def
+
+/BeginEPSF {
+  BeginInclude
+  /showpage { } def
+} bind def
+
+/EndEPSF {
+  EndInclude
+} bind def
+
+% Page prefeed
+/page_prefeed {         % bool -> -
+  statusdict /prefeed known {
+    statusdict exch /prefeed exch put
+  } {
+    pop
+  } ifelse
+} bind def
+
+/deffont {
+  findfont exch scalefont def
+} bind def
+
+/reencode_font {
+  findfont reencode 2 copy definefont pop def
+} bind def
+
+% Function c-show (str => -)
+% centers text only according to x axis.
+/c-show { 
+  dup stringwidth pop
+  2 div neg 0 rmoveto
+  show
+} bind def
+
+% Function l-show (str => -)
+% prints texts so that it ends at currentpoint
+/l-show {
+  dup stringwidth pop neg 
+  0 
+  rmoveto show
+} bind def
+
+% center-fit show (str w => -)
+% show centered, and scale currentfont so that the width is less than w
+/cfshow {
+  exch dup stringwidth pop
+  % If the title is too big, try to make it smaller
+  3 2 roll 2 copy
+  gt
+  { % if, i.e. too big
+    exch div
+    currentfont exch scalefont setfont
+  } { % ifelse
+    pop pop 
+  }
+  ifelse
+  c-show			% center title
+} bind def
+
+% Return the y size of the current font
+% - => fontsize
+/currentfontsize {
+  currentfont /FontMatrix get 3 get 1000 mul
+} bind def
+
+% reencode the font
+% <encoding-vector> <fontdict> -> <newfontdict>
+/reencode { %def
+  dup length 5 add dict begin
+    { %forall
+      % <vector> <key> <val>
+      1 index /FID ne 
+      { def }{ pop pop } ifelse
+    } forall
+    /Encoding exch def % -
+
+    % Use the font's bounding box to determine the ascent, descent,
+    % and overall height; don't forget that these values have to be
+    % transformed using the font's matrix.
+    % We use `load' because sometimes BBox is executable, sometimes not.
+    % Since we need 4 numbers an not an array avoid BBox from being executed
+    /FontBBox load aload pop
+    FontMatrix transform /Ascent exch def pop
+    FontMatrix transform /Descent exch def pop
+    /FontHeight Ascent Descent sub def
+
+    % Get the underline position and thickness if they're defined.
+    % Use 1 if they are not defined.
+    currentdict /FontInfo 2 copy known
+    { get
+      /UnderlinePosition 2 copy % <FontInfo> /UP <FontInfo> /UP
+      2 copy known
+      { get }{ pop pop 1 } ifelse
+      0 exch FontMatrix transform exch pop
+      def % <FontInfo>
+
+      /UnderlineThickness 2 copy % <FontInfo> /UT <FontInfo> /UT
+      2 copy known
+      { get }{ pop pop 1 } ifelse
+      0 exch FontMatrix transform exch pop
+      def % <FontInfo>
+      pop % -
+    }{ pop pop
+    } ifelse
+
+    currentdict
+  end 
+} bind def
+
+% Function print line number (<string> # -)
+/# {
+  gsave
+    sx cw mul neg 2 div 0 rmoveto
+    f# setfont
+    c-show
+  grestore
+} bind def
+
+% -------- Some routines to enlight plain b/w printings ---------
+
+% Underline
+% width --
+/dounderline {
+  currentpoint
+  gsave
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    0 rlineto
+    stroke
+  grestore
+} bind def
+
+% Underline a string
+% string --
+/dounderlinestring {
+  stringwidth pop
+  dounderline
+} bind def
+
+/UL {
+  /ul exch store
+} bind def
+
+% Draw a box of WIDTH wrt current font
+% width --
+/dobox {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    stroke
+  grestore
+} bind def
+
+/BX {
+  /bx exch store
+} bind def
+
+% Box a string
+% string --
+/doboxstring {
+  stringwidth pop
+  dobox
+} bind def
+
+%
+% ------------- Color routines ---------------
+%
+/FG /setrgbcolor load def
+
+% Draw the background
+% width --
+/dobackground {
+  currentpoint
+  gsave
+    newpath
+    moveto
+    0 currentfont /Descent get currentfontsize mul rmoveto
+    dup 0 rlineto
+    0 currentfont /FontHeight get currentfontsize mul rlineto
+    neg 0 rlineto
+    closepath
+    bgcolor aload pop setrgbcolor
+    fill
+  grestore
+} bind def
+
+% Draw bg for a string
+% string --
+/dobackgroundstring {
+  stringwidth pop
+  dobackground
+} bind def
+
+
+/BG {
+  dup /bg exch store
+  { mark 4 1 roll ] /bgcolor exch store } if
+} bind def
+
+
+/Show {
+  bg { dup dobackgroundstring } if
+  ul { dup dounderlinestring } if
+  bx { dup doboxstring } if
+  show
+} bind def
+
+% Function T(ab), jumps to the n-th tabulation in the current line
+/T {
+  cw mul x0 add
+  bg { dup currentpoint pop sub dobackground } if
+  ul { dup currentpoint pop sub dounderline } if
+  bx { dup currentpoint pop sub dobox } if
+  y0 moveto
+} bind def
+
+% Function n: move to the next line
+/n {
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+% Function N: show and move to the next line
+/N {
+  Show
+  /y0 y0 bfs sub store
+  x0 y0 moveto
+} bind def
+
+/S {
+  Show
+} bind def
+
+%%Copyright: (c) 1988, 89, 90, 91, 92, 93 Miguel Santana
+%%Copyright: (c) 1995, 96, 97, 98 Akim Demaille, Miguel Santana
+% Function title: prints page header.
+% <ct> <rt> <lt> are passed as argument
+/title { 
+  % 1. Draw the background
+  x v get y v get moveto
+  0 setgray
+  gsave
+    0 th 2 div neg rmoveto 
+    th setlinewidth
+    0.5 0.5 1 setrgbcolor
+    pw 0 rlineto stroke
+  grestore
+  % 2. Border it
+  gsave
+    0.7 setlinewidth
+    pw 0 rlineto
+    0 th neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+  % stk: ct rt lt
+  x v get y v get th sub 1 add moveto
+%%IncludeResource: font Helvetica
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  % 3. The left title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    fnfs 0.8 mul hm rmoveto
+    show			% left title
+  grestore
+  exch
+  % stk: ct ltw rt
+  % 4. the right title
+  gsave
+    dup stringwidth pop fnfs 0.8 mul add exch % leave space took on stack
+    dup
+    pw exch stringwidth pop fnfs 0.8 mul add sub
+    hm
+    rmoveto
+    show			% right title
+  grestore
+  % stk: ct ltw rtw
+  % 5. the center title
+  gsave
+    pw 3 1 roll
+    % stk: ct pw ltw rtw
+    3 copy 
+    % Move to the center of the left room
+    sub add 2 div hm rmoveto
+    % What is the available space in here?
+    add sub fnfs 0.8 mul sub fnfs 0.8 mul sub
+    % stk: ct space_left
+%%IncludeResource: font Helvetica-Bold
+  fHelvetica-Bold fnfs scalefont setfont
+    1 setgray
+    cfshow
+  grestore
+} bind def
+
+% Function border: prints virtual page border
+/border { %def
+  gsave				% print four sides
+    0 setgray
+    x v get y v get moveto
+    0.7 setlinewidth		% of the square
+    pw 0 rlineto
+    0 ph neg rlineto
+    pw neg 0 rlineto
+    closepath stroke
+  grestore
+} bind def
+
+% Function water: prints a water mark in background
+/water { %def
+  gsave
+    scx scy moveto rotate
+%%IncludeResource: font Times-Bold
+  fTimes-Bold 100 scalefont setfont
+    .97 setgray
+    dup stringwidth pop 2 div neg -50 rmoveto
+    show
+  grestore
+} bind def
+
+% Function rhead: prints the right header
+/rhead {  %def
+  lx ly moveto
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  l-show
+} bind def
+
+% Function footer (cf rf lf -> -)
+/footer {
+  fHelvetica fnfs 0.8 mul scalefont setfont
+  dx dy moveto
+  show
+
+  snx sny moveto
+  l-show
+  
+  fnx fny moveto
+  c-show
+} bind def
+
+% Function print line number (<string> # -)
+/# {
+  gsave
+    sx cw mul neg 2 div 0 rmoveto
+    f# setfont
+    c-show
+  grestore
+} bind def
+%%BeginResource: procset a2ps-color-prolog 2.0 1
+
+%% Definition of the color faces.
+/p {
+  0 0 0 FG
+  false BG
+  false UL
+  false BX
+  fCourier bfs scalefont setfont
+  Show
+} bind def
+
+/sy {
+  0 0 0 FG
+  false BG
+  fSymbol bfs scalefont setfont
+  Show
+} bind def
+
+/k {
+  false BG
+  false UL
+  false BX
+  0 0 0.9 FG
+  fCourier bfs scalefont setfont
+  Show
+} bind def
+
+/K {
+  false BG
+  false UL
+  false BX
+  0 0 0.8 FG
+  fCourier-Bold bfs scalefont setfont
+  Show
+} bind def
+
+/c {
+  false BG
+  false UL
+  false BX
+  0.8 0 0 FG
+  fCourier bfs scalefont setfont
+  Show
+} bind def
+
+/C {
+  false BG
+  false UL
+  false BX
+  0.8 0 0 FG
+  fCourier-Bold bfs scalefont setfont
+  Show
+} bind def
+
+/l {
+  0 0 0 FG
+  0.8 0.8 0 true BG
+  false UL
+  false BX
+  fCourier bfs scalefont setfont
+  Show
+} bind def
+
+/L {
+  0 0 0 FG
+  1 1 0 true BG
+  false UL
+  false BX
+  fCourier-Bold bfs scalefont setfont
+  Show
+} bind def
+
+/str {
+  false BG
+  false UL
+  false BX
+  0 0.5 0 FG
+  fTimes-Roman bfs scalefont setfont
+  Show
+} bind def
+
+/e{
+  1 0 0 true BG
+  false UL
+  true BX
+  1 1 1 FG
+  fHelvetica-Bold bfs scalefont setfont
+  Show
+} bind def
+
+% Function print line number (<string> # -)
+/# {
+  gsave
+    sx cw mul 2 div neg 0 rmoveto
+    f# setfont
+    0.8 0.1 0.1 FG
+    c-show
+  grestore
+} bind def
+%%EndResource
+%%EndProlog
+%%BeginSetup
+%%IncludeResource: font Courier
+%%IncludeResource: font Courier-Bold
+%%IncludeResource: font Times-Roman
+%%IncludeResource: font Symbol
+%%BeginResource: encoding ISO-8859-1Encoding
+/ISO-8859-1Encoding [
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclam /quotedbl /numbersign /dollar /percent /ampersand /quoteright 
+/parenleft /parenright /asterisk /plus /comma /minus /period /slash 
+/zero /one /two /three /four /five /six /seven 
+/eight /nine /colon /semicolon /less /equal /greater /question 
+/at /A /B /C /D /E /F /G 
+/H /I /J /K /L /M /N /O 
+/P /Q /R /S /T /U /V /W 
+/X /Y /Z /bracketleft /backslash /bracketright /asciicircum /underscore 
+/quoteleft /a /b /c /d /e /f /g 
+/h /i /j /k /l /m /n /o 
+/p /q /r /s /t /u /v /w 
+/x /y /z /braceleft /bar /braceright /asciitilde /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef /.notdef 
+/space /exclamdown /cent /sterling /currency /yen /brokenbar /section 
+/dieresis /copyright /ordfeminine /guillemotleft /logicalnot /hyphen /registered /macron 
+/degree /plusminus /twosuperior /threesuperior /acute /mu /paragraph /bullet 
+/cedilla /onesuperior /ordmasculine /guillemotright /onequarter /onehalf /threequarters /questiondown 
+/Agrave /Aacute /Acircumflex /Atilde /Adieresis /Aring /AE /Ccedilla 
+/Egrave /Eacute /Ecircumflex /Edieresis /Igrave /Iacute /Icircumflex /Idieresis 
+/Eth /Ntilde /Ograve /Oacute /Ocircumflex /Otilde /Odieresis /multiply 
+/Oslash /Ugrave /Uacute /Ucircumflex /Udieresis /Yacute /Thorn /germandbls 
+/agrave /aacute /acircumflex /atilde /adieresis /aring /ae /ccedilla 
+/egrave /eacute /ecircumflex /edieresis /igrave /iacute /icircumflex /idieresis 
+/eth /ntilde /ograve /oacute /ocircumflex /otilde /odieresis /divide 
+/oslash /ugrave /uacute /ucircumflex /udieresis /yacute /thorn /ydieresis 
+] def
+%%EndResource
+% Initialize page description variables.
+/sh 842 def
+/sw 595 def
+/llx 24 def
+/urx 571 def
+/ury 818 def
+/lly 24 def
+/#copies 1 def
+/th 20.000000 def
+/fnfs 15 def
+/bfs 10.000000 def
+/cw 6.000000 def
+
+% Dictionary for ISO-8859-1 support
+/iso1dict 6 dict begin
+  /fCourier ISO-8859-1Encoding /Courier reencode_font
+  /fCourier-Bold ISO-8859-1Encoding /Courier-Bold reencode_font
+  /fHelvetica ISO-8859-1Encoding /Helvetica reencode_font
+  /fHelvetica-Bold ISO-8859-1Encoding /Helvetica-Bold reencode_font
+  /fTimes-Bold ISO-8859-1Encoding /Times-Bold reencode_font
+  /fTimes-Roman ISO-8859-1Encoding /Times-Roman reencode_font
+currentdict end def
+/bgcolor [ 0 0 0 ] def
+/bg false def
+/ul false def
+/bx false def
+% The font for line numbering
+/f# /Helvetica findfont bfs .6 mul scalefont def
+/fSymbol /Symbol findfont def
+/hm fnfs 0.25 mul def
+/pw
+   cw 90.400000 mul
+def
+/ph
+   747.000000 th add
+def
+/pmw 0 def
+/pmh 0 def
+/v 0 def
+/x [
+  0
+] def
+/y [
+  pmh ph add 0 mul ph add
+] def
+/scx sw 2 div def
+/scy sh 2 div def
+/snx urx def
+/sny lly 2 add def
+/dx llx def
+/dy sny def
+/fnx scx def
+/fny dy def
+/lx snx def
+/ly ury fnfs 0.8 mul sub def
+/sx 0 def
+/tab 8 def
+/x0 0 def
+/y0 0 def
+%%EndSetup
+
+%%Page: (1) 1
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+() N
+(import) K
+( akka.actor.{TypedActor, ActorSystem}) p n
+() N
+(import) K
+( com.typesafe.scalalogging.slf4j.LazyLogging) p n
+(import) K
+( deebee.exceptions.QueryException) p n
+(import) K
+( deebee.frontends.Connection) p n
+() N
+(import) K
+( sql.ast._) p n
+(import) K
+( storage.RelationActor) p n
+() N
+(import) K
+( scala.util.{Try, Success, Failure}) p n
+(import) K
+( scala.collection.mutable) p n
+() N
+(/**) C n
+( * Represents the top level of a database, responsible for sending queries) N
+( * to the individual actors handling those tables and for managing the creation) N
+( * of new tables.) N
+( *) N
+( * Eventually, this will also probably manage joins, when that happens.) N
+( * @author Hawk Weisman) N
+( */) N
+(abstract) K
+( ) p
+(class) K
+( Database\() p
+(val) K
+( name: String\) ) p
+(extends) K
+( LazyLogging {) p n
+() N
+(  ) S
+(type) K
+( Table <: RelationActor) p n
+(  ) S
+(protected) K
+( ) p
+(val) K
+( system = ActorSystem\(") p
+(Database-) str
+(" + name\)) p n
+(  ) S
+(protected) K
+( ) p
+(val) K
+( tables = mutable.Map[String, Table]\(\)) p n
+() N
+() N
+(  ) S
+(/**) C n
+(   * Generate the correct type of relation for this type of database.) N
+(   * This adds actors to the actor system.) N
+(   * @return) N
+(   */) N
+(  ) p
+(protected) K
+( ) p
+(def) K
+( create\(c: CreateStmt\): Table) p n
+() N
+(  ) S
+(def) K
+( connectTo = Connection.connect\() p
+(this) K
+(\)) p n
+(  ) S
+(def) K
+( query\(stmt: Node\): Try[Option[Relation]] = stmt ) p
+(match) K
+( {) p n
+(      ) S
+(case) K
+( c: CreateStmt => ) p
+(if) K
+( \(tables contains c.name\) {) p n
+(        ) S
+(//TODO: eventually support the "IF NOT EXISTS" statement here) c n
+(        logger.warn\(s") p
+(Could not create table ${c.name}, relation already exists) str
+("\)) p n
+(        Success\(None\)) N
+(      } ) S
+(else) K
+( {) p n
+(        tables += \(c.name.toString -> create\(c\)\)) N
+(        logger.info\(s") S
+(Created table ${c.name}) str
+("\)) p n
+(        Success\(None\)) N
+(      }) N
+(      ) S
+(case) K
+( DropStmt\(which\) => tables get which ) p
+(match) K
+( {) p n
+(        ) S
+(case) K
+( Some\(table\) =>) p n
+(          TypedActor\(system\).stop\(table\)) N
+(          tables -= which) N
+(          logger.info\(s") S
+(Dropped table $which) str
+("\)) p n
+(          Success\(None\)) N
+(        ) S
+(case) K
+( None =>) p n
+(          logger.warn\(s") S
+(Could not drop table $which, no relation by that name exists) str
+("\)) p n
+(          Success\(None\)) N
+(      }) N
+(      ) S
+(case) K
+( s: SelectStmt => tables get s.from ) p
+(match) K
+( {) p n
+(        ) S
+(case) K
+( Some\(table\) => table.select\(s\).map\(Some\(_\)\)) p n
+(        ) S
+(case) K
+( None => logger.warn\(s") p
+(Could not select from ${s.from}, no relation by that name exists) str
+("\)) p n
+(          Failure\() S
+(new) K
+( QueryException\(s") p
+(Could not select from ${s.from}, no relation by that name exists) str
+("\)\)) p n
+(      }) N
+(      ) S
+(case) K
+( d: DeleteStmt => tables get d.from ) p
+(match) K
+( {) p n
+(        ) S
+(case) K
+( Some\(table\) => Try\(table.delete\(d\)\).map\(_ => None\)) p n
+(        ) S
+(case) K
+( None => logger.warn\(s") p
+(Could not delete from ${d.from}, no relation by that name exists) str
+("\)) p n
+(          Failure\() S
+(new) K
+( QueryException\(s") p
+(Could not delete from ${d.from}, no relation by that name exists) str
+("\)\)) p n
+(      }) N
+(      ) S
+(case) K
+( i: InsertStmt => tables get i.into ) p
+(match) K
+( {) p n
+(        ) S
+(case) K
+( Some\(table\) => Try\(table.insert\(i\)\) ) p
+(match) K
+( {) p n
+(          ) S
+(case) K
+( Failure\(why\) => Failure\(why\)) p n
+(          ) S
+(case) K
+( Success\(_\) => Success\(None\)) p n
+(        }) N
+(        ) S
+(case) K
+( None => logger.warn\(s") p
+(Could not insert into from ${i.into}, no relation by that name exists) str
+("\)) p n
+(          Failure\() S
+(new) K
+( QueryException\(s") p
+(Could not insert into from ${i.into}, no relation by that name exists) str
+("\)\)) p n
+(Database.scala) (Page 1/2) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (1/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (2) 2
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(      }) p n
+(    }) N
+(}) N
+() N
+(Database.scala) (Page 2/2) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (2/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 3
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+() N
+(import) K
+( deebee.exceptions.QueryException) p n
+(import) K
+( deebee.sql.ast._) p n
+(import) K
+( deebee.storage.Entry) p n
+() N
+(import) K
+( scala.util.{Try, Failure, Success}) p n
+() N
+(/**) C n
+( * Common operations for all Relations.) N
+( *) N
+( * @author Hawk Weisman <hawk@meteorcodelabs.com>) N
+( *) N
+( * Created by hawk on 11/29/14.) N
+( */) N
+(trait) K
+( Relation {) p n
+(  ) S
+(protected) K
+( ) p
+(implicit) K
+( ) p
+(lazy) K
+( ) p
+(val) K
+( table = ) p
+(this) K n
+() p n
+(  ) S
+(/**) C n
+(   * Selects the whole table \(unordered\)) N
+(   * @return the whole table, as a set of lists of entries) N
+(   */) N
+(  ) p
+(def) K
+( rows: Set[Row]) p n
+() N
+(  ) S
+(def) K
+( attributes: Seq[Attribute]) p n
+() N
+(  ) S
+(/**) C n
+(   * Add a new [[Row]] to this [[Relation]], returning a [[Try]] on a [[Relation]]with th) N
+(e row appended.) N
+(   *) N
+(   * In the case of mutable [[Relation]]s \(i.e. [[deebee.storage.CSVRelation CSVRelation]) N
+(]\), this) N
+(   * can be a reference back to the same relation after it has been modified; while in th) N
+(e course of) N
+(   * immutable relations \(i.e. [[View]]\) this can be a new relation with those rows appen) N
+(ded. This) N
+(   * is intended to ensure that the code for processing `INSERT` statements is polymorphi) N
+(c) N
+(   * across mutable and immutable [[Relation]]s.) N
+(   *) N
+(   * If the relation cannot be modified, this returns a [[Try]] containing an) N
+(   * [[deebee.exceptions.InternalStateException]].) N
+(   *) N
+(   * @param row the row to add) N
+(   * @return a [[Try]] on a reference to a [[Relation]] with the row appended) N
+(   */) N
+(  ) p
+(protected) K
+( ) p
+(def) K
+( add\(row: Row\): Try[Relation ) p
+(with) K
+( Modifyable]) p n
+() N
+(  ) S
+(def) K
+( project\(names: Seq[String]\): Relation ) p
+(with) K
+( Selectable = ) p
+(new) K
+( View\() p n
+(    rows.map\() N
+(      r => names.map\() N
+(        name => {) N
+(          r\(attributes.indexWhere\(a => a.name.name == name\) ) S
+(match) K
+( {) p n
+(            ) S
+(case) K
+( n ) p
+(if) K
+( n < 0 => ) p
+(throw) K
+( ) p
+(new) K
+( QueryException\(s") p
+(Could not process projection, $this did not co) str n
+(ntain $name) S
+("\)) p n
+(            ) S
+(case) K
+( n: Int => n) p n
+(          }\)) N
+(        }) N
+(        \)) N
+(      \),) N
+(    attributes.filter\(names contains _.name.name\)) N
+(  \)) N
+(  ) S
+(def) K
+( filter\(predicate: Row => Boolean\): Relation ) p
+(with) K
+( Selectable ) p
+(with) K
+( Modifyable = ) p
+(new) K
+( V) p n
+(iew\() N
+(    rows.filter\(predicate\),) N
+(    attributes) N
+(  \) ) S
+(with) K
+( Selectable ) p
+(with) K
+( Modifyable) p n
+() N
+(  ) S
+(protected) K
+( ) p
+(def) K
+( filterNot\(predicate: Row => Boolean\): Relation ) p
+(with) K
+( Selectable ) p
+(with) K
+( Modif) p n
+(yable = ) S
+(new) K
+( View\() p n
+(    rows.filterNot\(predicate\),) N
+(    attributes) N
+(  \) ) S
+(with) K
+( Selectable ) p
+(with) K
+( Modifyable) p n
+() N
+(Relation.scala) (Page 1/4) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (3/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (2) 4
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(  ) p
+(/**) C n
+(   * Return a copy of the relation with the first `n` rows dropped.) N
+(   *) N
+(   * @param n the number of rows to drop) N
+(   * @return a copy of the relation with the first `n` rows dropped.) N
+(   */) N
+(  ) p
+(//TODO: this should return a row set \(so as to avoid the overhead of creating a whole n) c n
+(ew Relation\)) N
+(  ) p
+(protected) K
+( ) p
+(def) K
+( drop\(n: Int\): Try[Relation ) p
+(with) K
+( Selectable ) p
+(with) K
+( Modifyable]) p n
+() N
+(  ) S
+(def) K
+( iterator = rows.toIterator) p n
+() N
+(  ) S
+(def) K
+( take\(n: Int\) = ) p
+(new) K
+( View\(rows.take\(n\), attributes\)) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( toString = rows.map\(r => r.foldLeft\(""\)\(\(acc, thing\) => acc + ") p
+(|) str
+(" + thing\)) p n
+(\).mkString\(") S
+(\\n) str
+("\)) p n
+(}) N
+() N
+(trait) K
+( Selectable ) p
+(extends) K
+( Relation {) p n
+() N
+(  ) S
+(def) K
+( process\(select: SelectStmt\): Try[Relation] = {) p n
+(    ) S
+(val) K
+( predicate = select.where) p n
+(      .map\(clause => clause.emit\() S
+(this) K
+(\)\)) p n
+(    \(select.projections ) S
+(match) K
+( {) p n
+(      ) S
+(case) K
+( GlobProj :: Nil => Success\(predicate ) p
+(match) K
+( {) p n
+(        ) S
+(case) K
+( Some\(Success\(pred\)\) => this.filter\(pred\)) p n
+(        ) S
+(case) K
+( _ => ) p
+(this) K n
+(      }\)) p n
+(      ) S
+(case) K
+( Nil => Failure\() p
+(new) K
+( QueryException\(") p
+(Received a SELECT statement with no projections.) str
+("\)\)) p n
+(      ) S
+(case) K
+( p: Seq[Proj] ) p
+(if) K
+( p.length > 0 => Success\(\(predicate ) p
+(match) K
+( {) p n
+(        ) S
+(case) K
+( Some\(Success\(pred\)\) => this.filter\(pred\)) p n
+(        ) S
+(case) K
+( _ => ) p
+(this) K n
+(      }\).project\(p.map\(_.emit\)\)\)) p n
+(    }\).map\(results =>) N
+(      results.take\() N
+(        select.limit) N
+(          .map\(_) N
+(            .emit\() S
+(this) K
+(\)) p n
+(            .getOrElse\(results.rows.size\) ) S
+(// this will be Success because it's a constant) c n
+(.) N
+(          \)) p n
+(          .getOrElse\(results.rows.size\)) N
+(      \)) N
+(      \)) N
+(  }) N
+() N
+(}) N
+(trait) K
+( Modifyable ) p
+(extends) K
+( Relation ) p
+(with) K
+( Selectable {) p n
+(  ) S
+(/**) C n
+(   * Join a `Seq[Try[T]]` into a `Try[Seq[T]]`.) N
+(   *) N
+(   * This really should be in the stdlib.) N
+(   * @param xs a Sequence of Try[T]s) N
+(   * @tparam T the type which the Try wraps) N
+(   * @return a `Try[Seq[T]]` containing either the values or) N
+(   *         the first exception of the failure encountered) N
+(   */) N
+(  ) p
+(protected) K
+( ) p
+(def) K
+( sequence[T]\(xs : Seq[Try[T]]\) : Try[Seq[T]] = \(Try\(Seq[T]\(\)\) /: xs\) {) p n
+(        ) S
+(// TODO: rewrite this as eta expansion on Seq[Try]) c n
+(    \(a, b\) => a flatMap \(c => b map \(d => c :+ d\)\)) p n
+(  }) N
+(  ) S
+(/**) C n
+(   * Attempt to constrain a value against an [[Attribute]]) N
+(   * and create an [[Entry]], returning either a Success) N
+(   * containing the created [[Entry]] or a Failure containing) N
+(   * a [[QueryException]] representing the constraints violation.) N
+(   * @param value the value to make into an entry) N
+(   * @param attr the attribute against which to make the entry) N
+(   * @return the results, either a `Success\(Entry\)` or a `Failure\(QueryException\)`) N
+(   */) N
+(  ) p
+(protected) K
+( ) p
+(def) K
+( mkEntry \(value: Const[_], attr: Attribute\): Try[Entry[_]] = {) p n
+(    ) S
+(if) K
+( \() p n
+(      \(\(attr.constraints contains Not_Null\) || \(attr.constraints contains Primary_Key\)\)) N
+(        && value.isInstanceOf[NullConst[_]]\) {) N
+(      Failure\() S
+(new) K
+( QueryException\(") p
+(Could not insert, violation of NOT NULL constraint) str
+("\)\)) p n
+(Relation.scala) (Page 2/4) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (4/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (3) 5
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    } ) p
+(else) K
+( ) p
+(if) K
+( \() p n
+(      \(\(attr.constraints contains Unique\) || \(attr.constraints contains Primary_Key\)\)) N
+(        && project\(Seq\(attr.name\)\)) N
+(          .rows) N
+(          .exists\(r =>) N
+(            r.exists\(_.value == value.x\)) N
+(        \)) N
+(    \) {) N
+(        Failure\() S
+(new) K
+( QueryException\(") p
+(Could not insert, violation of UNIQUE constraint) str
+("\)\)) p n
+(      } ) S
+(else) K
+( {) p n
+(        attr\(value\).emit\() S
+(this) K
+(\).flatten) p n
+(    }) N
+(  }) N
+() N
+(  ) S
+(/**) C n
+(   * Processes an `INSERT` statement, returning the result relation.) N
+(   * The returned relation is either a pointer to this relation) N
+(   * \(in the case of mutable relations\) or a new copy with the) N
+(   * changes \(in the case of immutable relations\).) N
+(   * @param insert the AST of the insert statement to process) N
+(   * @return A `Try[Relation]` containing either the result or) N
+(   *         any [[QueryException]] that occurred during processing.) N
+(   */) N
+(  ) p
+(def) K
+( process\(insert: InsertStmt\): Try[Relation ) p
+(with) K
+( Selectable ) p
+(with) K
+( Modifyable] = insert) p n
+( ) S
+(match) K
+( {) p n
+(    ) S
+(case) K
+( InsertStmt\(_, vals: List[Const[_] @unchecked]\) ) p
+(if) K
+( vals.length == attributes.leng) p n
+(th =>) N
+(      sequence\() N
+(        ) S
+(for) K
+( { i <- 0 until vals.length } ) p
+(yield) K
+( {) p n
+(          mkEntry\(vals\(i\), attributes\(i\)\)) N
+(        }) N
+(      \).flatMap\(add\)) N
+(    ) S
+(case) K
+( InsertStmt\(_, vals\) => Failure\() p
+(new) K
+( QueryException\(s") p
+(Could not insert \(${vals.mkString\() str
+(", ") p
+(\)) str n
+(}\):\\n) S
+(" +) p n
+(      s") S
+(Expected ${attributes.length} values, but received ${vals.length}.) str
+("\)\)) p n
+(  }) N
+() N
+(  ) S
+(/**) C n
+(   * Processes a  `DELETE` statement, returning the result relation.) N
+(   * The returned relation is either a pointer to this relation) N
+(   * \(in the case of mutable relations\) or a new copy with the) N
+(   * changes \(in the case of immutable relations\).) N
+(   * @param delete the AST of the delete statement to process) N
+(   * @return A `Try[Relation]` containing either the result or) N
+(   *         any [[QueryException]] that occurred during processing.) N
+(   */) N
+(  ) p
+(def) K
+( process\(delete: DeleteStmt\): Try[Relation ) p
+(with) K
+( Selectable ) p
+(with) K
+( Modifyable] = delete) p n
+( ) S
+(match) K
+( {) p n
+(    ) S
+(case) K
+( DeleteStmt\(_, None, None\) => drop\(rows.size\)) p n
+(    ) S
+(case) K
+( DeleteStmt\(_, Some\(comp\), None\) => ) p
+(for) K
+( \(pred <- comp.emit\() p
+(this) K
+(\)\) ) p
+(yield) K
+( filterNot) p n
+(\(pred\)) N
+(    ) S
+(case) K
+( DeleteStmt\(_, None, Some\(limit\)\) => \() p
+(for) K
+( \(n <- limit.emit\() p
+(this) K
+(\)\) ) p
+(yield) K
+( drop\(n\)\).) p n
+(flatten) N
+(    ) S
+(case) K
+( DeleteStmt\(_, Some\(comp\), Some\(limit\)\) => ) p
+(for) K
+( {) p n
+(      pred <- comp.emit\() S
+(this) K
+(\)) p n
+(      n <- limit.emit\() S
+(this) K
+(\)) p n
+(    } ) S
+(yield) K
+( {) p n
+(      ) S
+(var) K
+( count = 0) p n
+(      filterNot{ r =>) N
+(        ) S
+(if) K
+(\(pred\(r\)\)  count = count +1) p n
+(        pred\(r\) && count != n) N
+(     }) N
+(    }) N
+(  }) N
+() N
+(}) N
+() N
+(/**) C n
+( * An immutable, in-memory [[Relation]].) N
+( * @param rows the rows that make up this relation) N
+( * @param attributes the attributes of the relation) N
+( */) N
+(class) K
+( View\() p n
+(            ) S
+(val) K
+( rows: Set[Row],) p n
+(Relation.scala) (Page 3/4) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (5/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (4) 6
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(            ) p
+(val) K
+( attributes: Seq[Attribute]) p n
+(            \) ) S
+(extends) K
+( Relation ) p
+(with) K
+( Selectable ) p
+(with) K
+( Modifyable {) p n
+(  ) S
+(/**) C n
+(   * Add a new [[Row]] to this [[Relation]], returning a [[Try]] on a [[Relation]]with th) N
+(e row appended.) N
+(   *) N
+(   * In the case of mutable [[Relation]]s \(i.e. [[deebee.storage.CSVRelation C S V R e l ) N
+(a t i o n]]\), this) N
+(   * can be a reference back to the same relation after it has been modified; while in th) N
+(e course of) N
+(   * immutable relations \(i.e. [[View]]\) this can be a new relation with those rows appen) N
+(ded. This) N
+(   * is intended to ensure that the code for processing `INSERT` statements is polymorphi) N
+(c) N
+(   * across mutable and immutable [[Relation]]s.) N
+(   *) N
+(   * If the relation cannot be modified, this returns a [[Try]] containing an) N
+(   * [[deebee.exceptions.InternalStateException]].) N
+(   *) N
+(   * @param row the row to add) N
+(   * @return a reference to a [[Relation]] with the row appended) N
+(   */) N
+(  ) p
+(override) K
+( ) p
+(protected) K
+( ) p
+(def) K
+( add\(row: Row\): Try[Relation ) p
+(with) K
+( Selectable ) p
+(with) K
+( Modifyable] = S) p n
+(uccess\() N
+(    ) S
+(new) K
+( View\(rows + row, attributes\)) p n
+(  \)) N
+(/*) c n
+(  override protected def filterNot\(predicate: \(Row\) => Boolean\): Try[Relation with Select) N
+(able with Modifyable] = Success\() N
+(    new View\(rows.filterNot\(predicate\), attributes\)with Selectable with Modifyable) N
+(  \)) N
+(*/) N
+(  ) p
+(override) K
+( ) p
+(protected) K
+( ) p
+(def) K
+( drop\(n: Int\): Try[Relation ) p
+(with) K
+( Selectable ) p
+(with) K
+( Modifyable] = Su) p n
+(ccess\() N
+(    ) S
+(new) K
+( View\(rows.drop\(n\), attributes\) ) p
+(with) K
+( Modifyable) p n
+(  \)) N
+(}) S
+(Relation.scala) (Page 4/4) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (6/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 7
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(/**) C n
+( * DeeBee: A Tiny Database) N
+( *) N
+( * [[deebee.frontends]] contains the documentation for the various) N
+( * ways of connecting to DeeBee. If you want to use DeeBee as a) N
+( * library in your project, check out [[deebee.frontends.Connection]]) N
+( * for the connection-manager API. If you want to interact with DeeBee) N
+( * from the command-line, just run the DeeBee jarfile.) N
+( *) N
+( * @author Hawk Weisman) N
+( * Created by hawk on 11/25/14.) N
+( */) N
+(package) K
+( ) p
+(object) K
+( deebee {) p n
+(  ) S
+(type) K
+( Row = Seq[deebee.storage.Entry[_]]) p n
+(  ) S
+(type) K
+( Column = Stream[deebee.storage.Entry[_]]) p n
+(}) N
+(package.scala) (Page 1/1) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (7/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 8
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+(package) K
+( exceptions) p n
+() N
+(/**) C n
+( *) N
+( *) N
+( * @author Hawk Weisman <hawk@meteorcodelabs.com>) N
+( *) N
+( * Created by hawk on 11/19/14.) N
+( */) N
+(class) K
+( DeeBeeException\(message:String, cause: Option[Throwable]\) ) p
+(extends) K
+( Exception\(message) p n
+(\) {) N
+(  cause.foreach\(this.initCause\(_\)\)) N
+(}) S
+(DeeBeeException.scala) (Page 1/1) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (8/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 9
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+(package) K
+( exceptions) p n
+() N
+(/**) C n
+( * Exceptions generated as a result of an invalid internal state.) N
+( * These are generally fatal.) N
+( * @author Hawk Weisman) N
+( *) N
+( * Created by hawk on 11/19/14.) N
+( */) N
+(class) K
+( InternalStateException\(message:String, cause: Option[Throwable] = None\) ) p
+(extends) K
+( Dee) p n
+(BeeException\(message, cause\)) S
+(InternalStateException.scala) (Page 1/1) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (9/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 10
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+(package) K
+( exceptions) p n
+() N
+(/**) C n
+( * Exceptions that may occur as a result of a failed query attempt.) N
+( *) N
+( * @author Hawk Weisman) N
+( * Created by hawk on 11/24/14.) N
+( */) N
+(class) K
+( QueryException\(message: String, cause: Option[Throwable] = None\) ) p
+(extends) K
+( DeeBeeExce) p n
+(ption\(message, cause\) {) N
+(  ) S
+(def) K
+( ) p
+(this) K
+(\(message: String, cause: Throwable\) = ) p
+(this) K
+(\(message, Some\(cause\)\)) p n
+(}) N
+() N
+(class) K
+( QueryParsingException\(message:String\) ) p
+(extends) K
+( DeeBeeException\(message, None\)) p
+(QueryException.scala) (Page 1/1) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (10/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 11
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+(package) K
+( frontends) p n
+() N
+(import) K
+( deebee.storage.CSVDatabase) p n
+(import) K
+( sql._) p n
+(import) K
+( ast._) p n
+() N
+(import) K
+( scala.util.Try) p n
+() N
+(/**) C n
+( * Common interface for connections into a DeeBee database.) N
+( *) N
+( * == Connecting to a DeeBee DB ==) N
+( *) N
+( * [[Connection]]s are created using the [[Connection.apply\(\)]] method on the) N
+( * [[Connection]] companion object. This creates a connection into the specified) N
+( * database. If that database is not currently running, it will be started up) N
+( * \(or created if it doesn't exist\).) N
+( *) N
+( * Currently, all connections are [[BlockingConnection]]s) N
+( * that block on queries until they recieve a result. Eventually, there will be non-block) N
+(ing) N
+( * connections available as well.) N
+( *) N
+( * Also planned is a more advanced connections API, allowing callers to specify additiona) N
+(l) N
+( * configuration options to configure both the connection and the database it connects to) N
+(.) N
+( * A JDBC driver for DeeBee databases is also under consideration.) N
+( *) N
+( * == Using Connections ==) N
+( *) N
+( * Connections expose one main method, [[Connection.statement\(\) statement\(\)]].) N
+( * This method returns a [[scala.util.Try Try]] containing a [[scala.Option Option]] on a) N
+( * [[deebee.Relation Relation]] containing the result set.) N
+( *) N
+( * If the query failed,  [[Connection.statement\(\) statement\(\)]] will return a) N
+( * [[scala.util.Failure Failure]] containing a) N
+( * [[deebee.exceptions.QueryException QueryException]] with a message describing the fail) N
+(ure.) N
+( *) N
+( * If the query was successful, [[Connection.statement\(\) statement\(\)]] will return a) N
+( * [[scala.util.Success Success]] containing a [[scala.Option Option]] on a) N
+( * [[deebee.Relation Relation]]. If the query was a `SELECT` statement, the) N
+( * option will be defined; otherwise, it will be [[scala.None]]) N
+( *) N
+( * The result set returned by a `SELECT` statement is a [[deebee.Relation Relation]].) N
+( * Relations provide a [[Relation.iterator iterator]] method to iterate through the rows,) N
+( * as well as a [[Relation.rows rows]] method to access the entire set of rows.) N
+( *) N
+( * Eventually there will be a type-safe JDBC-style API for deconstructing rows, but) N
+( * this is currently not yet implemented.) N
+( *) N
+( *) N
+( * @author Hawk Weisman) N
+( * Created by hawk on 12/9/14.) N
+( */) N
+(trait) K
+( Connection {) p n
+(  ) S
+(def) K
+( statement\(queryString: String\): Try[Option[Relation]]) p n
+(  ) S
+(def) K
+( name: String) p n
+(}) N
+(object) K
+( Connection {) p n
+() N
+(  ) S
+(private) K
+( ) p
+(val) K
+( cache = collection.mutable.Map[String,Database]\(\)) p n
+(  ) S
+(/**) C n
+(   * Factory method for Connections. For now, this just makes [[BlockingConnection]]s.) N
+(   */) N
+(  ) p
+(protected) K
+([deebee] ) p
+(def) K
+( connect\(into: Database\): Connection = ) p
+(new) K
+( BlockingConnection\(into) p n
+(\)) N
+() N
+(  ) S
+(/**) C n
+(   * Canonical way to connect to a Database. If the database isn't already running,) N
+(   * it will be initialized in the current directory.) N
+(   * @param name the name of the database) N
+(Connection.scala) (Page 1/2) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (11/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (2) 12
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(   * @return a Connection into the specified database) C n
+(   */) N
+(  ) p
+(def) K
+( apply\(name: String\): Connection = apply\(name, System.getProperty\(") p
+(user.dir) str
+("\)\)) p n
+() N
+(  ) S
+(/**) C n
+(   * Canonical way to connect to a Database at a specified location in the filesystem.) N
+(   * If the database doesn't already exist, it will be created at the specified path.) N
+(   * @param name the name of the database) N
+(   * @param path a path to the specified database on the filesystem) N
+(   * @return a Connection into the specified database) N
+(   */) N
+(  ) p
+(def) K
+( apply\(name: String, path: String\): Connection = cache) p n
+(    ) S
+(//TODO: eventually, connection strings for different type of DBs) c n
+(    .getOrElseUpdate\(name, ) p
+(new) K
+( CSVDatabase\(name, path + ") p
+(/name) str
+("\)\)) p n
+(    .connectTo) N
+(}) N
+() N
+(/**) C n
+( * A basic, blocking connection into a database) N
+( * @param into The database this is a connection into) N
+( */) N
+(class) K
+( BlockingConnection\() p
+(protected) K
+( ) p
+(val) K
+( into: Database\) ) p
+(extends) K
+( Connection {) p n
+(  ) S
+(override) K
+( ) p
+(lazy) K
+( ) p
+(val) K
+( name = into.name) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( statement\(queryString: String\): Try[Option[Relation]] = \(SQLParser parse q) p n
+(ueryString\).flatMap{) N
+(    query: Node => into.query\(query\)) N
+(  }) N
+(}) N
+(Connection.scala) (Page 2/2) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (12/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 13
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee.frontends) p n
+() N
+(import) K
+( deebee._) p n
+(import) K
+( deebee.exceptions._) p n
+(import) K
+( deebee.sql.SQLParser) p n
+(import) K
+( deebee.sql.ast._) p n
+(import) K
+( deebee.storage._) p n
+() N
+(import) K
+( scala.util.{Failure, Success, Try}) p n
+() N
+(/**) C n
+( * A quick shell for demoing DML queries when DDL is not implemented.) N
+( * Created by hawk on 12/2/14.) N
+( */) N
+(object) K
+( DemoShell {) p n
+() N
+(  ) S
+(var) K
+( faculty: Relation ) p
+(with) K
+( Selectable ) p
+(with) K
+( Modifyable = ) p
+(new) K
+( View\() p n
+(    Set[Row]\() N
+(      Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(1\), ) p
+(new) K
+( VarcharEntry\(") p
+(Gregory) str
+(", 25\), ) p
+(new) K
+( VarcharEntry) p n
+(\(") S
+(Kapfhammer) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 106) str
+(", 25\)\),) p n
+(      Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(2\), ) p
+(new) K
+( VarcharEntry\(") p
+(Robert) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\() p n
+(") S
+(Roos) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(      Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(3\), ) p
+(new) K
+( VarcharEntry\(") p
+(Janyl) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+() str n
+(Jumadinova) S
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(      Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(4\), ) p
+(new) K
+( VarcharEntry\(") p
+(John) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+() str n
+(Wenskovitch) S
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 108) str
+(", 25\)\)) p n
+(    \),) N
+(    Seq[Attribute]\() N
+(      Attribute\(") S
+(id) str
+(", IntegerType, List\(Primary_Key, Not_Null\)\),) p n
+(      Attribute\(") S
+(first_name) str
+(", VarcharType\(25\), Nil\),) p n
+(      Attribute\(") S
+(last_name) str
+(", VarcharType\(25\), Nil\),) p n
+(      Attribute\(") S
+(office) str
+(", VarcharType\(25\), Nil\)) p n
+(    \)) N
+(  \)) N
+() N
+(  ) S
+(protected) K
+([deebee] ) p
+(def) K
+( doDemo\(\): Unit = {) p n
+(    println\(") S
+(Welcome to the DeeBee Interactive Demo!\\nEnter SQL commands at the prompt, or type `.exit` to exit.) str
+("\)) p n
+(    print\(") S
+(> ) str
+("\)) p n
+(    ) S
+(for) K
+( {line <- io.Source.stdin.getLines\(\) ) p
+(if) K
+( line != ") p
+(.exit) str
+("}{) p n
+(      println\() N
+(        SQLParser.parse\(line\) ) S
+(match) K
+( {) p n
+(          ) S
+(case) K
+( util.Success\(t\) => Try\() p n
+(            t ) S
+(match) K
+( {) p n
+(              ) S
+(case) K
+( s: SelectStmt ) p
+(if) K
+( s.from.name == ") p
+(faculty) str
+(" => faculty.process\(s\).foreach\() p n
+(println _\)) N
+(              ) S
+(case) K
+( i: InsertStmt ) p
+(if) K
+( i.into.name == ") p
+(faculty) str
+(" => faculty.process\(i\) ) p
+(match) K
+( {) p n
+(                ) S
+(case) K
+( Success\(r\) => faculty = r) p n
+(                ) S
+(case) K
+( Failure\(why\) => println\(why\)) p n
+(              }) N
+(              ) S
+(case) K
+( d: DeleteStmt ) p
+(if) K
+( d.from.name == ") p
+(faculty) str
+(" => faculty.process\(d\) ) p
+(match) K
+( {) p n
+(                ) S
+(case) K
+( Success\(r\) => faculty = r) p n
+(                ) S
+(case) K
+( Failure\(why\) => println\(why\)) p n
+(              }) N
+(              ) S
+(case) K
+( _ => t) p n
+(            }) N
+(          \) ) S
+(match) K
+( {) p n
+(            ) S
+(case) K
+( Success\(fully\) => println\(fully\)) p n
+(            ) S
+(case) K
+( Failure\(qe: QueryException\) => println\(qe.getMessage\)) p n
+(          }) N
+(          ) S
+(case) K
+( util.Failure\(e\) => e) p n
+(        }\)) N
+(      print\(") S
+(> ) str
+("\)) p n
+(    }) N
+(    System.exit\(0\)) N
+(  }) N
+(  ) S
+(/**) C n
+(   * Quick REPL for debugging. `.exit` exits.) N
+(   * @param args any command-line args passed to the REPL. Currently none are supported.) N
+(   */) N
+(  ) p
+(def) K
+( main\(args: Array[String]\): Unit = {) p n
+(    args ) S
+(match) K
+( {) p n
+(      ) S
+(case) K
+( Array\(") p
+(--parse) str
+("\) => SQLParser.main\(args\)) p n
+(      ) S
+(case) K
+( _ => doDemo\(\)) p n
+(    }) N
+(DemoShell.scala) (Page 1/2) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (13/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (2) 14
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(  }) p n
+() N
+(}) N
+(DemoShell.scala) (Page 2/2) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (14/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 15
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+(package) K
+( frontends) p n
+() N
+(import) K
+( java.io.PrintStream) p n
+(import) K
+( java.nio.file.{Paths, Files}) p n
+() N
+(import) K
+( scala.util.{Success,Failure}) p n
+() N
+(import) K
+( deebee.sql.SQLParser) p n
+() N
+() N
+(case) K
+( ) p
+(class) K
+( Config\() p n
+(                   path: String = System.getProperty\(") S
+(user.dir) str
+("\),) p n
+(                   verbose: Boolean = ) S
+(false) k
+(,) p n
+(                   demo: Boolean = ) S
+(false) k
+(,) p n
+(                   parserDemo:Boolean = ) S
+(false) k n
+(                   \)) p n
+() N
+(/**) C n
+( * DeeBee interactive shell. Loosely inspired by the SQLite3 one.) N
+( * @author Hawk) N
+( * Created by hawk on 12/10/14.) N
+( */) N
+(object) K
+( Shell {) p n
+(  ) S
+(protected) K
+( ) p
+(val) K
+( parser  = ) p
+(new) K
+( scopt.OptionParser[Config]\(") p
+(deebee-shell) str
+("\) {) p n
+(    head\(") S
+(deebee-shell) str
+(",") p
+(0.1) str
+("\)) p n
+(    arg[String]\(") S
+(directory) str
+("\) optional\(\) action { \(x, c\) =>) p n
+(    c.copy\(path = x\) } validate { x =>) N
+(      ) S
+(if) K
+( \( Files exists Paths.get\(x\) \) success ) p
+(else) K
+( failure\(s") p
+(Could not get file for path $x) str
+("\)) p n
+(    } text ") S
+(directory containing the database to connect to) str
+(") p n
+(    opt[Unit]\('v', ") S
+(verbose) str
+("\) action{ \(_, c\) =>) p n
+(    c.copy\(verbose = ) S
+(true) k
+(\)} text ") p
+(enable verbose logging mode) str
+(") p n
+(    opt[Unit]\('d', ") S
+(demo) str
+("\) action{ \(_, c\) =>) p n
+(      c.copy\(demo = ) S
+(true) k
+(\)} text ") p
+(run the faculty database demo) str
+(") p n
+(    opt[Unit]\('p', ") S
+(parse) str
+("\) action{ \(_, c\) =>) p n
+(      c.copy\(parserDemo = ) S
+(true) k
+(\)} text ") p
+(run the parser  demo) str
+(") p n
+(    help\(") S
+(help) str
+("\) text ") p
+(prints this usage text) str
+(") p n
+(  }) N
+() N
+(  ) S
+(/**) C n
+(   * Runs the shell over a given connection.) N
+(   * @param conn a connection to the database to provide a shellf or) N
+(   * @param in Input stream. Default is stdin.) N
+(   * @param out Output stream for general results. Default is stdout.) N
+(   * @param err Output stream for errors. Default is stderr.) N
+(   */) N
+(  ) p
+(def) K
+( run\() p n
+(           conn: Connection,) N
+(           in: io.BufferedSource = io.Source.stdin,) N
+(           out: PrintStream = System.out,) N
+(           err: PrintStream = System.err) N
+(           \): Unit = {) N
+() N
+(    ) S
+(val) K
+( name = conn.name) p n
+(    out.println\(") S
+(Welcome to the DeeBee Interactive Demo!\\n) str
+(" +) p n
+(      ") S
+(Enter SQL commands at the prompt. Type `.exit` to exit.) str
+("\)) p n
+(    out.print\(s") S
+($name> ) str
+("\)) p n
+(    ) S
+(for) K
+( {line <- in.getLines\(\)} {) p n
+(      line ) S
+(match) K
+( {) p n
+(        ) S
+(case) K
+( ") p
+(.exit) str
+(" => System.exit\(0\)) p n
+(          ) S
+(// TODO: provide something like SQLite's ".tables" directive) c n
+(        ) p
+(case) K
+( _ =>) p n
+(          conn.statement\(line\) ) S
+(match) K
+( {) p n
+(            ) S
+(case) K
+( Success\(Some\(res\)\) => out.println\(s") p
+($name>>> $res) str
+("\)) p n
+(            ) S
+(case) K
+( Success\(None\) => {}) p n
+(            ) S
+(case) K
+( Failure\(why\) => err.println\(s") p
+($name>>> $why) str
+("\)) p n
+(          }) N
+(          out.print\(s") S
+($name> ) str
+("\)) p n
+(      }) N
+(    }) N
+(  }) N
+() N
+(  ) S
+(/**) C n
+(   * Runs the DeeBee shell, dispatching to the parser) N
+(Shell.scala) (Page 1/2) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (15/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (2) 16
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(   * and demo shells or to the main shell, as needed.) C n
+(   * @param args any command-line arguments) N
+(   */) N
+(  ) p
+(def) K
+( main\(args: Array[String]\): Unit = parser.parse\(args, Config\(\)\) map { _ ) p
+(match) K
+( {) p n
+(      ) S
+(case) K
+( Config\(_,v,) p
+(false) k
+(,) p
+(true) k
+(\) => SQLParser.main\(args\)) p n
+(      ) S
+(case) K
+( Config\(_,v,) p
+(true) k
+(,) p
+(false) k
+(\) => DemoShell.main\(args\)) p n
+(      ) S
+(case) K
+( Config\(path,v,) p
+(false) k
+(,) p
+(false) k
+(\) => run\() p n
+(        path ) S
+(match) K
+( {) p n
+(          ) S
+(case) K
+( p: String ) p
+(if) K
+( p == System.getProperty\(") p
+(user.dir) str
+("\) =>) p n
+(            Connection\(") S
+(deebee) str
+(", p\)) p n
+(          ) S
+(case) K
+( p: String =>) p n
+(            ) S
+(val) K
+( np = p.split\(") p
+(/) str
+("\)) p n
+(            Connection\() N
+(              np.last,) N
+(              np.dropRight\(1\).mkString) N
+(            \)) N
+(        }) N
+(      \)) N
+(    }) N
+(  } getOrElse {) N
+(    System.exit\(1\)) N
+(  }) N
+() N
+(}) N
+(Shell.scala) (Page 2/2) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (16/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 17
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+(package) K
+( sql) p n
+() N
+(import) K
+( deebee.exceptions._) p n
+(import) K
+( deebee.sql.ast._) p n
+() N
+(import) K
+( scala.util.Try) p n
+(import) K
+( scala.util.parsing.combinator.PackratParsers) p n
+(import) K
+( scala.util.parsing.combinator.lexical.StdLexical) p n
+(import) K
+( scala.util.parsing.combinator.syntactical.StandardTokenParsers) p n
+() N
+(/**) C n
+( * Parser for the Structured Query Language.) N
+( *) N
+( * The [[SQLParser#parse parse\(\)]] method takes a String containing a SQL query and outpu) N
+(ts an [[scala.util.Try]]) N
+( * on a [[ast.Node]] representing the abstract syntax tree generated by that source code.) N
+( * The top-level node in a SQL AST is the type of statement corresponding to that query -) N
+( for our purposes, this means) N
+( * either one of the two supported DDL statements \([[ast.CreateStmt CREATE TABLE]] or [[a) N
+(st.DropStmt DROP TABLE]]\) or) N
+( * one of the three supported DML statements \([[ast.SelectStmt SELECT]], [[ast.InsertStmt) N
+( INSERT]], or [[ast.DeleteStmt DELETE]]\).) N
+( *) N
+( * ==Note on Parsing==) N
+( *) N
+( * For anyone not familiar with Scala's [[scala.util.parsing.combinator parser-combinator) N
+(s]] library,) N
+( * I strongly suggest you check it out.) N
+( *) N
+( * Parser combinators represent a functional programming approach to text parsing that al) N
+(low developers) N
+( * to write recursive-descent parsers that are easy to write, human-readable, and modular) N
+(, making them) N
+( * very testable and maintainable.) N
+( *) N
+( * Essentially, the way it works is pretty simple: a parser combinator is a higher-order ) N
+(function) N
+( * that takes in two parser functions \(i.e. functions that accepts some strings and rejec) N
+(ts others\)) N
+( * and returns a new parser function that combines the two input parsers in a specified f) N
+(ashion.) N
+( * This allows a programmer to construct a complete parser for some grammar out of smalle) N
+(r pieces.) N
+( *) N
+( * Due to Scala's function application semantics, its' parser combinators library essenti) N
+(ally forms) N
+( * an embedded DSL that allows parsers to be specified in a syntax that closely resembles) N
+( BNF. This) N
+( * means that writing a parser in Scala is a lot like writing a parser in Bison \(or other) N
+( parser) N
+( * generators\), but instead of writing a grammar description that is used to generate) N
+( * \(frequently messy, unreadable, and unmaintainable\) source code, you are actually writi) N
+(ng the source) N
+( * for the parser. This is yet another example of the power of Scala and its' approach to) N
+( programming.) N
+( *) N
+( * If you're interested to learn more about Scala parsing, I strongly suggest you read th) N
+(e paper) N
+( * [[https://lirias.kuleuven.be/bitstream/123456789/164870/1/CW491.pdf "Parser Combinator) N
+(s in Scala"]]) N
+( * by Odersky, Moors, and Piessens, and [[http://www.artima.com/pins1ed/combinator-parsin) N
+(g.html Chapter 31]]) N
+( * in the book "Programming in Scala" by Martin Odersky, Lex Spoon, and Bill Venners, the) N
+( first edition of which) N
+( * is available for free online.) N
+( *) N
+( * ===PackratParsers===) N
+( *) N
+( * In the Deebee SQL parser, I make frequent use of [[scala.util.parsing.combinator.Packr) N
+(atParsers PackratParsers]].) N
+( * These parsers function similarly to the `Parser` from [[scala.util.parsing.combinator.) N
+(Parsers Parsers]], but) N
+( * with the addition of a memoization facility. This allows us to implement back-tracking) N
+(SQLParser.scala) (Page 1/5) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (17/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (2) 18
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(, recursive-descent parsers,) C n
+( * but with the added guarantees of unlimited lookahead and linear parse time. `PackratPa) N
+(rsers` also allows us to accept) N
+( * left-recursive grammars without infinite recursion. There isn't a whole lot of left re) N
+(cursion in the SQL grammar) N
+( * I'm attempting to implement in Deebee, but the performance improvement is always nice.) N
+( *) N
+( * If you're interested in packrat parsing, this technique was first described in a very ) N
+(interesting paper which can be) N
+( * found [[http://scala-programming-language.1934581.n4.nabble.com/attachment/1956909/0/p) N
+(ackrat_parsers.pdf here]].) N
+( *) N
+( * @author Hawk Weisman) N
+( */) N
+() p n
+(object) K
+( SQLParser ) p
+(extends) K
+( StandardTokenParsers ) p
+(with) K
+( PackratParsers {) p n
+() N
+(  ) S
+(class) K
+( SQLLexical ) p
+(extends) K
+( StdLexical ) p
+(with) K
+( PackratParsers {) p n
+() N
+(    ) S
+(import) K
+( scala.util.parsing.input.CharArrayReader.EofCh) p n
+() N
+(    ) S
+(override) K
+( ) p
+(def) K
+( whitespace: Parser[Any] = rep\() p n
+(      whitespaceChar) N
+(        | '/' ~ '*' ~ comment) N
+(        | '#' ~ rep\(chrExcept\(EofCh, '\\n'\)\)) N
+(        | '-' ~ '-' ~ rep\(chrExcept\(EofCh, '\\n'\)\)) N
+(        | '/' ~ '*' ~ failure\(") S
+(unclosed comment) str
+("\)) p n
+(    \)) N
+() N
+(    ) S
+(override) K
+( ) p
+(protected) K
+( ) p
+(def) K
+( processIdent\(name: String\) =) p n
+(      ) S
+(if) K
+( \(reserved contains name.toLowerCase\) Keyword\(name.toLowerCase\) ) p
+(else) K
+( Identifier\(n) p n
+(ame\)) N
+() N
+(    ) S
+(override) K
+( ) p
+(protected) K
+( ) p
+(def) K
+( comment: Parser[Any] = \() p n
+(      '*' ~ '/' ^^ { ) S
+(case) K
+( _ => ' '}) p n
+(        | chrExcept\(EofCh\) ~ comment) N
+(      \)) N
+() N
+(  }) N
+() N
+(  ) S
+(type) K
+( NumericParser[T] = String => T) p n
+(  ) S
+(type) K
+( P[T] = PackratParser[T]) p n
+(  ) S
+(override) K
+( ) p
+(val) K
+( lexical = ) p
+(new) K
+( SQLLexical) p n
+() N
+(  lexical.reserved ++= List\(") S
+(create) str
+(", ") p
+(drop) str
+(", ") p
+(table) str
+(", ") p
+(int) str
+(", ") p
+(integer) str
+(", ") p
+(char) str
+(", ") p
+(varchar) str
+(", ") p
+(numeric) str
+(",) p n
+(    ") S
+(decimal) str
+(", ") p
+(not) str
+(", ") p
+(null) str
+(", ") p
+(foreign) str
+(", ") p
+(primary) str
+(", ") p
+(key) str
+(", ") p
+(unique) str
+(", ") p
+(references) str
+(", ") p
+(select) str
+(", ") p
+(from) str
+(", ") p
+(as) str
+(") p n
+(, ") S
+(where) str
+(",) p n
+(    ") S
+(and) str
+(", ") p
+(or) str
+(", ") p
+(limit) str
+(", ") p
+(delete) str
+(", ") p
+(insert) str
+(", ") p
+(into) str
+(", ") p
+(values) str
+(") p n
+(  \)) N
+() N
+(  lexical.delimiters ++= List\() N
+(    ") S
+(*) str
+(", ") p
+(+) str
+(", ") p
+(-) str
+(", ") p
+(<) str
+(", ") p
+(=) str
+(", ") p
+(<>) str
+(", ") p
+(!=) str
+(", ") p
+(<=) str
+(", ") p
+(>=) str
+(", ") p
+(>) str
+(", ") p
+(/) str
+(", ") p
+(\() str
+(", ") p
+(\)) str
+(", ") p
+(,) str
+(", ") p
+(.) str
+(", ") p
+(;) str
+(") p n
+(  \)) N
+() N
+(  ) S
+(// parser for ints) c n
+(  ) p
+(protected) K
+( ) p
+(val) K
+( intParser: NumericParser[Int] = {) p n
+(    _.toInt) N
+(  }) N
+(  ) S
+(protected) K
+( ) p
+(val) K
+( doubleParser: NumericParser[Double] = {) p n
+(    _.toDouble) N
+(  }) N
+(  ) S
+(def) K
+( int = accept\(") p
+(integer) str
+(", { ) p
+(case) K
+( lexical.NumericLit\(n\) => intParser.apply\(n\)}\)) p n
+() N
+(  ) S
+(def) K
+( double = numericLit ~ ") p
+(.) str
+(" ~ numericLit ^^{ ) p
+(case) K
+( first ~ ") p
+(.) str
+(" ~ last => doubleParser.a) p n
+(pply\(first + ") S
+(.) str
+(" +last\)}) p n
+() N
+(  ) S
+(def) K
+( string = accept\(") p
+(string) str
+(", { ) p
+(case) K
+( lexical.StringLit\(n\) => n}\)) p n
+() N
+() N
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( query: P[Node] = \() p n
+(    createTable) N
+(      | select) N
+(      | delete) N
+(      | insert) N
+(SQLParser.scala) (Page 2/5) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (18/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (3) 19
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(      | dropTable) p n
+(    \) <~ ") S
+(;) str
+(") p n
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( createTable: P[CreateStmt] = \(") p
+(create) str
+(" ~ ") p
+(table) str
+("\) ~> identifier ~ ") p
+(\() str
+(" ~ rep1sep\(at) p n
+(tr | refConstraint, ") S
+(,) str
+("\) <~ ") p
+(\)) str
+(" ^^ {) p n
+(    ) S
+(case) K
+( name ~ ") p
+(\() str
+(" ~ contents => ) p
+(new) K
+( CreateStmt\() p n
+(      name,) N
+(      contents.filter {) N
+(        _.isInstanceOf[Attribute]) N
+(      }.asInstanceOf[List[Attribute]],) N
+(      contents.filter {) N
+(        _.isInstanceOf[Constraint]) N
+(      }.asInstanceOf[List[Constraint]]) N
+(    \)) N
+(  }) N
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( insert: P[InsertStmt] = ") p
+(insert) str
+(" ~> ") p
+(into) str
+(" ~> identifier ~ \(") p
+(values) str
+(" ~> ") p
+(\() str
+(" ~> reps) p n
+(ep\(literal, ") S
+(,) str
+("\) <~ ") p
+(\)) str
+("\) ^^ {) p n
+(    ) S
+(case) K
+( into ~ values => InsertStmt\(into, values\)) p n
+(  }) N
+() N
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( dropTable: P[DropStmt] = ") p
+(drop) str
+(" ~> ") p
+(table) str
+(" ~> identifier ^^{) p
+(case) K
+( i => DropStmt\(i) p n
+(\)}) N
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( attr: P[Attribute] = ident ~ typ ~ inPlaceConstraint.* ^^ { ) p
+(case) K
+( name ~ dt ~ c) p n
+(s => Attribute\(name, dt, cs\)}) N
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( typ: P[Type] = \() p n
+(    \(") S
+(int) str
+(" | ") p
+(integer) str
+("\) ^^^ IntegerType) p n
+(      | ") S
+(char) str
+(" ~> ") p
+(\() str
+(" ~> int <~ ") p
+(\)) str
+(" ^^{ ) p
+(case) K
+( i => CharType\(i\) }) p n
+(      | ") S
+(varchar) str
+(" ~> ") p
+(\() str
+(" ~> int <~ ") p
+(\)) str
+(" ^^{ ) p
+(case) K
+( n => VarcharType\(n\) }) p n
+(      | \(") S
+(numeric) str
+(" | ") p
+(decimal) str
+("\) ~> ") p
+(\() str
+(" ~> int ~ ") p
+(,) str
+(" ~ int <~ ") p
+(\)) str
+(" ^^{ ) p
+(case) K
+( p ~ ") p
+(,) str
+(" ~ d => Decim) p n
+(alType\(p,d\)}) N
+(    \)) N
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( inPlaceConstraint: P[Constraint] = \() p n
+(    \(") S
+(not) str
+(" ~ ") p
+(null) str
+("\) ^^^ Not_Null) p n
+(      | \(") S
+(primary) str
+(" ~ ") p
+(key) str
+("\) ^^^ Primary_Key) p n
+(      | ") S
+(unique) str
+(" ^^^ Unique) p n
+(    \)) N
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( identifier: P[Ident] = ident ^^{ i => Ident\(i\)}) p n
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( refConstraint: P[Constraint] =) p n
+(    ") S
+(foreign) str
+(" ~ ") p
+(key) str
+(" ~ ") p
+(\() str
+(" ~> rep1sep\(identifier, ") p
+(,) str
+("\) ~ ") p
+(\)) str
+(" ~ ") p
+(references) str
+(" ~ opt\(identifier\) ~) p n
+( ") S
+(\() str
+(" ~ rep1sep\(identifier, ") p
+(,) str
+("\) <~ ") p
+(\)) str
+(" ^^{) p n
+(      ) S
+(case) K
+( cols ~ ") p
+(\)) str
+(" ~ ") p
+(references) str
+(" ~ ref ~ ") p
+(\() str
+(" ~ othercols  =>) p n
+(        Foreign_Key\(cols,ref,othercols\)) N
+(    }) N
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( select: P[SelectStmt] = ") p
+(select) str
+(" ~> projections ~ ") p
+(from) str
+(" ~ identifier ~ opt\(wher) p n
+(eClause\) ~ opt\(limitClause\) ^^{) N
+(    ) S
+(case) K
+( proj ~ ") p
+(from) str
+(" ~ from ~ where ~ limit => SelectStmt\(proj, from, where, limit\)) p n
+(  }) N
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( delete: P[DeleteStmt] = ") p
+(delete) str
+(" ~> ") p
+(from) str
+(" ~> identifier ~ opt\(whereClause\) ~ op) p n
+(t\(limitClause\) ^^{) N
+(    ) S
+(case) K
+( from ~ where ~ limit => DeleteStmt\( from, where, limit \)) p n
+(  }) N
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( projections: P[List[Proj]] = ") p
+(*) str
+(" ^^^ GlobProj :: Nil | rep1sep\(exprProj, ") p
+(,) str
+("\)) p n
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( exprProj: P[NameProj] = identifier ~ opt\(") p
+(as) str
+(" ~> identifier\) ^^{) p n
+(    ) S
+(case) K
+( proj ~ asPart => NameProj\(proj, asPart\)) p n
+(  }) N
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( whereClause: P[Comparison] = ") p
+(where) str
+(" ~> comparison) p n
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( limitClause: P[Expr[Int]] = ") p
+(limit) str
+(" ~> intExpr) p n
+(  ) S
+(//lazy val parenComp: P[Comparison] = "\(" ~> comparison <~ "\)") c n
+(  ) p
+(lazy) K
+( ) p
+(val) K
+( comparison: P[Comparison] = \() p n
+(    complexComparison) N
+(      | basicComparison) N
+(      |  ") S
+(\() str
+(" ~> comparison <~ ") p
+(\)) str
+(") p n
+(    \)) N
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( complexComparison: P[Comparison]= \() p n
+(    \(comparison ~ ") S
+(and) str
+(" ~ comparison\)) p n
+(    | \(comparison ~ ") S
+(or) str
+(" ~ comparison\)) p n
+(    \) ^^ {) N
+(    ) S
+(case) K
+( lhs ~ op ~ rhs => Comparison\(lhs, op.toUpperCase, rhs\)) p n
+(  }) N
+() N
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( basicComparison: P[Comparison] = \() p n
+(    \(notCmpExpr ~ ") S
+(=) str
+(" ~ notCmpExpr\)) p n
+(    | \(notCmpExpr ~ ") S
+(!=) str
+(" ~ notCmpExpr\)) p n
+(    | \(notCmpExpr ~ ") S
+(<>) str
+(" ~ notCmpExpr\)) p n
+(    | \(notCmpExpr ~ ") S
+(>=) str
+(" ~ notCmpExpr\)) p n
+(SQLParser.scala) (Page 3/5) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (19/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (4) 20
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    | \(notCmpExpr ~ ") p
+(<=) str
+(" ~ notCmpExpr\)) p n
+(    | \(notCmpExpr ~ ") S
+(>) str
+(" ~ notCmpExpr\)) p n
+(    | \(notCmpExpr ~ ") S
+(<) str
+(" ~ notCmpExpr\)) p n
+(    \) ^^{) N
+(    ) S
+(case) K
+( lhs ~ op ~ rhs => Comparison\(lhs, op.toUpperCase, rhs\)) p n
+(  }) N
+() N
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( intExpr: P[Expr[Int]] = int ^^{ Const\(_\) }) p n
+(    ) S
+(// | term // TODO: insert math here) c n
+() p n
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( expression: P[Expr[_]] = comparison | notCmpExpr) p n
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( notCmpExpr: P[Expr[_]] = \() p n
+(    literal) N
+(    | identifier ^^{ ) S
+(case) K
+( i => i.asInstanceOf[Expr[_]] }) p n
+(  \)) N
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( nullLit: P[Const[_]] = ") p
+(null) str
+(" ^^^ ) p
+(new) K
+( NullConst) p n
+(  ) S
+(lazy) K
+( ) p
+(val) K
+( literal: P[Const[_]] = \() p n
+(    \() N
+(      int) N
+(        ||| double) N
+(        | stringLit) N
+(    \) ^^{ Const\(_\) }) N
+(      | nullLit) N
+(    \)) N
+() N
+() N
+(  ) S
+(/**) C n
+(   * Quick REPL for debugging. `.exit` exits.) N
+(   * @param args any command-line arguments passed) N
+(   */) N
+(  ) p
+(def) K
+( main\(args: Array[String]\): Unit = {) p n
+(    print\(") S
+(> ) str
+("\)) p n
+(    ) S
+(for) K
+( {line <- io.Source.stdin.getLines\(\) ) p
+(if) K
+( line != ") p
+(.exit) str
+("}{) p n
+(      println\(") S
+(>>> ) str
+(" + \(parse\(line\) ) p
+(match) K
+( {) p n
+(          ) S
+(case) K
+( util.Success\(t\) => t) p n
+(          ) S
+(case) K
+( util.Failure\(e\) => e) p n
+(        }\)) N
+(      \)) N
+(      print\(") S
+(> ) str
+("\)) p n
+(    }) N
+(  }) N
+() N
+(  ) S
+(/**) C n
+(   * Parse a SQL query into the corresponding AST) N
+(   * @param source A string containing the query) N
+(   * @return either a Success\([[Node]]\) with the root node of the AST) N
+(   *         for the query, or a Failure containing any) N
+(   *         [[QueryParsingException]]s that occurred.) N
+(   * @see [[sql.ast]]) N
+(   */) N
+(  ) p
+(def) K
+( parse\(source: String\): Try[Node] = {) p n
+(    phrase\(query\)\() S
+(new) K
+( lexical.Scanner\(source\)\) ) p
+(match) K
+( {) p n
+(      ) S
+(case) K
+( Success\(result: Node, _\) => util.Success\(result\)) p n
+(      ) S
+(case) K
+( x: Failure => util.Failure\() p
+(new) K
+( QueryParsingException\(x.toString\(\)\)\)) p n
+(      ) S
+(case) K
+( x: Error => util.Failure\() p
+(new) K
+( QueryParsingException\(x.toString\(\)\)\)) p n
+(    }) N
+(  }) N
+(  ) S
+(/**) C n
+(   * Parse a data literal into a corresponding constant.) N
+(   * This is used primarily for the CSV backend reading from persisted) N
+(   * files on disk.) N
+(   * @param lit A string containing the SQL literal) N
+(   * @return either a Success\([[Const]]\) with the root node of the AST) N
+(   *         for the query, or a Failure containing any) N
+(   *         [[QueryParsingException]]s that occurred.) N
+(   * @see [[sql.ast.Const]]) N
+(   * @see [[storage.CSVRelation.rows]]) N
+(   */) N
+(  ) p
+(def) K
+( parseLit\(lit: String\): Try[Const[_]] = phrase\(literal\)\() p
+(new) K
+( lexical.Scanner\(lit\)\) ) p
+(ma) K n
+(tch) S
+( {) p n
+(    ) S
+(case) K
+( Success\(result: Const[_], _\) => util.Success\(result\)) p n
+(    ) S
+(case) K
+( x: Failure => util.Failure\() p
+(new) K
+( QueryParsingException\(x.toString\(\)\)\)) p n
+(    ) S
+(case) K
+( x: Error => util.Failure\() p
+(new) K
+( QueryParsingException\(x.toString\(\)\)\)) p n
+(  }) N
+(SQLParser.scala) (Page 4/5) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (20/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (5) 21
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p n
+() N
+(}) N
+(SQLParser.scala) (Page 5/5) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (21/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 22
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+(package) K
+( sql) p n
+(package) K
+( ast) p n
+() N
+(/**) C n
+( * AST nodes for SQL constraints) N
+( * Created by hawk on 11/21/14.) N
+( */) N
+(sealed) K
+( ) p
+(trait) K
+( Constraint ) p
+(extends) K
+( Node {) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( emitSQL = ) p
+(this) K n
+(    .getClass) p n
+(    .getSimpleName) N
+(    .toUpperCase) N
+(    .replace\(") S
+(_) str
+(", ") p
+( ) str
+("\)) p n
+(    .replace\(") S
+($) str
+(", ""\)) p n
+(}) N
+(case) K
+( ) p
+(object) K
+( Primary_Key ) p
+(extends) K
+( Constraint) p n
+(case) K
+( ) p
+(class) K
+( Foreign_Key\() p n
+(  cols: List[Ident],) N
+(  relation: Option[Ident] = None,) N
+(  references: List[Ident]\) ) S
+(extends) K
+( Constraint {) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( emitSQL = s") p
+(FOREIGN KEY \(${cols.map\(_.emitSQL\).mkString\() str
+(",") p
+(\)}\) ) str
+(" +) p n
+(    s") S
+(REFERENCES ${relation.map\(_.emitSQL\).mkString} ) str
+(" +) p n
+(    s") S
+(\(${references.map\(_.emitSQL\).mkString\() str
+(", ") p
+(\)}\)) str
+(") p n
+(}) N
+(case) K
+( ) p
+(object) K
+( Not_Null ) p
+(extends) K
+( Constraint) p n
+(case) K
+( ) p
+(object) K
+( Unique ) p
+(extends) K
+( Constraint) p
+(Constraints.scala) (Page 1/1) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (22/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 23
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+(package) K
+( sql.ast) p n
+() N
+(import) K
+( deebee.exceptions.QueryException) p n
+() N
+(import) K
+( scala.util.{Failure, Success, Try}) p n
+() N
+(/**) C n
+( * Trait for SQL exceptions.) N
+( *) N
+( * @author Hawk Weisman <hawk@meteorcodelabs.com>) N
+( *) N
+( * Created by hawk on 11/23/14.) N
+( */) N
+(sealed) K
+( ) p
+(trait) K
+( Expr[T] ) p
+(extends) K
+( Node {) p n
+(  ) S
+(/**) C n
+(   * Evaluate this expression against the given context, emitting a [[Try]] containing ei) N
+(ther) N
+(   * whatever this expression produces, or any semantic errors generated while processing) N
+( the expression.) N
+(   *) N
+(   * This needs to be contextualized in order to access the schema and state of the table) N
+( the expression is) N
+(   * evaluated relative to.) N
+(   *) N
+(   * Query processing exceptions include type errors, accesses to nonexistent attributes,) N
+( or any malformed) N
+(   * syntax that might slip through the parser. These are generally instances of [[QueryE) N
+(xception]] - handle) N
+(   * these with warnings. If a different type of exception ever slips through, that proba) N
+(bly is fatal and should) N
+(   * be thrown to top level.) N
+(   *) N
+(   * @param context The relation against which to evaluate the expression.) N
+(   * @return a [[Try]] containing either whatever the expression generates \([[T]]\) or any) N
+( [[Exception]]s) N
+(   *         generated during processing.) N
+(   */) N
+(  ) p
+(def) K
+( emit\(context: Relation\): Try[T]) p n
+(}) N
+(case) K
+( ) p
+(class) K
+( Const[T]\(x: T\) ) p
+(extends) K
+( Expr[T] {) p n
+(  ) S
+(override) K
+( ) p
+(val) K
+( emitSQL = x ) p
+(match) K
+( {) p n
+(    ) S
+(case) K
+( s: String => ") p
+(\\') str
+(" + x.toString + ") p
+(\\') str
+(") p n
+(    ) S
+(case) K
+( _ => x.toString) p n
+(  }) N
+(  ) S
+(override) K
+( ) p
+(def) K
+( emit\(context: Relation\) = Success\(x\)) p n
+(}) N
+(class) K
+( NullConst[T] ) p
+(extends) K
+( Const\(None\) {) p n
+(  ) S
+(override) K
+( ) p
+(val) K
+( emitSQL = ") p
+(null) str
+(") p n
+(}) N
+() N
+(case) K
+( ) p
+(class) K
+( Ident\(name: String\) ) p
+(extends) K
+( Expr[Int] {) p n
+(  ) S
+(override) K
+( ) p
+(val) K
+( emitSQL = name) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( emit\(context: Relation\): Try[Int] = context.attributes.indexWhere\(_.name.n) p n
+(ame == name\) ) S
+(match) K
+( {) p n
+(    ) S
+(case) K
+( -1 => Failure\() p
+(new) K
+( QueryException\(s") p
+(Relation $context did not contain attribute $name) str
+("\)\)) p n
+(    ) S
+(case) K
+( i: Int => Success\(i\)) p n
+(  }) N
+(}) N
+() N
+(/**) C n
+( * Representation for a comparison.) N
+( *) N
+( * [[Comparison# e m i t \( \) e m i t]]s a partial function taking [[Row]]s and returning) N
+( * true or false. This can then be used for filtering the database rows by the predicate,) N
+( * such as when processing a SELECT statement.) N
+( *) N
+( * @param left the left-hand side of the predicate. Currently this is either a row name o) N
+(r another predicate) N
+( * @param op the operator) N
+( * @param right the right-hand side of the predicate) N
+( */) N
+(case) K
+( ) p
+(class) K
+( Comparison\(left: Expr[_], op: String, right: Expr[_]\) ) p
+(extends) K
+( Expr[Row => Bool) p n
+(ean] {) N
+(Expressions.scala) (Page 1/3) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (23/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (2) 24
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p n
+(  ) S
+(override) K
+( ) p
+(lazy) K
+( ) p
+(val) K
+( emitSQL = s") p
+($left $op $right) str
+(") p n
+(  ) S
+(/*) c n
+(  implicit def toPredicate\(pred: Row => Boolean\): Predicate = new Predicate\(pred\)) N
+(  */) N
+(  ) p
+(/**) C n
+(   * Attempt to process the comparison represented by this AST node against the specified) N
+( context.) N
+(   * @param context The relation against which to evaluate the expression.) N
+(   * @return a [[Try]] containing either whatever the expression generates) N
+(   *         \([[Row]] => [[Boolean]]\) or any [[Exception]]s generated during processing.) N
+(   */) N
+(  ) p
+(override) K
+( ) p
+(def) K
+( emit\(context: Relation\): Try[Row => Boolean] = \() p
+(for) K
+( {) p n
+(    leftside <- left.emit\(context\)) N
+(    rightside <- right.emit\(context\)) N
+(  } ) S
+(yield) K
+( {) p n
+(    \(leftside, op, rightside\) ) S
+(match) K
+( {) p n
+(      ) S
+(case) K
+( \(l: \(Row => Boolean\), ") p
+(AND) str
+(", r: \(Row => Boolean\)\) => Success\({ row: Row => l\() p n
+(row\) && r\(row\)}\)) N
+(      ) S
+(case) K
+( \(l: \(Row => Boolean\), ") p
+(OR) str
+(", r: \(Row => Boolean\)\) => Success\({ row: Row => l\(r) p n
+(ow\) || r\(row\)}\)) N
+(      ) S
+(case) K
+( \(l: Int, ") p
+(=) str
+(" | ") p
+(==) str
+(", value\) => Success\({ x: Row =>) p n
+(        x\(l\).value == value) N
+(      }\)) N
+(      ) S
+(case) K
+( \(l: Int, ") p
+(!=) str
+(", value\) => Success\({ x: Row =>) p n
+(        x\(l\).value != value) N
+(      }\)) N
+(      ) S
+(case) K
+( \(l: Int, ") p
+(>) str
+(", value\) => \(context.attributes\(l\).datatype, value\) ) p
+(match) K
+( {) p n
+(        ) S
+(case) K
+( \(IntegerType, v: Int\) => Success\({ x: Row => x\(l\).value.asInstanceOf[Int] > ) p n
+(v}\)) N
+(        ) S
+(case) K
+( \(DecimalType\(_, _\), v: Double\) => Success\({ x: Row => x\(l\).value.asInstanceO) p n
+(f[Double] > v}\)) N
+(        ) S
+(case) K
+( thing => Failure\() p
+(new) K
+( QueryException\(s") p
+(TypeError: '>' requires numeric type, got $thing.) str
+("\)\)) p n
+(      }) N
+(      ) S
+(case) K
+( \(l: Int, ") p
+(<) str
+(", value\) => \(context.attributes\(l\).datatype, value\) ) p
+(match) K
+( {) p n
+(        ) S
+(case) K
+( \(IntegerType, v: Int\) => Success\({ x: Row => x\(l\).value.asInstanceOf[Int] < ) p n
+(v}\)) N
+(        ) S
+(case) K
+( \(DecimalType\(_, _\), v: Double\) => Success\({ x: Row => x\(l\).value.asInstanceO) p n
+(f[Double] < v}\)) N
+(        ) S
+(case) K
+( thing => Failure\() p
+(new) K
+( QueryException\(s") p
+(TypeError: '<' requires numeric type, got $thing.) str
+("\)\)) p n
+(      }) N
+(      ) S
+(case) K
+( \(l: Int, ") p
+(<=) str
+(", value\) => \(context.attributes\(l\).datatype, value\) ) p
+(match) K
+( {) p n
+(        ) S
+(case) K
+( \(IntegerType, v: Int\) => Success\({ x: Row => x\(l\).value.asInstanceOf[Int] <=) p n
+( v}\)) N
+(        ) S
+(case) K
+( \(DecimalType\(_, _\), v: Double\) => Success\({ x: Row => x\(l\).value.asInstanceO) p n
+(f[Double] <= v}\)) N
+(        ) S
+(case) K
+( thing => Failure\() p
+(new) K
+( QueryException\(s") p
+(TypeError: '<=' requires numeric type, got $thing.) str
+("\)\)) p n
+(      }) N
+(      ) S
+(case) K
+( \(l: Int, ") p
+(>=) str
+(", value\) => \(context.attributes\(l\).datatype, value\) ) p
+(match) K
+( {) p n
+(        ) S
+(case) K
+( \(IntegerType, v: Int\) => Success\({ x: Row => x\(l\).value.asInstanceOf[Int] >=) p n
+( v}\)) N
+(        ) S
+(case) K
+( \(DecimalType\(_, _\), v: Double\) => Success\({ x: Row => x\(l\).value.asInstanceO) p n
+(f[Double] >= v}\)) N
+(        ) S
+(case) K
+( thing => Failure\() p
+(new) K
+( QueryException\(s") p
+(TypeError: '>=' requires numeric type, got $thing.) str
+("\)\)) p n
+(      }) N
+(      ) S
+(case) K
+( \(l: Int, ") p
+(LIKE) str
+(", value\) => \(context.attributes\(l\).datatype, value\) ) p
+(match) K
+( {) p n
+(        ) S
+(case) K
+( \(CharType\(_\) | VarcharType\(_\), v: String\) => Success\({ x: Row => x\(l\).value.) p n
+(asInstanceOf[String].matches\(v\)}\)) N
+(        ) S
+(case) K
+( thing => Failure\() p
+(new) K
+( QueryException\(s") p
+(TypeError: 'LIKE' requires character type, got $thing.) str
+(") p n
+(\)\)) N
+(      }) N
+(    }) N
+(  }\).flatten) N
+() N
+(/*) c n
+(  /**) N
+(   * Wraps partial functions of the form [[Row]] => [[Boolean]] to allow composition) N
+(   * @param pred a partial function [[Row]] => [[Boolean]]) N
+(   */) N
+(  ) p
+(class) K
+( Predicate\() p
+(val) K
+( pred: Row => Boolean\) ) p
+(extends) K
+( \(Row => Boolean\) {) p n
+(    ) S
+(def) K
+( apply\(x: Row\) = pred\(x\)) p n
+() N
+(    ) S
+(def) K
+( &&\(that: Row => Boolean\) = ) p
+(new) K
+( Predicate\(x => pred\(x\) && that\(x\)\)) p n
+() N
+(Expressions.scala) (Page 2/3) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (24/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (3) 25
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    ) p
+(def) K
+( ||\(that: Row => Boolean\) = ) p
+(new) K
+( Predicate\(x => pred\(x\) || that\(x\)\)) p n
+() N
+(    ) S
+(def) K
+( unary_! = ) p
+(new) K
+( Predicate\(x => !pred\(x\)\)) p n
+(  }*/) N
+(}) N
+(/*) c n
+(/**) N
+( * Wraps a parenthesized comparison. Basically, this just farms out to) N
+( * [[Comparison]] for all the heavy-lifting.) N
+( *) N
+( * @param left the left-hand side of the predicate. Currently this is either a row name o) N
+(r another predicate) N
+( * @param op the operator) N
+( * @param right the right-hand side of the predicate) N
+( */) N
+(case) K
+( ) p
+(class) K
+( ParenComparison\(left: Expr[_], op: String, right: Expr[_]\) ) p
+(extends) K
+( Expr[Row =>) p n
+( Boolean] {) N
+(  ) S
+(override) K
+( ) p
+(lazy) K
+( ) p
+(val) K
+( emitSQL = s") p
+(\($left $op $right\)) str
+(") p n
+() N
+(  ) S
+(def) K
+( ) p
+(this) K
+(\(c: Comparison\) = ) p
+(this) K
+(\(c.left, c.op, c.right\)) p n
+() N
+(  ) S
+(override) K
+( ) p
+(def) K
+( emit\(context: Relation\) = ) p
+(new) K
+( Comparison\(left, op, right\).emit\(context\)) p n
+(}*/) S
+(Expressions.scala) (Page 3/3) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (25/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 26
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+(package) K
+( sql) p n
+(package) K
+( ast) p n
+() N
+(/**) C n
+( * Trait for a node in a SQL abstract syntax tree.) N
+( *) N
+( * @author Hawk Weisman) N
+( *) N
+( * Created by hawk on 11/21/14.) N
+( */) N
+(trait) K
+( Node {) p n
+(  ) S
+(/**) C n
+(   * Re-emit the SQL statement\(s\) corresponding to this node) N
+(   * @return) N
+(   */) N
+(  ) p
+(def) K
+( emitSQL: String) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( toString = emitSQL) p n
+(}) S
+(Node.scala) (Page 1/1) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (26/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 27
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+(package) K
+( sql) p n
+(package) K
+( ast) p n
+() N
+(/**) C n
+( * Trait for SQL projections.) N
+( * Created by hawk on 11/21/14.) N
+( */) N
+(sealed) K
+( ) p
+(trait) K
+( Proj ) p
+(extends) K
+( Node {) p n
+(  ) S
+(def) K
+( emit: String) p n
+(}) N
+(case) K
+( ) p
+(class) K
+( NameProj\(name: Ident, as: Option[Ident]\) ) p
+(extends) K
+( Proj {) p n
+(  ) S
+(override) K
+( ) p
+(val) K
+( emit: String = name) p n
+() N
+(  ) S
+(override) K
+( ) p
+(def) K
+( emitSQL = List\(Some\(name.emitSQL\), as\).flatten.mkString\(") p
+( as ) str
+("\)) p n
+(}) N
+(case) K
+( ) p
+(object) K
+( GlobProj ) p
+(extends) K
+( Proj {) p n
+(  ) S
+(override) K
+( ) p
+(val) K
+( emit = ") p
+(*) str
+(") p n
+() N
+(  ) S
+(override) K
+( ) p
+(def) K
+( emitSQL = ") p
+(*) str
+(") p n
+(}) S
+(Projections.scala) (Page 1/1) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (27/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 28
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+(package) K
+( sql) p n
+(package) K
+( ast) p n
+() N
+() N
+(import) K
+( deebee.exceptions.QueryException) p n
+(import) K
+( deebee.storage.Entry) p n
+() N
+(import) K
+( scala.reflect.runtime.universe.TypeTag) p n
+(import) K
+( scala.util.{Try, Success, Failure}) p n
+() N
+(/**) C n
+( * AST nodes for SQL statements) N
+( *) N
+( * Created by hawk on 11/21/14.) N
+( */) N
+(sealed) K
+( ) p
+(trait) K
+( Stmt ) p
+(extends) K
+( Node) p n
+(sealed) K
+( ) p
+(abstract) K
+( ) p
+(class) K
+( DMLStmt\() p
+(val) K
+( table: Ident\) ) p
+(extends) K
+( Stmt) p n
+() N
+(case) K
+( ) p
+(class) K
+( SelectStmt\() p n
+(  projections: List[Proj] = GlobProj :: Nil,) N
+(  from: Ident,) N
+(  where: Option[Comparison] = None,) N
+(  ) S
+(//TODO: implement these) c n
+(  ) p
+(//groupBy: Option[GroupBy] = None,) c n
+(  ) p
+(//orderBy: Option[OrderBy] = None,) c n
+(  limit: Option[Expr[Int]] = None) p n
+(                   \) ) S
+(extends) K
+( DMLStmt\(from\) {) p n
+() N
+(  ) S
+(override) K
+( ) p
+(def) K
+( emitSQL =) p n
+(    s") S
+(SELECT ${projections.map\(_.emitSQL\).mkString\() str
+(", ") p
+(\)}) str
+(" +) p n
+(    s") S
+( FROM ${from.emitSQL}) str
+("+) p n
+(    s") S
+(${where.map\() str
+(" WHERE ") p
+( + _.emitSQL\).getOrElse\() str
+("") p
+(\)}) str
+("+) p n
+(    s") S
+(${limit.map\() str
+(" LIMIT ") p
+( + _\).getOrElse\() str
+("") p
+(\)};) str
+(") p n
+(    ) S
+(//groupBy.map\(_.emitSQL\),) c n
+(    ) p
+(//orderBy.map\(_.emitSQL\),) c n
+() p n
+(}) N
+() N
+(case) K
+( ) p
+(class) K
+( DeleteStmt\() p n
+(  from: Ident,) N
+(  where: Option[Comparison] = None,) N
+(  limit: Option[Expr[Int]] = None) N
+(  \) ) S
+(extends) K
+( DMLStmt\(from\) {) p n
+() N
+(  ) S
+(override) K
+( ) p
+(def) K
+( emitSQL =) p n
+(    s") S
+(DELETE FROM ${from.emitSQL}) str
+(" +) p n
+(      s") S
+(${where.map\() str
+(" WHERE ") p
+( + _.emitSQL\).getOrElse\() str
+("") p
+(\)}) str
+("+) p n
+(      s") S
+(${limit.map\() str
+(" LIMIT ") p
+( + _\).getOrElse\() str
+("") p
+(\)};) str
+(") p n
+(}) N
+() N
+(case) K
+( ) p
+(class) K
+( Attribute\() p n
+(                   name: Ident,) N
+(                   datatype: Type,) N
+(                   constraints: List[Constraint]) N
+(                   \) ) S
+(extends) K
+( Node {) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( emitSQL = s") p
+($name ${datatype.emitSQL}${constraints.map\() str
+(" ") p
+( + _.emitSQL\).mkString}) str
+(") p n
+(  ) S
+(def) K
+( apply\(a: Any\): Try[Entry[_]] = Try\(datatype.entry\(a\)\)) p n
+(}) N
+() N
+(case) K
+( ) p
+(class) K
+( CreateStmt\() p n
+(                   name: Ident,) N
+(                   attributes: List[Attribute],) N
+(                   constraints: List[Constraint] = Nil) N
+(                   \) ) S
+(extends) K
+( Node {) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( emitSQL = {) p n
+(    s") S
+(CREATE TABLE $name \(\\n\\t${attributes.map\(_.emitSQL\).mkString\() str
+(",\\n\\t") p
+(\)}) str
+(" +) p n
+(      {) S
+(if) K
+( \(constraints.length > 0\) ") p
+(,\\n\\t) str
+(" ) p
+(else) K
+( ""} +) p n
+(      s") S
+(${constraints.map\(_.emitSQL\).mkString\() str
+("\\n\\t") p
+(\)}\\n\);) str
+(") p n
+(  }) N
+(}) N
+() N
+(case) K
+( ) p
+(class) K
+( DropStmt\(name: Ident\) ) p
+(extends) K
+( DMLStmt\(name\) {) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( emitSQL = s") p
+(DROP TABLE $name;) str
+(") p n
+(Statements.scala) (Page 1/2) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (28/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (2) 29
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(}) p n
+() N
+(case) K
+( ) p
+(class) K
+( InsertStmt\(into: Ident, values: List[Const[_]]\) ) p
+(extends) K
+( DMLStmt\(into\) {) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( emitSQL = s") p
+(INSERT INTO $into VALUES \(${values.map\(_.toString\).mkString\() str
+(", ") p
+(\)}\);) str
+(") p n
+(}) N
+(Statements.scala) (Page 2/2) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (29/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 30
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+(package) K
+( sql) p n
+(package) K
+( ast) p n
+() N
+(import) K
+( java.util.Date) p n
+(import) K
+( deebee.exceptions.QueryException) p n
+(import) K
+( deebee.storage._) p n
+() N
+(/**) C n
+( * AST nodes for data types) N
+( *) N
+( * Created by hawk on 11/21/14.) N
+( */) N
+(sealed) K
+( ) p
+(trait) K
+( Type ) p
+(extends) K
+( Node {) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( emitSQL = ) p
+(this) K n
+(    .getClass) p n
+(    .getSimpleName) N
+(    .replace\(") S
+(Type) str
+(", ""\)) p n
+(    .replace\(") S
+($) str
+(", ""\)) p n
+(    .toUpperCase) N
+(  ) S
+(def) K
+( entry\(a: Any\): Entry[_]) p n
+(}) N
+(case) K
+( ) p
+(object) K
+( IntegerType ) p
+(extends) K
+( Type {) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( entry\(a: Any\) = a ) p
+(match) K
+( {) p n
+(    ) S
+(case) K
+( _: Int => ) p
+(new) K
+( IntegerEntry\(a.asInstanceOf[Int]\)) p n
+(    ) S
+(case) K
+( Const\(a: Int\) => ) p
+(new) K
+( IntegerEntry\(a\)) p n
+(    ) S
+(case) K
+( _: NullConst[_] => ) p
+(new) K
+( NullEntry) p n
+(    ) S
+(case) K
+( _ => ) p
+(throw) K
+( ) p
+(new) K
+( QueryException\(s") p
+(TypeError when creating Integer entry) str
+("\)) p n
+(  }) N
+(}) N
+() N
+(case) K
+( ) p
+(class) K
+( CharType\(n: Const[Int]\) ) p
+(extends) K
+( Type {) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( emitSQL = s") p
+(CHAR\($n\)) str
+(") p n
+() N
+(  ) S
+(override) K
+( ) p
+(def) K
+( entry\(a: Any\) = a ) p
+(match) K
+( {) p n
+(    ) S
+(case) K
+( _: String => ) p
+(new) K
+( CharEntry\(a.asInstanceOf[String], n\)) p n
+(    ) S
+(case) K
+( Const\(a: String\) => ) p
+(new) K
+( CharEntry\(a,n\)) p n
+(    ) S
+(case) K
+( _: NullConst[_] => ) p
+(new) K
+( NullEntry) p n
+(    ) S
+(case) K
+( _ => ) p
+(throw) K
+( ) p
+(new) K
+( QueryException\(s") p
+(TypeError when creating Char entry) str
+("\)) p n
+(  }) N
+(}) N
+(case) K
+( ) p
+(class) K
+( VarcharType\(n: Const[Int]\) ) p
+(extends) K
+( Type {) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( emitSQL = s") p
+(VARCHAR\($n\)) str
+(") p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( entry\(a: Any\) = a ) p
+(match) K
+( {) p n
+(    ) S
+(case) K
+( _: String => ) p
+(new) K
+( VarcharEntry\(a.asInstanceOf[String], n\)) p n
+(    ) S
+(case) K
+( Const\(a: String\) => ) p
+(new) K
+( VarcharEntry\(a,n\)) p n
+(    ) S
+(case) K
+( _: NullConst[_] => ) p
+(new) K
+( NullEntry) p n
+(    ) S
+(case) K
+( _ => ) p
+(throw) K
+( ) p
+(new) K
+( QueryException\(s") p
+(TypeError when creating Varchar entry) str
+("\)) p n
+(  }) N
+(}) N
+(case) K
+( ) p
+(class) K
+( DecimalType\(p: Const[Int], s: Const[Int]\) ) p
+(extends) K
+( Type {) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( emitSQL = s") p
+(DECIMAL\($p, $s\)) str
+(") p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( entry\(a: Any\) = a ) p
+(match) K
+( {) p n
+(    ) S
+(case) K
+( _: Double => ) p
+(new) K
+( DecimalEntry\(a.asInstanceOf[Double], p, s\)) p n
+(    ) S
+(case) K
+( Const\(a: Double\) => ) p
+(new) K
+( DecimalEntry\(a,p,s\)) p n
+(    ) S
+(case) K
+( _: NullConst[_] => ) p
+(new) K
+( NullEntry) p n
+(    ) S
+(case) K
+( _ => ) p
+(throw) K
+( ) p
+(new) K
+( QueryException\(s") p
+(TypeError when creating Decimal entry) str
+("\)) p n
+(  }) N
+(}) N
+(case) K
+( ) p
+(object) K
+( DateType ) p
+(extends) K
+( Type {) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( entry\(a: Any\): Entry[_] = a ) p
+(match) K
+( {) p n
+(    ) S
+(case) K
+( Const\(a: Date\) => ) p
+(new) K
+( DateEntry\(a\)) p n
+(    ) S
+(case) K
+( _: NullConst[_] => ) p
+(new) K
+( NullEntry) p n
+(    ) S
+(case) K
+( _ => ) p
+(throw) K
+( ) p
+(new) K
+( QueryException\(s") p
+(TypeError when creating Date entry) str
+("\)) p n
+(  }) N
+(}) S
+(Types.scala) (Page 1/1) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (30/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 31
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+(package) K
+( sql) p n
+() N
+(import) K
+( scala.language.implicitConversions) p n
+() N
+(/**) C n
+( * Abstract Syntax Tree \(AST\) for DeeBee SQL queries.) N
+( *) N
+( * All AST nodes extend the [[ast.Node Node]] trait. There are subtypes) N
+( * for specific types of SQL statements\([[ast.DMLStmt DMLStmt]],) N
+( * [[ast.CreateStmt CreateStmt]], and [[ast.DropStmt DropStmt]]\).) N
+( *) N
+( * Most of the classes here are for internal use only. The only time) N
+( * I can see anyone needing to poke around in here is if you wanted) N
+( * to implement LISP-esque macros in DeeBee SQL, which would actually) N
+( * be kind of cool, but I'd question your sanity.) N
+( *) N
+( * Created by hawk on 11/21/14.) N
+( */) N
+(package) K
+( ) p
+(object) K
+( ast {) p n
+(  ) S
+(type) K
+( Predicate = Expr[Boolean]) p n
+(  ) S
+(implicit) K
+( ) p
+(def) K
+( liftIdent\(name: String\): Ident = Ident\(name\)) p n
+(  ) S
+(implicit) K
+( ) p
+(def) K
+( unwrapIdent\(i: Ident\): String = i.name) p n
+(  ) S
+(implicit) K
+( ) p
+(def) K
+( liftConstant[T]\(x: T\): Const[T] = Const\(x\)) p n
+(  ) S
+(implicit) K
+( ) p
+(def) K
+( unliftConstant[T]\(c: Const[T]\): T = c.x) p n
+(}) N
+(package.scala) (Page 1/1) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (31/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 32
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee.storage) p n
+() N
+(import) K
+( java.io.File) p n
+(import) K
+( scala.io.Source) p n
+(import) K
+( scala.language.postfixOps) p n
+(import) K
+( scala.util.Success) p n
+() N
+(import) K
+( akka.actor.TypedProps) p n
+(import) K
+( akka.actor.TypedActor) p n
+() N
+(import) K
+( deebee.Database) p n
+(import) K
+( deebee.sql.SQLParser) p n
+(import) K
+( deebee.sql.ast._) p n
+() N
+(/**) C n
+( * A database backed by CSVs on disk) N
+( * Created by hawk on 11/24/14.) N
+( */) N
+(class) K
+( CSVDatabase\(name: String, ) p
+(val) K
+( path: String\) ) p
+(extends) K
+( Database\(name\) {) p n
+(  ) S
+(override) K
+( ) p
+(type) K
+( Table = RelationActor) p n
+(  ) S
+(val) K
+( back = ) p
+(new) K
+( File\(path\)) p n
+(  ) S
+(// init logic) c n
+(  ) p
+(if) K
+( \(\(back exists\) && \(back isDirectory\)\) {) p n
+(    ) S
+(// if the database already exists, re-initialize) c n
+(    logger.info\(s") p
+(Database $name already existed on dissc, reinitializing.) str
+("\)) p n
+(    ) S
+(for) K
+( \(dir <- back.listFiles ) p
+(if) K
+( dir isDirectory\) {) p n
+(      ) S
+(val) K
+( code = ) p
+(new) K
+( File\(dir, ") p
+(schema.sql) str
+("\)) p n
+(      ) S
+(if) K
+( \(code exists\) {) p n
+(        SQLParser.parse\(Source fromFile code mkString\) ) S
+(match) K
+( {) p n
+(          ) S
+(case) K
+( Success\(schema: CreateStmt\) =>) p n
+(            tables += \(schema.name.toString -> create\(schema\)\)) N
+(            logger.info\(s") S
+(Created table ${schema.name}) str
+("\)) p n
+(          ) S
+(case) K
+( _ => logger.warn\(s") p
+(Schema file $code did not contain a valid SQL schema.) str
+("\)) p n
+(        }) N
+(      }) N
+(    }) N
+(  } ) S
+(else) K
+( {) p n
+(    ) S
+(// this is a new database) c n
+(    logger.info\(s") p
+(Database $name did not exist on disc, initializing.) str
+("\)) p n
+(    back.mkdirs\(\)) N
+(  }) N
+() N
+(  ) S
+(/**) C n
+(   * Generate the correct type of relation for this type of database.) N
+(   * This adds actors to the actor system.) N
+(   * @return) N
+(   */) N
+(  ) p
+(override) K
+( ) p
+(protected) K
+( ) p
+(def) K
+( create\(c: CreateStmt\): Table =) p n
+(    TypedActor\(system\).typedActorOf\() N
+(        TypedProps\(classOf[RelationActor],) N
+(          ) S
+(new) K
+( CSVRelation\(c, path\)\),) p n
+(          name = c.name) N
+(      \)) N
+(}) N
+(CSVDatabase.scala) (Page 1/1) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (32/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 33
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+(package) K
+( storage) p n
+() N
+(import) K
+( java.io.File) p n
+(import) K
+( java.nio.file.{Paths, Files}) p n
+(import) K
+( java.nio.charset.StandardCharsets) p n
+() N
+(import) K
+( com.github.tototoshi.csv.{CSVWriter, CSVReader}) p n
+(import) K
+( com.typesafe.scalalogging.slf4j.LazyLogging) p n
+(import) K
+( deebee.exceptions.{InternalStateException, QueryException}) p n
+(import) K
+( deebee.sql.SQLParser) p n
+(import) K
+( deebee.sql.ast._) p n
+() N
+(import) K
+( scala.util.{Try, Success, Failure}) p n
+(import) K
+( scala.io.Source) p n
+(import) K
+( deebee.sql.ast.CreateStmt) p n
+() N
+(/**) C n
+( * Implementation for a [[Relation]] backed by a comma-separated values file.) N
+( *) N
+( * Created by hawk on 11/19/14.) N
+( */) N
+(class) K
+( CSVRelation\() p n
+(                   schema: CreateStmt,) N
+(                   path: String) N
+(                   \) ) S
+(extends) K
+( RelationActor ) p
+(with) K
+( Relation ) p
+(with) K
+( Selectable ) p
+(with) K
+( Modifyable ) p
+() K n
+(with) S
+( LazyLogging {) p n
+(  ) S
+(def) K
+( ) p
+(this) K
+(\(name: String, path: String\) = ) p
+(this) K
+(\() p n
+(    SQLParser.parse\() N
+(      Source) N
+(        .fromFile\(s") S
+($path/$name/schema.sql) str
+("\)) p n
+(        .mkString) N
+(    \)) N
+(      .getOrElse\() S
+(throw) K
+( ) p
+(new) K
+( InternalStateException\(") p
+(Could not parse saved schema!) str
+("\)\)) p n
+(      .asInstanceOf[CreateStmt],) N
+(    path\)) N
+() N
+(  ) S
+(val) K
+( name = schema.name) p n
+(  ) S
+(val) K
+( attributes = schema.attributes) p n
+(  ) S
+(val) K
+( constraints = schema.constraints) p n
+() N
+(  ) S
+(private) K
+( ) p
+(val) K
+( dir = ) p
+(new) K
+( File\(s") p
+($path/$name/) str
+("\)) p n
+(  ) S
+(if) K
+( \(!dir.exists\(\)\) dir.mkdirs\(\)) p n
+() N
+(  ) S
+(private) K
+( ) p
+(val) K
+( back = ) p
+(new) K
+( File\(dir + s") p
+(/$name.csv) str
+("\)) p n
+(  ) S
+(if) K
+( \(!back.exists\(\)\) back.createNewFile\(\)) p n
+() N
+(  ) S
+(// ugly hack for persisting schemas) c n
+(  ) p
+(private) K
+( ) p
+(val) K
+( schemaBack = ) p
+(new) K
+( File\(s") p
+($path/$name/schema.sql) str
+("\)) p n
+(  ) S
+(if) K
+( \(!schemaBack.exists\(\)\) {) p n
+(    Files.write\() N
+(      Paths.get\(schemaBack.getAbsolutePath\),) N
+(      schema) N
+(        .emitSQL) N
+(        .getBytes\(StandardCharsets.UTF_8\)) N
+(    \)) N
+(  }) N
+() N
+(  ) S
+(private) K
+( ) p
+(def) K
+( reader = CSVReader.open\(back\)) p n
+(  ) S
+(private) K
+( ) p
+(def) K
+( writer = CSVWriter.open\(back, append = ) p
+(true) k
+(\)) p n
+() N
+(  ) S
+(private) K
+( ) p
+(def) K
+( outFmt\(r: Row\): Seq[String] = r.map {) p n
+(    ) S
+(case) K
+( v: VarcharEntry => s") p
+('$v') str
+(") p n
+(    ) S
+(case) K
+( c: CharEntry => s") p
+('$c') str
+(") p n
+(    ) S
+(case) K
+( e: Entry[_] => e.toString) p n
+(  }) N
+() N
+(  ) S
+(/**) C n
+(   * Selects the whole table \(unordered\)) N
+(   * @return the whole table, as a set of lists of entries) N
+(   */) N
+(  ) p
+(override) K
+( ) p
+(def) K
+( rows: Set[Row] =) p n
+(    reader) N
+(      .all\(\)) N
+(CSVRelation.scala) (Page 1/3) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (33/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (2) 34
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(      .toSet) p n
+(      .map { row: List[String] =>) N
+(        ) S
+(for) K
+( { i <- 0 until row.length } ) p
+(yield) K
+( {) p n
+(          attributes\(i\)) N
+(            .apply\(SQLParser parseLit row\(i\) ) S
+(match) K
+( {) p n
+(                ) S
+(case) K
+( Success\(v\) => v) p n
+(                ) S
+(case) K
+( Failure\(reason\) =>) p n
+(                  ) S
+(throw) K
+( ) p
+(new) K
+( InternalStateException\() p n
+(                    ") S
+(Could not parse literal) str
+(",) p n
+(                    Some\(reason\)) N
+(                  \)) N
+(              }\) ) S
+(match) K
+( {) p n
+(            ) S
+(case) K
+( Success\(fully\) => fully) p n
+(            ) S
+(case) K
+( Failure\(reason\) =>) p n
+(              ) S
+(throw) K
+( ) p
+(new) K
+( InternalStateException\() p n
+(                ") S
+(Could not create entry) str
+(",) p n
+(                Some\(reason\)) N
+(              \)) N
+(          }) N
+(      }) N
+(    }) N
+() N
+() N
+(  ) S
+(/**) C n
+(   * Add a new [[Row]] to this [[Relation]], returning a [[Try]] on a [[Relation]]with th) N
+(e row appended.) N
+(   *) N
+(   * In the case of mutable [[Relation]]s \(i.e. [[deebee.storage.CSVRelation C S V R e l ) N
+(a t i o n]]\), this) N
+(   * can be a reference back to the same relation after it has been modified; while in th) N
+(e course of) N
+(   * immutable relations \(i.e. [[View]]\) this can be a new relation with those rows appen) N
+(ded. This) N
+(   * is intended to ensure that the code for processing `INSERT` statements is polymorphi) N
+(c) N
+(   * across mutable and immutable [[Relation]]s.) N
+(   *) N
+(   * If the relation cannot be modified, this returns a [[Try]] containing an) N
+(   * [[deebee.exceptions.InternalStateException]].) N
+(   *) N
+(   * @param row the row to add) N
+(   * @return a [[Try]] on a reference to a [[Relation]] with the row appended) N
+(   */) N
+(  ) p
+(override) K
+( ) p
+(protected) K
+( ) p
+(def) K
+( add\(row: deebee.Row\): Try[Relation ) p
+(with) K
+( Modifyable] = {) p n
+(    writer.writeRow\(outFmt\(row\)\)) N
+(    writer.close\(\)) N
+(    Success\() S
+(this) K
+(\)) p n
+(  }) N
+() N
+(  ) S
+(override) K
+( ) p
+(protected) K
+( ) p
+(def) K
+( drop\(n: Int\): Try[Relation ) p
+(with) K
+( Modifyable] = {) p n
+(    ) S
+(//todo: make this not awful) c n
+(    ) p
+(val) K
+( writer = CSVWriter.open\(back\)) p n
+(    rows.drop\(n\).foreach\(r => writer.writeRow\(outFmt\(r\)\)\)) N
+(    Success\() S
+(this) K
+(\)) p n
+(  }) N
+() N
+(  ) S
+(override) K
+( ) p
+(def) K
+( select\(statement: SelectStmt\): Try[Relation] = process\(statement\)) p n
+() N
+() N
+(  @throws[QueryException]\(") S
+(If something went wrong) str
+("\)) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( insert\(statement: InsertStmt\): Unit = {) p n
+(    ) S
+(val) K
+( result = this.process\(statement\)) p n
+(    result ) S
+(match) K
+( {) p n
+(      ) S
+(case) K
+( Failure \(why\) => ) p
+(throw) K
+( why) p n
+(      ) S
+(case) K
+( Success \(_\) => {}) p n
+(    }) N
+(  }) N
+() N
+(  @throws[QueryException]\(") S
+(If something went wrong) str
+("\)) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( delete\(statement: DeleteStmt\): Unit = process\(statement\) ) p
+(match) K
+( {) p n
+(    ) S
+(case) K
+( Success\(newRows: Relation\) =>) p n
+(      ) S
+(val) K
+( writer = CSVWriter.open\(back\)) p n
+(      newRows.rows.foreach\(r => writer.writeRow\(outFmt\(r\)\)\)) N
+(    ) S
+(case) K
+( Failure\(why\) => ) p
+(throw) K
+( why) p n
+(CSVRelation.scala) (Page 2/3) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (34/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (3) 35
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(  }) p n
+(}) S
+(CSVRelation.scala) (Page 3/3) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (35/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 36
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+(package) K
+( storage) p n
+() N
+(import) K
+( java.util.Date) p n
+() N
+(/**) C n
+( * Representation of an entry from a database row.) N
+( *) N
+( * These may show up when unpacking result sets. You can get the value of an) N
+( * entry using `Entry.value` or [[Entry.unapply]] \(`entry\(thing\)` in a pattern match\).) N
+( * Eventually there will be a typesafe JDBC-esque \(`rs.nextChar`-style\) API for result) N
+( * set unpacking, but that's still a work in progress.) N
+( *) N
+( * @author Hawk Weisman) N
+( * Created by hawk on 11/24/14.) N
+( */) N
+(sealed) K
+( ) p
+(abstract) K
+( ) p
+(class) K
+( Entry[T]\() p
+(val) K
+( value: T\){) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( equals\(that: Any\): Boolean = that ) p
+(match) K
+( {) p n
+(    ) S
+(case) K
+( that : Entry[T] => this.value == that.value) p n
+(    ) S
+(case) K
+( _ => ) p
+(false) k n
+(  }) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( hashCode = value.hashCode) p n
+(  ) S
+(override) K
+( ) p
+(def) K
+( toString = value.toString) p n
+(}) N
+() N
+(object) K
+( Entry {) p n
+(  ) S
+(implicit) K
+( ) p
+(def) K
+( unpackImplicitly[T]\(e: Entry[T]\): T = e.value) p n
+(  ) S
+(def) K
+( unapply[T]\(e: Entry[T]\) = e.value) p n
+(}) N
+() N
+(class) K
+( CharEntry\(chars: String, length: Int\) ) p
+(extends) K
+( Entry[String]\() p n
+(  ) S
+(if) K
+( \(chars.length < length\) {) p n
+(    chars + ") S
+( ) str
+(" * \(length - chars.length\)) p n
+(  } ) S
+(else) K
+( {) p n
+(    chars.take\(length\)) N
+(  }) N
+(\)) N
+() N
+(class) K
+( VarcharEntry\(chars: String, length: Int\) ) p
+(extends) K
+( Entry[String]\(chars.take\(length\)\)) p n
+() N
+(class) K
+( IntegerEntry\(value: Int\) ) p
+(extends) K
+( Entry[Int]\(value\)) p n
+() N
+(class) K
+( DecimalEntry\(value: Double, ) p
+(val) K
+( p: Int, ) p
+(val) K
+( d: Int\) ) p
+(extends) K
+( Entry[Double]\(value\)) p n
+() N
+(class) K
+( DateEntry\(value: Date\) ) p
+(extends) K
+( Entry[Date]\(value\)) p n
+() N
+(class) K
+( NullEntry ) p
+(extends) K
+( Entry[Any]\(None\)) p
+(Entry.scala) (Page 1/1) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (36/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 37
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+(package) K
+( storage) p n
+() N
+(import) K
+( akka.actor.{Actor, ActorLogging}) p n
+(import) K
+( deebee.exceptions.{InternalStateException, QueryException}) p n
+(import) K
+( deebee.sql.ast._) p n
+() N
+(import) K
+( scala.util.{Success, Try, Failure}) p n
+() N
+(/**) C n
+( * Definition for the table API.) N
+( *) N
+( * Created by hawk on 11/19/14.) N
+() N
+() N
+(/* */) N
+(abstract) K
+( ) p
+(class) K
+( RelationActor\() p n
+(                         ) S
+(val) K
+( name: String,) p n
+(                         ) S
+(val) K
+( attributes: List[Attribute],) p n
+(                         ) S
+(val) K
+( constraints: List[Constraint]) p n
+(                         \) ) S
+(extends) K
+( Actor ) p
+(with) K
+( Relation ) p
+(with) K
+( Selectable ) p
+(with) K
+( Modifyable {) p n
+() N
+() N
+(  ) S
+(/**) C n
+(   * Process `SELECT`, `INSERT`, and `DELETE` statements when sent by the supervising [[D) N
+(atabase]].) N
+(   * This will also handle `UPDATE` statements when they are implemented.) N
+(   *) N
+(   * The supervising database will send these messages as [[Stmt]]s from the [[deebee.sql) N
+(.ast]] package when it) N
+(   * receives them from the frontend \(either an API connection or a SQL console\). The dat) N
+(abase is responsible for) N
+(   * dispatching these queries to the appropriate child table's actor. Query results \(if ) N
+(any\) will be sent back to) N
+(   * the sender.) N
+(   *) N
+(   * These queries should be able to be handled at this level of abstraction using the da) N
+(tabase's internal API) N
+(   * \([[Relation.project\(\)]], [[Relation.filter\(\)]], [[Relation.rows\( \)]]\) and filtering ) N
+(them by the received) N
+(   * [[Stmt]]'s predicates \(if any\). This means that the concrete [[Relation]] implementa) N
+(tions need not deal with) N
+(   * query processing, and must only provide the internal API for providing columns and r) N
+(ows.) N
+(   */) N
+(  ) p
+(override) K
+( ) p
+(def) K
+( receive: Receive = {) p n
+(    ) S
+(case) K
+( s: SelectStmt ) p
+(if) K
+( s.table.name == this.name => sender ! process\(s\)) p n
+(    ) S
+(case) K
+( s: DeleteStmt ) p
+(if) K
+( s.table.name == this.name => sender ! process\(s\)) p n
+(    ) S
+(case) K
+( s: InsertStmt ) p
+(if) K
+( s.table.name == this.name => sender ! process\(s\)) p n
+(    ) S
+(case) K
+( s: DMLStmt ) p
+(if) K
+( s.table.name != this.name => sender ! Failure\() p n
+(      ) S
+(new) K
+( InternalStateException\(s") p
+($name received a DML query intended for ${s.table.name}.) str
+("\)\)) p n
+(    ) S
+(case) K
+( a: Any => sender ! Failure\() p
+(new) K
+( InternalStateException\(s") p
+($name didn't know how to handle ) str n
+($a.) S
+("\)\)) p n
+(  }) N
+(}) N
+(*/) N
+() N
+(/**) C n
+( * Process `SELECT`, `INSERT`, and `DELETE` statements when sent by the supervising [[Dat) N
+(abase]].) N
+( * This will also handle `UPDATE` statements when they are implemented.) N
+( *) N
+( * The supervising database will send these messages as [[Stmt]]s from the [[deebee.sql.a) N
+(st]] package when it) N
+( * receives them from the frontend \(either an API connection or a SQL console\). The datab) N
+(ase is responsible for) N
+( * dispatching these queries to the appropriate child table's actor. Query results \(if an) N
+(y\) will be sent back to) N
+( * the sender.) N
+( *) N
+( * These queries should be able to be handled at this level of abstraction using the data) N
+(base's internal API) N
+( * \([[Relation.project\(\)]], [[Relation.filter\(\)]], [[Relation.rows\( \)]]\) and filtering th) N
+(em by the received) N
+(RelationActor.scala) (Page 1/2) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (37/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (2) 38
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+( * [[Stmt]]'s predicates \(if any\). This means that the concrete [[Relation]] implementati) C n
+(ons need not deal with) N
+( * query processing, and must only provide the internal API for providing columns and row) N
+(s.) N
+( */) N
+(trait) K
+( RelationActor {) p n
+(  ) S
+(def) K
+( select\(statement: SelectStmt\): Try[Relation]) p n
+(  ) S
+(def) K
+( delete\(statement: DeleteStmt\): Unit) p n
+(  ) S
+(def) K
+( insert\(statement: InsertStmt\): Unit) p n
+(}) S
+(RelationActor.scala) (Page 2/2) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (38/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 39
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(package) K
+( deebee) p n
+() N
+(/**) C n
+( * Package for storage backends and code related to interacting with DeeBee storage.) N
+( * This is all for internal use, except for [[storage.Entry Entry]], which may show) N
+( * up while unpacking result sets.) N
+( *) N
+( * Created by hawk on 11/24/14.) N
+( */) N
+(package) K
+( ) p
+(object) K
+( storage) p
+(package.scala) (Page 1/1) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (39/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 40
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(import) K
+( deebee._) p n
+(import) K
+( deebee.exceptions.QueryException) p n
+(import) K
+( deebee.sql.SQLParser) p n
+(import) K
+( deebee.sql.ast._) p n
+(import) K
+( deebee.storage._) p n
+(import) K
+( org.scalatest.{BeforeAndAfterEach, GivenWhenThen, Matchers, FeatureSpec}) p n
+(import) K
+( scala.util.Success) p n
+(import) K
+( scala.io.Source) p n
+(import) K
+( java.nio.file.{Paths, Files}) p n
+(import) K
+( java.nio.charset.StandardCharsets) p n
+() N
+(/**) C n
+( * Integration tests for the whole system.) N
+( *) N
+( * @author Hawk Weisman <hawk@meteorcodelabs.com>) N
+( *) N
+( * Created by hawk on 12/2/14.) N
+( */) N
+(class) K
+( IntegrationSpec ) p
+(extends) K
+( FeatureSpec ) p
+(with) K
+( Matchers ) p
+(with) K
+( GivenWhenThen ) p
+(with) K
+( BeforeAnd) p n
+(AfterEach {) N
+() N
+(  ) S
+(val) K
+( testdb = getClass) p n
+(    .getResource\(") S
+(testdb) str
+("\)) p n
+(    .getPath) N
+() N
+(  ) S
+(// reset the DB contents before each test) c n
+(  ) p
+(override) K
+( ) p
+(def) K
+( beforeEach\(\) {) p n
+(    Files.write\() N
+(      Paths.get\(testdb + ") S
+(/Writers/Writers.csv) str
+("\),) p n
+(      \(") S
+(1,'Isaac','Yudovich','Asimov','1/20/1920','4/6/1992','Russian SFSR'\\n) str
+(" +) p n
+(        ") S
+(2,'Robert','Anson','Heinlein','7/7/1902','5/8/1988','USA'\\n) str
+(" +) p n
+(        ") S
+(3,'Arthur','Charles','Clarke','12/16/1917','3/19/2008','USA'\\n) str
+(") p n
+(        \).getBytes\(StandardCharsets.UTF_8\)) N
+(    \)) N
+(    Files.deleteIfExists\(Paths.get\(testdb + ") S
+(/createme/createme.csv) str
+("\)\)) p n
+(    Files.deleteIfExists\(Paths.get\(testdb + ") S
+(/createme/schema.sql) str
+("\)\)) p n
+(    Files.deleteIfExists\(Paths.get\(testdb + ") S
+(/createme) str
+("\)\)) p n
+(  }) N
+() N
+(  feature\(") S
+(SELECT statements are processed correctly.) str
+("\) {) p n
+(    scenario\(") S
+(an in-memory relation receives a simple `SELECT * FROM` statement) str
+("\) {) p n
+() N
+(      Given\(") S
+(a simple in-memory relation) str
+("\)) p n
+(      ) S
+(val) K
+( faculty = ) p
+(new) K
+( View\() p n
+(        Set[Row]\() N
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(1\), ) p
+(new) K
+( VarcharEntry\(") p
+(Gregory) str
+(", 25\), ) p
+(new) K
+( VarcharE) p n
+(ntry\(") S
+(Kapfhammer) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 106) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(2\), ) p
+(new) K
+( VarcharEntry\(") p
+(Robert) str
+(", 25\), ) p
+(new) K
+( VarcharEn) p n
+(try\(") S
+(Roos) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(3\), ) p
+(new) K
+( VarcharEntry\(") p
+(Janyl) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Jumadinova) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(4\), ) p
+(new) K
+( VarcharEntry\(") p
+(John) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Wenskovitch) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 108) str
+(", 25\)\)) p n
+(        \),) N
+(        Seq[Attribute]\() N
+(          Attribute\(") S
+(id) str
+(", IntegerType, List\(Primary_Key, Not_Null\)\),) p n
+(          Attribute\(") S
+(first_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(last_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(office) str
+(", VarcharType\(25\), Nil\)) p n
+(        \)) N
+(      \) ) S
+(with) K
+( Selectable) p n
+(      When\(") S
+(the relation is queried) str
+("\)) p n
+(      ) S
+(val) K
+( query = SQLParser.parse\(") p
+(SELECT * FROM faculty;) str
+("\).get) p n
+() N
+(      Then\(") S
+(the parser should parse the query as a SELECT statement) str
+("\)) p n
+(      query shouldBe a [SelectStmt]) N
+() N
+(      And\(") S
+(the query should be processed successfully) str
+("\)) p n
+(      ) S
+(val) K
+( result = faculty.process\(query.asInstanceOf[SelectStmt]\)) p n
+(      result shouldBe a [Success[_]]) N
+() N
+(      And\(") S
+(the relation should return the correct result set) str
+("\)) p n
+(      result.get.toString should equal \(faculty.toString\)) N
+() N
+(IntegrationSpec.scala) (Page 1/10) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (40/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (2) 41
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    }) p n
+(    scenario\(") S
+(an in-memory relation receives a `SELECT` statement with projections ) str
+("\) {) p n
+(      Given\(") S
+(a simple in-memory relation) str
+("\)) p n
+(      ) S
+(val) K
+( faculty = ) p
+(new) K
+( View\() p n
+(        Set[Row]\() N
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(1\), ) p
+(new) K
+( VarcharEntry\(") p
+(Gregory) str
+(", 25\), ) p
+(new) K
+( VarcharE) p n
+(ntry\(") S
+(Kapfhammer) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 106) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(2\), ) p
+(new) K
+( VarcharEntry\(") p
+(Robert) str
+(", 25\), ) p
+(new) K
+( VarcharEn) p n
+(try\(") S
+(Roos) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(3\), ) p
+(new) K
+( VarcharEntry\(") p
+(Janyl) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Jumadinova) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(4\), ) p
+(new) K
+( VarcharEntry\(") p
+(John) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Wenskovitch) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 108) str
+(", 25\)\)) p n
+(        \),) N
+(        Seq[Attribute]\() N
+(          Attribute\(") S
+(id) str
+(", IntegerType, List\(Primary_Key, Not_Null\)\),) p n
+(          Attribute\(") S
+(first_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(last_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(office) str
+(", VarcharType\(25\), Nil\)) p n
+(        \)) N
+(      \) ) S
+(with) K
+( Selectable) p n
+(      When\(") S
+(the relation is queried with projections) str
+("\)) p n
+(      ) S
+(val) K
+( query = SQLParser.parse\(") p
+(SELECT first_name, last_name FROM faculty;) str
+("\).get) p n
+() N
+(      Then\(") S
+(the parser should parse the query as a SELECT statement) str
+("\)) p n
+(      query shouldBe a[SelectStmt]) N
+() N
+(      And\(") S
+(the query should be processed successfully) str
+("\)) p n
+(      ) S
+(val) K
+( result = faculty.process\(query.asInstanceOf[SelectStmt]\)) p n
+(      result shouldBe a [Success[_]]) N
+() N
+(      And\(") S
+(the relation should return the projected columns) str
+("\)) p n
+(      result.get.toString should equal\(") S
+(|Gregory|Kapfhammer\\n|Robert|Roos\\n|Janyl|Jumadinova\\n|John|Wensk) str n
+(ovitch) S
+("\)) p n
+(    }) N
+() N
+(    scenario\(") S
+(an in-memory relation receives a `SELECT` statement with a `WHERE` clause ) str
+("\) {) p n
+(      Given\(") S
+(a simple in-memory relation) str
+("\)) p n
+(      ) S
+(val) K
+( faculty = ) p
+(new) K
+( View\() p n
+(        Set[Row]\() N
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(1\), ) p
+(new) K
+( VarcharEntry\(") p
+(Gregory) str
+(", 25\), ) p
+(new) K
+( VarcharE) p n
+(ntry\(") S
+(Kapfhammer) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 106) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(2\), ) p
+(new) K
+( VarcharEntry\(") p
+(Robert) str
+(", 25\), ) p
+(new) K
+( VarcharEn) p n
+(try\(") S
+(Roos) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(3\), ) p
+(new) K
+( VarcharEntry\(") p
+(Janyl) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Jumadinova) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(4\), ) p
+(new) K
+( VarcharEntry\(") p
+(John) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Wenskovitch) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 108) str
+(", 25\)\)) p n
+(        \),) N
+(        Seq[Attribute]\() N
+(          Attribute\(") S
+(id) str
+(", IntegerType, List\(Primary_Key, Not_Null\)\),) p n
+(          Attribute\(") S
+(first_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(last_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(office) str
+(", VarcharType\(25\), Nil\)) p n
+(        \)) N
+(      \) ) S
+(with) K
+( Selectable) p n
+(      When\(") S
+(the relation is queried with a SELECT ... WHERE statement) str
+("\)) p n
+(      ) S
+(val) K
+( query = SQLParser.parse\(") p
+(SELECT * FROM faculty WHERE id > 2;) str
+("\).get) p n
+() N
+(      Then\(") S
+(the parser should parse the query as a SELECT statement) str
+("\)) p n
+(      query shouldBe a[SelectStmt]) N
+() N
+(      And\(") S
+(the query should be processed successfully) str
+("\)) p n
+(      ) S
+(val) K
+( result = faculty.process\(query.asInstanceOf[SelectStmt]\)) p n
+(      result shouldBe a [Success[_]]) N
+() N
+(      And\(") S
+(the results should only contain columns matching the predicate) str
+("\)) p n
+(      result.get.toString should equal\(") S
+(|3|Janyl|Jumadinova|Alden 107\\n|4|John|Wenskovitch|Alden 108) str
+("\)) p n
+(    }) N
+(    scenario\(") S
+(an in-memory relation receives a `SELECT` statement with a `WHERE` clause and projections ) str
+("\) {) p n
+(      Given\(") S
+(a simple in-memory relation) str
+("\)) p n
+(      ) S
+(val) K
+( faculty = ) p
+(new) K
+( View\() p n
+(        Set[Row]\() N
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(1\), ) p
+(new) K
+( VarcharEntry\(") p
+(Gregory) str
+(", 25\), ) p
+(new) K
+( VarcharE) p n
+(IntegrationSpec.scala) (Page 2/10) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (41/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (3) 42
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(ntry\(") p
+(Kapfhammer) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 106) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(2\), ) p
+(new) K
+( VarcharEntry\(") p
+(Robert) str
+(", 25\), ) p
+(new) K
+( VarcharEn) p n
+(try\(") S
+(Roos) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(3\), ) p
+(new) K
+( VarcharEntry\(") p
+(Janyl) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Jumadinova) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(4\), ) p
+(new) K
+( VarcharEntry\(") p
+(John) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Wenskovitch) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 108) str
+(", 25\)\)) p n
+(        \),) N
+(        Seq[Attribute]\() N
+(          Attribute\(") S
+(id) str
+(", IntegerType, List\(Primary_Key, Not_Null\)\),) p n
+(          Attribute\(") S
+(first_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(last_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(office) str
+(", VarcharType\(25\), Nil\)) p n
+(        \)) N
+(      \) ) S
+(with) K
+( Selectable) p n
+(      When\(") S
+(the relation is queried with a SELECT ... WHERE statement with projections) str
+("\)) p n
+(      ) S
+(val) K
+( query = SQLParser.parse\(") p
+(SELECT first_name, last_name FROM faculty WHERE first_name='Gregory';) str
+() p n
+("\).get) N
+() N
+(      Then\(") S
+(the parser should parse the query as a SELECT statement) str
+("\)) p n
+(      query shouldBe a[SelectStmt]) N
+() N
+(      And\(") S
+(the query should be processed successfully) str
+("\)) p n
+(      ) S
+(val) K
+( result = faculty.process\(query.asInstanceOf[SelectStmt]\)) p n
+(      result shouldBe a [Success[_]]) N
+() N
+(      And\(") S
+(the results should only contain columns matching the predicate) str
+("\)) p n
+(      result.get.toString should equal\(") S
+(|Gregory|Kapfhammer) str
+("\)) p n
+(    }) N
+(    scenario\(") S
+(an in-memory relation receives a `SELECT` statement with a `LIMIT` clause) str
+("\) {) p n
+() N
+(      Given\(") S
+(a simple in-memory relation) str
+("\)) p n
+(      ) S
+(val) K
+( faculty = ) p
+(new) K
+( View\() p n
+(        Set[Row]\() N
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(1\), ) p
+(new) K
+( VarcharEntry\(") p
+(Gregory) str
+(", 25\), ) p
+(new) K
+( VarcharE) p n
+(ntry\(") S
+(Kapfhammer) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 106) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(2\), ) p
+(new) K
+( VarcharEntry\(") p
+(Robert) str
+(", 25\), ) p
+(new) K
+( VarcharEn) p n
+(try\(") S
+(Roos) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(3\), ) p
+(new) K
+( VarcharEntry\(") p
+(Janyl) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Jumadinova) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(4\), ) p
+(new) K
+( VarcharEntry\(") p
+(John) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Wenskovitch) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 108) str
+(", 25\)\)) p n
+(        \),) N
+(        Seq[Attribute]\() N
+(          Attribute\(") S
+(id) str
+(", IntegerType, List\(Primary_Key, Not_Null\)\),) p n
+(          Attribute\(") S
+(first_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(last_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(office) str
+(", VarcharType\(25\), Nil\)) p n
+(        \)) N
+(      \) ) S
+(with) K
+( Selectable) p n
+(      When\(") S
+(the relation is queried) str
+("\)) p n
+(      ) S
+(val) K
+( query = SQLParser.parse\(") p
+(SELECT * FROM faculty LIMIT 1;) str
+("\).get) p n
+() N
+(      Then\(") S
+(the parser should parse the query as a SELECT statement) str
+("\)) p n
+(      query shouldBe a [SelectStmt]) N
+() N
+(      And\(") S
+(the query should be processed successfully) str
+("\)) p n
+(      ) S
+(val) K
+( result = faculty.process\(query.asInstanceOf[SelectStmt]\)) p n
+(      result shouldBe a [Success[_]]) N
+() N
+(      And\(") S
+(the result set should contain the requested number of rows) str
+("\)) p n
+(      result.get.rows should have size 1) N
+(      And\(") S
+(the result set should match the query) str
+("\)) p n
+(      result.get.toString should equal \(") S
+(|1|Gregory|Kapfhammer|Alden 106) str
+("\)) p n
+() N
+(    }) N
+(  }) N
+(  feature\(") S
+(DELETE statements are processed correctly.) str
+("\) {) p n
+(    scenario\(") S
+(an in-memory relation receives a `DELETE` statement) str
+("\) {) p n
+(      Given\(") S
+(a simple in-memory modifyable relation) str
+("\)) p n
+(      ) S
+(var) K
+( faculty: Relation ) p
+(with) K
+( Modifyable = ) p
+(new) K
+( View\() p n
+(        Set[Row]\() N
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(1\), ) p
+(new) K
+( VarcharEntry\(") p
+(Gregory) str
+(", 25\), ) p
+(new) K
+( VarcharE) p n
+(ntry\(") S
+(Kapfhammer) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 106) str
+(", 25\)\),) p n
+(IntegrationSpec.scala) (Page 3/10) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (42/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (4) 43
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(          Seq[Entry[_]]\() p
+(new) K
+( IntegerEntry\(2\), ) p
+(new) K
+( VarcharEntry\(") p
+(Robert) str
+(", 25\), ) p
+(new) K
+( VarcharEn) p n
+(try\(") S
+(Roos) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(3\), ) p
+(new) K
+( VarcharEntry\(") p
+(Janyl) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Jumadinova) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(4\), ) p
+(new) K
+( VarcharEntry\(") p
+(John) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Wenskovitch) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 108) str
+(", 25\)\)) p n
+(        \),) N
+(        Seq[Attribute]\() N
+(          Attribute\(") S
+(id) str
+(", IntegerType, List\(Primary_Key, Not_Null\)\),) p n
+(          Attribute\(") S
+(first_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(last_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(office) str
+(", VarcharType\(25\), Nil\)) p n
+(        \)) N
+(      \) ) S
+(with) K
+( Modifyable) p n
+(      When\(") S
+(the relation is queried) str
+("\)) p n
+(      ) S
+(val) K
+( query = SQLParser.parse\(") p
+(DELETE FROM faculty;) str
+("\).get) p n
+() N
+(      Then\(") S
+(the parser should parse the query as a DELETE statement) str
+("\)) p n
+(      query shouldBe a[DeleteStmt]) N
+() N
+(      And\(") S
+(the query should be processed successfully) str
+("\)) p n
+(      ) S
+(val) K
+( result = faculty.process\(query.asInstanceOf[DeleteStmt]\)) p n
+(      result shouldBe a[Success[_]]) N
+() N
+(      And\(") S
+(the relation should be empty.) str
+("\)) p n
+(      faculty = result.get) N
+(      faculty.rows should have size 0) N
+(    }) N
+(    scenario\(") S
+(an in-memory relation receives a `DELETE` statement with a predicate) str
+("\) {) p n
+(      Given\(") S
+(a simple in-memory modifyable relation) str
+("\)) p n
+(      ) S
+(var) K
+( faculty: Relation ) p
+(with) K
+( Modifyable = ) p
+(new) K
+( View\() p n
+(        Set[Row]\() N
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(1\), ) p
+(new) K
+( VarcharEntry\(") p
+(Gregory) str
+(", 25\), ) p
+(new) K
+( VarcharE) p n
+(ntry\(") S
+(Kapfhammer) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 106) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(2\), ) p
+(new) K
+( VarcharEntry\(") p
+(Robert) str
+(", 25\), ) p
+(new) K
+( VarcharEn) p n
+(try\(") S
+(Roos) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(3\), ) p
+(new) K
+( VarcharEntry\(") p
+(Janyl) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Jumadinova) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(4\), ) p
+(new) K
+( VarcharEntry\(") p
+(John) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Wenskovitch) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 108) str
+(", 25\)\)) p n
+(        \),) N
+(        Seq[Attribute]\() N
+(          Attribute\(") S
+(id) str
+(", IntegerType, List\(Primary_Key, Not_Null\)\),) p n
+(          Attribute\(") S
+(first_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(last_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(office) str
+(", VarcharType\(25\), Nil\)) p n
+(        \)) N
+(      \) ) S
+(with) K
+( Modifyable) p n
+(      When\(") S
+(the relation is queried) str
+("\)) p n
+(      ) S
+(val) K
+( query = SQLParser.parse\(") p
+(DELETE FROM faculty WHERE id > 2;) str
+("\).get) p n
+() N
+(      Then\(") S
+(the parser should parse the query as a DELETE statement) str
+("\)) p n
+(      query shouldBe a[DeleteStmt]) N
+() N
+(      And\(") S
+(the query should be processed successfully) str
+("\)) p n
+(      ) S
+(val) K
+( result = faculty.process\(query.asInstanceOf[DeleteStmt]\)) p n
+(      result shouldBe a[Success[_]]) N
+() N
+(      And\(") S
+(the relation should not contain rows matching the predicate.) str
+("\)) p n
+(      faculty = result.get) N
+(      faculty.rows should have size 2) N
+(      faculty.toString should not include ") S
+(|3|Janyl|Jumadinova|Alden 107\\n|4|John|Wenskovitch|Alden 108) str
+(") p n
+(    }) N
+(    scenario\(") S
+(an in-memory relation receives a `DELETE` statement with a `LIMIT` clause) str
+("\) {) p n
+(      Given\(") S
+(a simple in-memory modifyable relation) str
+("\)) p n
+(      ) S
+(var) K
+( faculty: Relation ) p
+(with) K
+( Modifyable = ) p
+(new) K
+( View\() p n
+(        Set[Row]\() N
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(1\), ) p
+(new) K
+( VarcharEntry\(") p
+(Gregory) str
+(", 25\), ) p
+(new) K
+( VarcharE) p n
+(ntry\(") S
+(Kapfhammer) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 106) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(2\), ) p
+(new) K
+( VarcharEntry\(") p
+(Robert) str
+(", 25\), ) p
+(new) K
+( VarcharEn) p n
+(try\(") S
+(Roos) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(3\), ) p
+(new) K
+( VarcharEntry\(") p
+(Janyl) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Jumadinova) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(4\), ) p
+(new) K
+( VarcharEntry\(") p
+(John) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(IntegrationSpec.scala) (Page 4/10) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (43/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (5) 44
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(ry\(") p
+(Wenskovitch) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 108) str
+(", 25\)\)) p n
+(        \),) N
+(        Seq[Attribute]\() N
+(          Attribute\(") S
+(id) str
+(", IntegerType, List\(Primary_Key, Not_Null\)\),) p n
+(          Attribute\(") S
+(first_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(last_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(office) str
+(", VarcharType\(25\), Nil\)) p n
+(        \)) N
+(      \) ) S
+(with) K
+( Modifyable) p n
+(      When\(") S
+(the relation is queried) str
+("\)) p n
+(      ) S
+(val) K
+( query = SQLParser.parse\(") p
+(DELETE FROM faculty LIMIT 1;) str
+("\).get) p n
+() N
+(      Then\(") S
+(the parser should parse the query as a DELETE statement) str
+("\)) p n
+(      query shouldBe a[DeleteStmt]) N
+() N
+(      And\(") S
+(the query should be processed successfully) str
+("\)) p n
+(      ) S
+(val) K
+( result = faculty.process\(query.asInstanceOf[DeleteStmt]\)) p n
+(      result shouldBe a[Success[_]]) N
+() N
+(      And\(") S
+(the relation should have the correct number of rows.) str
+("\)) p n
+(      faculty = result.get) N
+(      faculty.rows should have size 3) N
+(    }) N
+(  }) N
+(  feature\(") S
+(INSERT statements are processed correctly.) str
+("\) {) p n
+(    scenario\(") S
+(an in-memory relation receives an `INSERT INTO` statement) str
+("\) {) p n
+(      Given\(") S
+(a simple in-memory modifyable relation) str
+("\)) p n
+(      ) S
+(var) K
+( faculty: Relation ) p
+(with) K
+( Modifyable = ) p
+(new) K
+( View\() p n
+(        Set[Row]\() N
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(1\), ) p
+(new) K
+( VarcharEntry\(") p
+(Gregory) str
+(", 25\), ) p
+(new) K
+( VarcharE) p n
+(ntry\(") S
+(Kapfhammer) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 106) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(2\), ) p
+(new) K
+( VarcharEntry\(") p
+(Robert) str
+(", 25\), ) p
+(new) K
+( VarcharEn) p n
+(try\(") S
+(Roos) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(3\), ) p
+(new) K
+( VarcharEntry\(") p
+(Janyl) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Jumadinova) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\)) p n
+(        \),) N
+(        Seq[Attribute]\() N
+(          Attribute\(") S
+(id) str
+(", IntegerType, List\(Primary_Key, Not_Null\)\),) p n
+(          Attribute\(") S
+(first_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(last_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(office) str
+(", VarcharType\(25\), Nil\)) p n
+(        \)) N
+(      \) ) S
+(with) K
+( Modifyable) p n
+(      When\(") S
+(the relation is queried) str
+("\)) p n
+(      ) S
+(val) K
+( query = SQLParser.parse\(") p
+(INSERT INTO faculty VALUES\(4, 'John', 'Wenskovitch', 'Alden 108'\);) str
+("\).g) p n
+(et) N
+() N
+(      Then\(") S
+(the parser should parse the query as an INSERT statement) str
+("\)) p n
+(      query shouldBe an [InsertStmt]) N
+() N
+(      And\(") S
+(the query should be processed successfully) str
+("\)) p n
+(      ) S
+(val) K
+( result = faculty.process\(query.asInstanceOf[InsertStmt]\)) p n
+(      result shouldBe a[Success[_]]) N
+() N
+(      And\(") S
+(the relation should have the correct number of rows.) str
+("\)) p n
+(      faculty = result.get) N
+(      faculty.rows should have size 4) N
+() N
+(      And\(") S
+(the relation should contain the added row) str
+("\)) p n
+(      faculty.toString should include \(") S
+(|4|John|Wenskovitch|Alden 108) str
+("\)) p n
+(    }) N
+(    scenario\(") S
+(an in-memory relation recieves an `INSERT INTO` statement that violates its' type constraints) str
+("\) {) p n
+(      Given\(") S
+(a simple in-memory modifyable relation) str
+("\)) p n
+(      ) S
+(var) K
+( faculty: Relation ) p
+(with) K
+( Modifyable = ) p
+(new) K
+( View\() p n
+(        Set[Row]\() N
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(1\), ) p
+(new) K
+( VarcharEntry\(") p
+(Gregory) str
+(", 25\), ) p
+(new) K
+( VarcharE) p n
+(ntry\(") S
+(Kapfhammer) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 106) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(2\), ) p
+(new) K
+( VarcharEntry\(") p
+(Robert) str
+(", 25\), ) p
+(new) K
+( VarcharEn) p n
+(try\(") S
+(Roos) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(3\), ) p
+(new) K
+( VarcharEntry\(") p
+(Janyl) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Jumadinova) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\)) p n
+(        \),) N
+(        Seq[Attribute]\() N
+(          Attribute\(") S
+(id) str
+(", IntegerType, List\(Primary_Key, Not_Null\)\),) p n
+(IntegrationSpec.scala) (Page 5/10) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (44/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (6) 45
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(          Attribute\(") p
+(first_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(last_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(office) str
+(", VarcharType\(25\), Nil\)) p n
+(        \)) N
+(      \) ) S
+(with) K
+( Modifyable) p n
+(      When\(") S
+(the relation is queried) str
+("\)) p n
+(      ) S
+(val) K
+( query = SQLParser.parse\(") p
+(INSERT INTO faculty VALUES\('this is a bad place for a string to be', 'John', ') str n
+(Wenskovitch', 'Alden 108'\);) S
+("\).get) p n
+() N
+(      Then\(") S
+(it should throw a QueryException with the correct message) str
+("\)) p n
+(      the [QueryException] thrownBy faculty.process\(query.asInstanceOf[InsertStmt]\).get s) N
+(hould have message ") S
+(TypeError when creating Integer entry) str
+(") p n
+() N
+(    }) N
+(    scenario\(") S
+(an in-memory relation recieves an `INSERT INTO` statement that contains the wrong number of values) str
+("\) {) p n
+(      Given\(") S
+(a simple in-memory modifyable relation) str
+("\)) p n
+(      ) S
+(var) K
+( faculty: Relation ) p
+(with) K
+( Modifyable = ) p
+(new) K
+( View\() p n
+(        Set[Row]\() N
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(1\), ) p
+(new) K
+( VarcharEntry\(") p
+(Gregory) str
+(", 25\), ) p
+(new) K
+( VarcharE) p n
+(ntry\(") S
+(Kapfhammer) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 106) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(2\), ) p
+(new) K
+( VarcharEntry\(") p
+(Robert) str
+(", 25\), ) p
+(new) K
+( VarcharEn) p n
+(try\(") S
+(Roos) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\),) p n
+(          Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(3\), ) p
+(new) K
+( VarcharEntry\(") p
+(Janyl) str
+(", 25\), ) p
+(new) K
+( VarcharEnt) p n
+(ry\(") S
+(Jumadinova) str
+(", 25\), ) p
+(new) K
+( VarcharEntry\(") p
+(Alden 107) str
+(", 25\)\)) p n
+(        \),) N
+(        Seq[Attribute]\() N
+(          Attribute\(") S
+(id) str
+(", IntegerType, List\(Primary_Key, Not_Null\)\),) p n
+(          Attribute\(") S
+(first_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(last_name) str
+(", VarcharType\(25\), Nil\),) p n
+(          Attribute\(") S
+(office) str
+(", VarcharType\(25\), Nil\)) p n
+(        \)) N
+(      \) ) S
+(with) K
+( Modifyable) p n
+(      When\(") S
+(the relation is queried) str
+("\)) p n
+(      ) S
+(val) K
+( query = SQLParser.parse\(") p
+(INSERT INTO faculty VALUES\(4, 'John', 'Wenskovitch', 'Alden 108', 'Ph.D ) str n
+(Candidate', 100238\);) S
+("\).get) p n
+() N
+(      Then\(") S
+(the parser should parse the query as an INSERT statement) str
+("\)) p n
+(      query shouldBe an [InsertStmt]) N
+() N
+(      And\(") S
+(the query should fail) str
+("\)) p n
+(      ) S
+(val) K
+( result = faculty.process\(query.asInstanceOf[InsertStmt]\)) p n
+(      result should be a 'failure) N
+() N
+(      And\(") S
+(the failure should contain the correct exception) str
+("\)) p n
+(      the [QueryException] thrownBy result.get should have message ") S
+(Could not insert ) str
+(" +) p n
+(        ") S
+(\(4, 'John', 'Wenskovitch', 'Alden 108', 'Ph.D Candidate', 100238\):\\nExpected 4 values, but received 6.) str
+(") p n
+() N
+(      And\(") S
+(the relation should have the correct number of rows.) str
+("\)) p n
+(      faculty.rows should have size 3) N
+() N
+(      And\(") S
+(the relation should not contain the added row) str
+("\)) p n
+(      faculty.toString should not include ") S
+(|4|John|Wenskovitch|Alden 108) str
+(") p n
+() N
+() N
+(    }) N
+(  }) N
+(  feature\(") S
+(Queries are handled correctly at the database level.) str
+("\) {) p n
+(    ) S
+(val) K
+( target = ) p
+(new) K
+( CSVDatabase\(") p
+(testdb) str
+(", testdb\)) p n
+() N
+(    scenario\(") S
+(a CSV database recieves a `SELECT` statement) str
+("\) {) p n
+(      Given\(") S
+(a CSV database) str
+("\)) p n
+(      ) S
+(val) K
+( conn = target.connectTo) p n
+(      When\(") S
+(the relation is queried) str
+("\)) p n
+(      ) S
+(val) K
+( tried = conn.statement\(") p
+(SELECT * FROM Writers;) str
+("\)) p n
+(      Then\(") S
+(the result should contain all the rows from the table) str
+("\)) p n
+(      tried should be a 'success) N
+(      ) S
+(val) K
+( result = tried.get) p n
+(      result should be\('defined\)) N
+(      result.get.rows should have size 3) N
+(      And\(") S
+(the result should contain the correct rows) str
+("\)) p n
+(      ) S
+(val) K
+( tableString = result.toString) p n
+(      tableString should include\(") S
+(|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR) str
+("\)) p n
+(      tableString should include\(") S
+(|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA) str
+("\)) p n
+(      tableString should include\(") S
+(|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA) str
+("\)) p n
+(IntegrationSpec.scala) (Page 6/10) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (45/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (7) 46
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    }) p n
+() N
+() N
+(    scenario\(") S
+(a CSV database recieves a `SELECT` statement with a predicate) str
+("\) {) p n
+(      Given\(") S
+(a CSV database) str
+("\)) p n
+(      ) S
+(val) K
+( conn = target.connectTo) p n
+(      When\(") S
+(the relation is queried) str
+("\)) p n
+(      ) S
+(val) K
+( tried = conn.statement\(") p
+(SELECT * FROM Writers WHERE first_name = 'Isaac';) str
+("\)) p n
+(      Then\(") S
+(the result should contain the row that matches the predicate) str
+("\)) p n
+(      tried should be a 'success) N
+(      ) S
+(val) K
+( result = tried.get) p n
+(      result should be\('defined\)) N
+(      result.get.rows should have size 1) N
+(      And\(") S
+(the result should contain the correct rows) str
+("\)) p n
+(      ) S
+(val) K
+( tableString = result.toString) p n
+(      tableString should include\(") S
+(|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR) str
+("\)) p n
+(      tableString should not include ") S
+(|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA) str
+(") p n
+(      tableString should not include ") S
+(|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA) str
+(") p n
+(    }) N
+(      scenario\(") S
+(a CSV database receives a `SELECT` statement with a less-than predicate) str
+("\) {) p n
+(        Given\(") S
+(a CSV database) str
+("\)) p n
+(        ) S
+(val) K
+( conn = target.connectTo) p n
+(        When\(") S
+(the relation is queried) str
+("\)) p n
+(        ) S
+(val) K
+( tried = conn.statement\(") p
+(SELECT * FROM Writers WHERE id <= 2;) str
+("\)) p n
+(        Then\(") S
+(the result should contain all the rows from the table) str
+("\)) p n
+(        tried should be a 'success) N
+(        ) S
+(val) K
+( result = tried.get) p n
+(        result should be\('defined\)) N
+(        result.get.rows should have size 2) N
+(        And\(") S
+(the result should contain the correct rows) str
+("\)) p n
+(        ) S
+(val) K
+( tableString = result.toString) p n
+(        tableString should include\(") S
+(|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR) str
+("\)) p n
+(        tableString should include\(") S
+(|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA) str
+("\)) p n
+(        tableString should not include ") S
+(|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA) str
+(") p n
+(    }) N
+(    scenario\(") S
+(a CSV database recieves a `SELECT` statement with a nested AND predicate) str
+("\) {) p n
+(      Given\(") S
+(a CSV database) str
+("\)) p n
+(      ) S
+(val) K
+( conn = target.connectTo) p n
+(      When\(") S
+(the relation is queried) str
+("\)) p n
+(      ) S
+(val) K
+( tried = conn.statement\(") p
+(SELECT * FROM Writers WHERE id >= 2 AND first_name != 'Robert';) str
+("\)) p n
+(      Then\(") S
+(the result should contain all matching rows) str
+("\)) p n
+(      tried should be a 'success) N
+(      ) S
+(val) K
+( result = tried.get) p n
+(      result should be\('defined\)) N
+(      result.get.rows should have size 1) N
+(      And\(") S
+(the result should contain the correct rows) str
+("\)) p n
+(      ) S
+(val) K
+( tableString = result.toString) p n
+(      tableString should not include ") S
+(|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR) str
+(") p n
+(      tableString should not include ") S
+(|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA) str
+(") p n
+(      tableString should include\(") S
+(|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA) str
+("\)) p n
+(    }) N
+(    scenario\(") S
+(a CSV database recieves a `SELECT` statement with a nested OR predicate) str
+("\) {) p n
+(      Given\(") S
+(a CSV database) str
+("\)) p n
+(      ) S
+(val) K
+( conn = target.connectTo) p n
+(      When\(") S
+(the relation is queried) str
+("\)) p n
+(      ) S
+(val) K
+( tried = conn.statement\(") p
+(SELECT * FROM Writers WHERE id >= 2 OR country_of_origin = 'Russian SF) str n
+(SR';) S
+("\)) p n
+(      Then\(") S
+(the result should contain all the rows from the table) str
+("\)) p n
+(      tried should be a 'success) N
+(      ) S
+(val) K
+( result = tried.get) p n
+(      result should be\('defined\)) N
+(      result.get.rows should have size 3) N
+(      And\(") S
+(the result should contain the correct rows) str
+("\)) p n
+(      ) S
+(val) K
+( tableString = result.toString) p n
+(      tableString should include\(") S
+(|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR) str
+("\)) p n
+(      tableString should include\(") S
+(|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA) str
+("\)) p n
+(      tableString should include\(") S
+(|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA) str
+("\)) p n
+(    }) N
+(    scenario\(") S
+(a CSV database recieves a `SELECT` statement with a nested OR predicate on the same field) str
+("\) {) p n
+(      Given\(") S
+(a CSV database) str
+("\)) p n
+(      ) S
+(val) K
+( conn = target.connectTo) p n
+(      When\(") S
+(the relation is queried) str
+("\)) p n
+(      ) S
+(val) K
+( tried = conn.statement\(") p
+(SELECT * FROM Writers WHERE id >= 3 OR id < 2;) str
+("\)) p n
+(      Then\(") S
+(the result should contain all the rows from the table) str
+("\)) p n
+(IntegrationSpec.scala) (Page 7/10) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (46/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (8) 47
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(      tried should be a 'success) p n
+(      ) S
+(val) K
+( result = tried.get) p n
+(      result should be\('defined\)) N
+(      result.get.rows should have size 2) N
+(      And\(") S
+(the result should contain the correct rows) str
+("\)) p n
+(      ) S
+(val) K
+( tableString = result.toString) p n
+(      tableString should include\(") S
+(|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR) str
+("\)) p n
+(      tableString should not include ") S
+(|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA) str
+(") p n
+(      tableString should include\(") S
+(|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA) str
+("\)) p n
+(    }) N
+() N
+(    scenario\(") S
+(a CSV database receives an `INSERT` statement) str
+("\) {) p n
+(      Given\(") S
+(a CSV database) str
+("\)) p n
+(      ) S
+(val) K
+( conn = target.connectTo) p n
+(      When\(") S
+(the relation is queried) str
+("\)) p n
+(      ) S
+(val) K
+( tried = conn.statement\(") p
+(INSERT INTO Writers VALUES\(4, 'Ray', 'Douglas', 'Bradbury', '8/22/1920', ') str n
+(6/5/2012', 'USA'\);) S
+("\)) p n
+(      Then\(") S
+(the query result should be successful) str
+("\)) p n
+(      tried should be a 'success) N
+(      ) S
+(val) K
+( result = tried.get) p n
+(      result should not be 'defined) N
+(      And\(") S
+(SELECTing from the database should contain the correct rows) str
+("\)) p n
+(      ) S
+(val) K
+( tableString = conn.statement\(") p
+(SELECT * FROM Writers;) str
+("\).get.toString) p n
+(      tableString should include\(") S
+(|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR) str
+("\)) p n
+(      tableString should include\(") S
+(|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA) str
+("\)) p n
+(      tableString should include\(") S
+(|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA) str
+("\)) p n
+(      tableString should include\(") S
+(|4|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA) str
+("\)) p n
+(      And\(") S
+(the CSV file on disk should contain the correct contents) str
+("\)) p n
+(      ) S
+(val) K
+( back = Source.fromFile\(testdb + ") p
+(/Writers/Writers.csv) str
+("\).mkString) p n
+(      back should include\(") S
+(1,'Isaac','Yudovich','Asimov','1/20/1920','4/6/1992','Russian SFSR'\\n) str
+(" +) p n
+(        ") S
+(2,'Robert','Anson','Heinlein','7/7/1902','5/8/1988','USA'\\n) str
+(" +) p n
+(        ") S
+(3,'Arthur','Charles','Clarke','12/16/1917','3/19/2008','USA'\\n) str
+(" +) p n
+(        ") S
+(4,'Ray','Douglas','Bradbury','8/22/1920','6/5/2012','USA') str
+("\)) p n
+(    }) N
+() N
+(    scenario\(") S
+(a CSV database receives a `DELETE` statement) str
+("\) {) p n
+(      Given\(") S
+(a CSV database) str
+("\)) p n
+(      ) S
+(val) K
+( conn = target.connectTo) p n
+(      When\(") S
+(the relation is queried) str
+("\)) p n
+(      ) S
+(val) K
+( tried = conn.statement\(") p
+(DELETE FROM Writers WHERE id > 2;) str
+("\)) p n
+(      Then\(") S
+(the query result should be successful) str
+("\)) p n
+(      tried should be a 'success) N
+(      ) S
+(val) K
+( result = tried.get) p n
+(      result should not be 'defined) N
+(      And\(") S
+(SELECTing from the database should contain the correct rows) str
+("\)) p n
+(      ) S
+(val) K
+( table = conn.statement\(") p
+(SELECT * FROM Writers;) str
+("\).get.get) p n
+(      table.rows should have size 2) N
+(      ) S
+(val) K
+( tableString = table.toString) p n
+(      tableString should include\(") S
+(|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR) str
+("\)) p n
+(      tableString should include\(") S
+(|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA) str
+("\)) p n
+(      tableString should not include ") S
+(|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA) str
+(") p n
+(      tableString should not include ") S
+(|4|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA) str
+(") p n
+(      And\(") S
+(the CSV file on disk should contain the correct contents) str
+("\)) p n
+(      ) S
+(val) K
+( back = Source.fromFile\( testdb + ") p
+(/Writers/Writers.csv) str
+("\). mkString) p n
+(      back should not include \(") S
+(3,'Arthur','Charles','Clarke','12/16/1917','3/19/2008','USA'\\n) str
+(" +) p n
+(        ") S
+(4,'Ray','Douglas','Bradbury','8/22/1920','6/5/2012','USA') str
+("\)) p n
+(    }) N
+(    scenario\(") S
+(a CSV database receives a `DELETE` with both a `LIMIT` and a `WHERE` clause) str
+("\) {) p n
+(      Given\(") S
+(a CSV database) str
+("\)) p n
+(      ) S
+(val) K
+( conn = target.connectTo) p n
+(      When\(") S
+(the relation is queried) str
+("\)) p n
+(      ) S
+(val) K
+( tried = conn.statement\(") p
+(DELETE FROM Writers WHERE id > 2 LIMIT 1;) str
+("\)) p n
+(      Then\(") S
+(the query result should be successful) str
+("\)) p n
+(      tried should be a 'success) N
+(      ) S
+(val) K
+( result = tried.get) p n
+(      result should not be 'defined) N
+(      And\(") S
+(SELECTing from the database should contain the correct rows) str
+("\)) p n
+(      ) S
+(val) K
+( table = conn.statement\(") p
+(SELECT * FROM Writers;) str
+("\).get.get) p n
+(      table.rows should have size 3) N
+(      ) S
+(val) K
+( tableString = table.toString) p n
+(      tableString should include\(") S
+(|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR) str
+("\)) p n
+(      tableString should include\(") S
+(|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA) str
+("\)) p n
+(      tableString should include \(") S
+(|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA) str
+("\)) p n
+(      tableString should not include ") S
+(|4|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA) str
+(") p n
+(IntegrationSpec.scala) (Page 8/10) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (47/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (9) 48
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(      And\(") p
+(the CSV file on disk should contain the correct contents) str
+("\)) p n
+(      ) S
+(val) K
+( back = Source.fromFile\( testdb + ") p
+(/Writers/Writers.csv) str
+("\). mkString) p n
+(      back should not include ") S
+(4,'Ray','Douglas','Bradbury','8/22/1920','6/5/2012','USA') str
+(") p n
+(    }) N
+() N
+(  }) N
+(  feature\(") S
+(Constraints are enforced correctly at the database level) str
+("\) {) p n
+(    ) S
+(val) K
+( target = ) p
+(new) K
+( CSVDatabase\(") p
+(testdb) str
+(", testdb\)) p n
+() N
+(    scenario\(") S
+(a CSV database receives an `INSERT` statement that violates a PRIMARY KEY constraint) str
+("\) {) p n
+(      Given\(") S
+(a CSV database) str
+("\)) p n
+(      ) S
+(val) K
+( conn = target.connectTo) p n
+(      When\(") S
+(a non-unique value violates a PRIMARY KEY constraint) str
+("\)) p n
+(      ) S
+(val) K
+( tried = conn.statement\(") p
+(INSERT INTO Writers VALUES\(1, 'Ray', 'Douglas', 'Bradbury', '8/22/1920', ') str n
+(6/5/2012', 'USA'\);) S
+("\)) p n
+(/*) c n
+(      Then\("the query result should be a failure"\)) N
+(      tried should be a 'failure) N
+(      And\("it should have the correct query exception"\)) N
+(      the [QueryException] thrownBy tried.get should have message "Could not insert, viol) N
+(ation of UNIQUE constraint") N
+(      */) N
+(      Then\(") p
+(SELECTing from the database should not contain the inserted row) str
+("\)) p n
+(      ) S
+(val) K
+( tableString = conn.statement\(") p
+(SELECT * FROM Writers;) str
+("\).get.toString) p n
+(      tableString should not include ") S
+(|1|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA) str
+(") p n
+(    }) N
+() N
+(    scenario\(") S
+(a CSV database receives an `INSERT` statement that violates a NOT NULL constraint) str
+("\) {) p n
+(      Given\(") S
+(a CSV database) str
+("\)) p n
+(      ) S
+(val) K
+( conn = target.connectTo) p n
+(      When\(") S
+(a null value violates a PRIMARY KEY constraint) str
+("\)) p n
+(      ) S
+(val) K
+( tried = conn.statement\(") p
+(INSERT INTO Writers VALUES\(null, 'Ray', 'Douglas', 'Bradbury', '8/22/1920') str n
+(, '6/5/2012', 'USA'\);) S
+("\)) p n
+(      ) S
+(/*) c n
+(            Then\("the query result should be a failure"\)) N
+(            tried should be a 'failure) N
+(            And\("it should have the correct query exception"\)) N
+(            the [QueryException] thrownBy tried.get should have message "Could not insert) N
+(, violation of UNIQUE constraint") N
+(            */) N
+(      Then\(") p
+(SELECTing from the database should not contain the inserted row) str
+("\)) p n
+(      ) S
+(val) K
+( tableString = conn.statement\(") p
+(SELECT * FROM Writers;) str
+("\).get.toString) p n
+(      tableString should not include ") S
+(|null|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA) str
+(") p n
+(    }) N
+(    scenario\(") S
+(a CSV database receives a number of null values) str
+("\) {) p n
+(      Given\(") S
+(a CSV database) str
+("\)) p n
+(      ) S
+(val) K
+( conn = target.connectTo) p n
+(      conn.statement\(") S
+(DROP TABLE createme;) str
+("\)) p n
+(      conn.statement\(") S
+(CREATE TABLE createme \() str
+(" +) p n
+(        ") S
+(testint INTEGER NOT NULL,) str
+(" +) p n
+(        ") S
+(testchar CHAR\(10\) NOT NULL,) str
+(" +) p n
+(        ") S
+(testvarchar VARCHAR\(15\) NOT NULL,) str
+(" +) p n
+(        ") S
+(testdec DECIMAL\(3,2\) NOT NULL) str
+(" +) p n
+(        ") S
+(\);) str
+("\)) p n
+() N
+(      When\(") S
+(the database recieves INSERT statements with nulls) str
+("\)) p n
+(      conn.statement\(") S
+(INSERT INTO createme VALUES\(null,'a ten-char', 'valid string',333.22\);) str
+("\)) p n
+(      conn.statement\(") S
+(INSERT INTO createme VALUES\(1, null, 'valid string',333.22\);) str
+("\)) p n
+(      conn.statement\(") S
+(INSERT INTO createme VALUES\(1,'a ten-char',null,333.22\);) str
+("\)) p n
+(      conn.statement\(") S
+(INSERT INTO createme VALUES\(1,'a ten-char', 'valid string',null\);) str
+("\)) p n
+() N
+(      Then\(") S
+(none of the INSERT statements should be inserted) str
+("\)) p n
+(      ) S
+(val) K
+( result = conn.statement\(") p
+(SELECT * FROM createme;) str
+("\)) p n
+(      result should be a 'success) N
+(      result.map\(o => o.map\(r => r.rows should have size 0\)\)) N
+(    }) N
+(    scenario\(") S
+(a CSV database receives a number of `INSERT` statements that cause type errors) str
+("\) {) p n
+(      Given\(") S
+(a CSV database) str
+("\)) p n
+(      ) S
+(val) K
+( conn = target.connectTo) p n
+(      conn.statement\(") S
+(CREATE TABLE createme \() str
+(" +) p n
+(        ") S
+(testint INTEGER NOT NULL,) str
+(" +) p n
+(        ") S
+(testchar CHAR\(10\) NOT NULL,) str
+(" +) p n
+(        ") S
+(testvarchar VARCHAR\(15\) NOT NULL,) str
+(" +) p n
+(        ") S
+(testdec DECIMAL\(3,2\) NOT NULL) str
+(" +) p n
+(IntegrationSpec.scala) (Page 9/10) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (48/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (10) 49
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(        ") p
+(\);) str
+("\)) p n
+() N
+(      When\(") S
+(the database recieves INSERT statements with nulls) str
+("\)) p n
+(      conn.statement\(") S
+(INSERT INTO createme VALUES\('a string doesn't go here','a ten-char', 'valid string',333.22\);) str
+("\)) p n
+(      conn.statement\(") S
+(INSERT INTO createme VALUES\(1, 1, 'valid string',333.22\);) str
+("\)) p n
+(      conn.statement\(") S
+(INSERT INTO createme VALUES\(1,'a ten-char',3,333.22\);) str
+("\)) p n
+(      conn.statement\(") S
+(INSERT INTO createme VALUES\(1,'a ten-char', 'valid string','also a bad place for a string'\);) str
+("\)) p n
+() N
+(      Then\(") S
+(none of the INSERT statements should be inserted) str
+("\)) p n
+(      ) S
+(val) K
+( result = conn.statement\(") p
+(SELECT * FROM createme;) str
+("\)) p n
+(      result should be a 'success) N
+(      result.map\(o => o.map\(r => r.rows should have size 0\)\)) N
+(    }) N
+(  }) N
+() N
+(  feature\(") S
+(CREATE TABLE statements are processed correctly.) str
+("\) {) p n
+(    ) S
+(val) K
+( target = ) p
+(new) K
+( CSVDatabase\(") p
+(testdb) str
+(", testdb\)) p n
+(    ) S
+(val) K
+( conn = target.connectTo) p n
+(    conn.statement\(") S
+(DROP TABLE createme;) str
+("\)) p n
+() N
+(    scenario\(") S
+(a CSV database recieves a `CREATE` statement) str
+("\) {) p n
+(     Given\(") S
+(a CSV database without a specific table) str
+("\)) p n
+(      When\(") S
+(the relation recieves a CREATE statement) str
+("\)) p n
+(      ) S
+(val) K
+( result = conn.statement\(") p
+(CREATE TABLE createme \() str
+(" +) p n
+(        ") S
+(testPK INTEGER PRIMARY KEY,) str
+(" +) p n
+(        ") S
+(testchar VARCHAR\(15\),) str
+(" +) p n
+(        ") S
+(testdec DECIMAL\(5,4\)) str
+(" +) p n
+(        ") S
+(\);) str
+("\)) p n
+(      Then\(") S
+(the result should be a success) str
+("\)) p n
+(      result should be a 'success) N
+(      And\(") S
+(INSERTing values into the table should be successful) str
+("\)) p n
+(      conn.statement\(") S
+(INSERT INTO createme VALUES\(4,'i am a string',55555.44444\);) str
+("\) should be a 'succe) p n
+(ss) N
+(      And\(") S
+(The table should contain the inserted values) str
+("\)) p n
+(      conn.statement\(") S
+(SELECT * FROM createme;) str
+("\).get.get.toString should include \(") p
+(|4|i am a string|) str n
+(55555.4444) S
+("\)) p n
+(    }) N
+(  }) N
+(  feature\(") S
+(DROP TABLE statements are processed correctly.) str
+("\) {) p n
+(    ) S
+(val) K
+( target = ) p
+(new) K
+( CSVDatabase\(") p
+(testdb) str
+(", testdb\)) p n
+(    ) S
+(val) K
+( conn = target.connectTo) p n
+(    conn.statement\(") S
+(CREATE TABLE createme \() str
+(" +) p n
+(      ") S
+(testPK INTEGER PRIMARY KEY,) str
+(" +) p n
+(      ") S
+(testchar VARCHAR\(15\),) str
+(" +) p n
+(      ") S
+(testdec DECIMAL\(5,4\)) str
+(" +) p n
+(      ") S
+(\);) str
+("\)) p n
+() N
+(    scenario\(") S
+(a CSV database recieves a `DROP` statement) str
+("\) {) p n
+(      Given\(") S
+(a CSV database wit a specific table) str
+("\)) p n
+(      When\(") S
+(the relation recieves a CREATE statement) str
+("\)) p n
+(      ) S
+(val) K
+( result = conn.statement\(") p
+(DROP TABLE createme;) str
+("\)) p n
+(      Then\(") S
+(the result should be a success) str
+("\)) p n
+(      result should be a 'success) N
+(      And\(") S
+(INSERTing values into the table should fail) str
+("\)) p n
+(      conn.statement\(") S
+(INSERT INTO createme VALUES\(4,'i am a string',55555.44444\);) str
+("\) should be a 'failu) p n
+(re) N
+(      And\(") S
+(SELECTing from the table should fail) str
+("\)) p n
+(      conn.statement\(") S
+(SELECT * FROM createme;) str
+("\) should be a 'failure) p n
+(      And\(") S
+(DELETEing from the table should fail) str
+("\)) p n
+(      conn.statement\(") S
+(DELETE * FROM createme;) str
+("\) should be a 'failure) p n
+(    }) N
+(  }) N
+(}) N
+(IntegrationSpec.scala) (Page 10/10) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (49/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 50
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(import) K
+( deebee.sql.ast.Node) p n
+(import) K
+( org.scalatest.{WordSpec, FlatSpec, Matchers}) p n
+(import) K
+( deebee.sql.SQLParser) p n
+(import) K
+( scala.io.Source) p n
+() N
+(import) K
+( scala.util.{Try, Success}) p n
+() N
+(/**) C n
+( * Unit tests for the SQL parser) N
+( * Created by hawk on 11/22/14.) N
+( */) N
+(class) K
+( ParserSpec ) p
+(extends) K
+( WordSpec ) p
+(with) K
+( Matchers {) p n
+() N
+(  ) S
+(private) K
+( ) p
+(def) K
+( writersSchema = Source fromURL \(getClass getResource ") p
+(/Writers.sql) str
+("\) getLines\(\)) p n
+() N
+(  ) S
+(/**) C n
+(   * Helper method for testing. Asserts that the a SQL query can be reconstructed from it) N
+(s') N
+(   * AST representation \(which should more or less ensure that it was parsed correctly\).) N
+(   * @param sql the SQL query to test) N
+(   */) N
+(  ) p
+(private) K
+( ) p
+(def) K
+( assertReconstructed \(sql: String\): Unit = {) p n
+(    ) S
+(val) K
+( result: Try[Node] = SQLParser.parse\(sql\)) p n
+(    result shouldBe a [Success[_]]) N
+(    result.get.emitSQL should include \(sql.replace\(") S
+(NUMERIC) str
+(", ") p
+(DECIMAL) str
+("\)\)) p n
+(  }) N
+() N
+(  ") S
+(The SQL Parser) str
+(" when {) p n
+(    ") S
+(parsing DDL CREATE and DROP statements) str
+(" should {) p n
+(      ") S
+(parse a simple CREATE TABLE statement) str
+(" in {) p n
+(        assertReconstructed\() N
+(          ") S
+(CREATE TABLE Test \(\\n) str
+(" +) p n
+(            ") S
+(\\ttest INTEGER PRIMARY KEY NOT NULL) str
+(" +) p n
+(            ") S
+(\\n\);) str
+(") p n
+(        \)) N
+(      }) N
+() N
+(      ") S
+(parse a CREATE TABLE statement with multiple attributes and types) str
+(" in {) p n
+(        assertReconstructed\(") S
+(CREATE TABLE Test \(\\n) str
+(" +) p n
+(          ") S
+(\\ttestint INTEGER PRIMARY KEY NOT NULL,\\n) str
+(" +) p n
+(          ") S
+(\\ttestvarchar VARCHAR\(255\),\\n) str
+(" +) p n
+(          ") S
+(\\ttestnumeric NUMERIC\(5, 8\) NOT NULL,\\n) str
+(" +) p n
+(          ") S
+(\\ttestdec DECIMAL\(1, 2\),\\n) str
+(" +) p n
+(          ") S
+(\\ttestchar CHAR\(15\)\\n) str
+(" +) p n
+(          ") S
+(\);) str
+(") p n
+(        \)) N
+(      }) N
+() N
+(      ") S
+(parse the first CREATE TABLE from Writers.sql, ignoring comments) str
+(" in {) p n
+(        ) S
+(val) K
+( result: Try[Node] = SQLParser.parse\(writersSchema take 19 mkString ") p
+(\\n) str
+("\)) p n
+(        result shouldBe a[Success[_]]) N
+(        result.get.emitSQL should include\() N
+(          ") S
+(CREATE TABLE Writers \(\\n) str
+(" +) p n
+(            ") S
+(\\tid INTEGER NOT NULL PRIMARY KEY,\\n) str
+(" +) p n
+(            ") S
+(\\tfirst_name VARCHAR\(15\) NOT NULL,\\n) str
+(" +) p n
+(            ") S
+(\\tmiddle_name VARCHAR\(15\),\\n) str
+(" +) p n
+(            ") S
+(\\tlast_name VARCHAR\(15\) NOT NULL,\\n) str
+(" +) p n
+(            ") S
+(\\tbirth_date VARCHAR\(10\) NOT NULL,\\n) str
+(" +) p n
+(            ") S
+(\\tdeath_date VARCHAR\(10\),\\n) str
+(" +) p n
+(            ") S
+(\\tcountry_of_origin VARCHAR\(20\) NOT NULL\\n) str
+(" +) p n
+(            ") S
+(\);) str
+(") p n
+(        \)) N
+(      }) N
+(      ") S
+(parse a CREATE TABLE statement from Writers.sql with FOREIGN KEY constraints) str
+(" in {) p n
+(        ) S
+(val) K
+( result: Try[Node] = SQLParser.parse\(writersSchema slice\(31, 37\) mkString ") p
+(\\n) str
+(") p n
+(\)) N
+(        result shouldBe a[Success[_]]) N
+(        result.get.emitSQL should include\() N
+(          ") S
+(CREATE TABLE Contemporaries \(\\n) str
+(" +) p n
+(            ") S
+(\\twriter_id INTEGER NOT NULL,\\n) str
+(" +) p n
+(            ") S
+(\\tcontemporary_id INTEGER NOT NULL,\\n) str
+(" +) p n
+(            ") S
+(\\tFOREIGN KEY \(writer_id\) REFERENCES Writers \(id\)\\n) str
+(" +) p n
+(            ") S
+(\\tFOREIGN KEY \(contemporary_id\) REFERENCES Writers \(id\)\\n) str
+(" +) p n
+(            ") S
+(\);) str
+(") p n
+(ParserSpec.scala) (Page 1/2) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (50/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (2) 51
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(        \)) p n
+(      }) N
+(      ") S
+(parse a DROP TABLE statement) str
+(" in {) p n
+(        assertReconstructed\(") S
+(DROP TABLE test;) str
+("\)) p n
+(      }) N
+(    }) N
+(    ") S
+(parsing DML SELECT statements) str
+(" should {) p n
+() N
+() N
+(      ") S
+(parse a simple SELECT statement) str
+(" in {) p n
+(        assertReconstructed\(") S
+(SELECT * FROM test;) str
+("\)) p n
+(      }) N
+() N
+(      ") S
+(parse a SELECT statement with projections) str
+(" in {) p n
+(        assertReconstructed\(") S
+(SELECT test1, test2 FROM test;) str
+("\)) p n
+(      }) N
+() N
+(      ") S
+(parse a SELECT statement with a WHERE clause) str
+(" in {) p n
+(        assertReconstructed\(") S
+(SELECT * FROM test WHERE test1 = 0;) str
+("\)) p n
+(      }) N
+() N
+(      ") S
+(parse a SELECT statement with a chained WHERE clause) str
+(" in {) p n
+(        assertReconstructed\(") S
+(SELECT * FROM test WHERE test1 = 9 AND test2 = 5;) str
+("\)) p n
+(      }) N
+(      ") S
+(parse a SELECT statement with a parenthesized WHERE clause) str
+(" ignore {) p n
+(        assertReconstructed\(") S
+(SELECT * FROM suppliers WHERE \(city = 'New York' AND name = 'IBM'\) OR \(rank) str n
+(ing >= 10\);) S
+("\)) p n
+(      }) N
+() N
+(      ") S
+(parse a SELECT statement with a LIMIT clause) str
+(" in {) p n
+(        assertReconstructed\(") S
+(SELECT * FROM test LIMIT 5;) str
+("\)) p n
+(      }) N
+() N
+(      ") S
+(parse a SELECT statement with WHERE and LIMIT clauses) str
+(" in {) p n
+(        assertReconstructed\(") S
+(SELECT * FROM test WHERE test1 = 9 LIMIT 5;) str
+("\)) p n
+(      }) N
+(    }) N
+(    ") S
+(parsing DML DELETE statements) str
+(" should {) p n
+(      ") S
+(parse a DELETE statement) str
+(" in {) p n
+(        assertReconstructed\(") S
+(DELETE FROM test;) str
+("\)) p n
+(      }) N
+(      ") S
+(parse a DELETE statement with a WHERE clause) str
+(" in {) p n
+(        assertReconstructed\(") S
+(DELETE FROM test WHERE test9 = 'deleteme';) str
+("\)) p n
+(      }) N
+() N
+(      ") S
+(parse a DELETE statement with a LIMIT clause) str
+(" in {) p n
+(        assertReconstructed\(") S
+(DELETE FROM test LIMIT 8;) str
+("\)) p n
+(      }) N
+() N
+(      ") S
+(parse a DELETE statement with WHERE and LIMIT clauses) str
+(" in {) p n
+(        assertReconstructed\(") S
+(DELETE FROM test WHERE test2 > 3 LIMIT 100;) str
+("\)) p n
+(      }) N
+(    }) N
+(    ") S
+(parsing DML INSERT statements) str
+(" should {) p n
+(      ") S
+(parse a basic INSERT statement) str
+(" in {) p n
+(        assertReconstructed\(") S
+(INSERT INTO test VALUES \(1, 'a string', 2, 'another string'\);) str
+("\)) p n
+(      }) N
+(    }) N
+(  }) N
+(}) N
+() N
+() N
+() N
+() N
+() N
+() N
+() N
+(ParserSpec.scala) (Page 2/2) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (51/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (1) 52
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+() p n
+(import) K
+( akka.actor.ActorSystem) p n
+(import) K
+( com.typesafe.config.ConfigFactory) p n
+(import) K
+( deebee.{Relation, View, Row}) p n
+(import) K
+( deebee.storage._) p n
+(import) K
+( deebee.sql.ast._) p n
+(import) K
+( org.scalatest.{GivenWhenThen, Matchers, WordSpecLike}) p n
+(import) K
+( akka.testkit.{TestKit, TestActorRef}) p n
+() N
+(/**) C n
+( * Unit tests for the query processing system) N
+( *) N
+( * Created by hawk on 11/27/14.) N
+( */) N
+(class) K
+( QueryProcessingSpec ) p
+(extends) K
+( TestKit\(ActorSystem\(\)\) ) p
+(with) K
+( WordSpecLike ) p
+(with) K
+( Matchers ) p n
+({) N
+(  ) S
+(//import QueryProcessingSpec._) c n
+(  ") p
+(A relation) str
+(" when {) p n
+(    ") S
+(in memory) str
+(" should {) p n
+(      ) S
+(val) K
+( row1 = Seq[Entry[_]]\() p
+(new) K
+( IntegerEntry\(1\), ) p
+(new) K
+( VarcharEntry\(") p
+(a string) str
+(", 16\)\)) p n
+(      ) S
+(val) K
+( row2 = Seq[Entry[_]]\() p
+(new) K
+( IntegerEntry\(2\), ) p
+(new) K
+( VarcharEntry\(") p
+(another string) str
+(", 16\)\)) p n
+(      ) S
+(val) K
+( target: Relation = ) p
+(new) K
+( View\() p n
+(        Set[Row]\(row1, row2\),) N
+(        Seq[Attribute]\(Attribute\(") S
+(test1) str
+(", IntegerType, Nil\), Attribute\(") p
+(test2) str
+(", VarcharType\() p n
+(16\), Nil\)\)) N
+(      \)) N
+() N
+(      ") S
+(provide access to its' rows) str
+(" in {) p n
+(        target.rows shouldBe a[Set[_]]) N
+(        target.rows should not be 'empty) N
+(        target.rows should contain\(row1\)) N
+(        target.rows should contain\(row2\)) N
+(      }) N
+(      ") S
+(project a new relation with the given attributes) str
+(" in {) p n
+(        ) S
+(val) K
+( result = target.project\(Seq\(") p
+(test1) str
+("\)\)) p n
+(        result.rows shouldBe a[Set[_]]) N
+(        result.rows should not be 'empty) N
+(        result.rows should contain\(Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(1\)\)\)) p n
+(        result.rows should contain\(Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(2\)\)\)) p n
+(      }) N
+(      ") S
+(correctly filter by a given predicate, returning a new relation) str
+(" in {) p n
+(        ) S
+(val) K
+( result = target.filter\({ r: Row => r\(0\).value == 1}\)) p n
+(        result.rows shouldBe a[Set[_]]) N
+(        result.rows should not be 'empty) N
+(        result.rows should contain\(row1\)) N
+(      }) N
+(    }) N
+(    ") S
+(backed by a CSV) str
+(" should {) p n
+(      ) S
+(val) K
+( path = getClass) p n
+(                  .getResource\(") S
+(testdb) str
+("\)) p n
+(                  .getPath) N
+(      ) S
+(val) K
+( target = ) p
+(new) K
+( CSVRelation\(") p
+(testcsvtable) str
+(", path\)) p n
+(      ") S
+(provide access to its' rows) str
+(" in {) p n
+(        target.rows shouldBe a [Set[_]]) N
+(        target.rows should not be 'empty) N
+(        target.rows should contain \(Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(1\), ) p
+(new) K
+( VarcharEntry\(") p
+() str n
+(test) S
+(",5\)\)\)) p n
+(        target.rows should contain \(Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(2\), ) p
+(new) K
+( VarcharEntry\(") p
+() str n
+(also test) S
+(",5\)\)\)) p n
+(      }) N
+(      ") S
+(project a new relation with the given attributes) str
+(" in {) p n
+(        ) S
+(val) K
+( result = target.project\(Seq\(") p
+(test1) str
+("\)\)) p n
+(        result.rows shouldBe a [Set[_]]) N
+(        result.rows should not be 'empty) N
+(        result.rows should contain \(Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(1\)\)\)) p n
+(        result.rows should contain \(Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(2\)\)\)) p n
+(      }) N
+(      ") S
+(correctly filter by a given predicate, returning a new relation) str
+(" in {) p n
+(        ) S
+(val) K
+( result = target.filter\({ r: Row => r\(0\).value == 1}\)) p n
+(        result.rows shouldBe a[Set[_]]) N
+(        result.rows should not be 'empty) N
+(        result.rows should contain\(Seq[Entry[_]]\() S
+(new) K
+( IntegerEntry\(1\), ) p
+(new) K
+( VarcharEntry\(") p
+(t) str n
+(est) S
+(",5\)\)\)) p n
+(      }) N
+(QueryProcessingSpec.scala) (Page 1/2) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (Friday December 12, 2014) (52/53) footer
+end % of iso1dict
+pagesave restore
+showpage
+%%Page: (2) 53
+%%BeginPageSetup
+/pagesave save def
+%%EndPageSetup
+iso1dict begin
+gsave
+llx lly 12 add translate
+/v 0 store
+/x0 x v get 4.200000 add sx cw mul add store
+/y0 y v get bfs th add sub store
+x0 y0 moveto
+(    }) p n
+(  }) N
+(/* // Eclipsed by a test in Integration?) c n
+(  "A relation actor" when {) N
+(    "backed by a CSV" should {) N
+(      "return the correct results for a basic SELECT" in {) N
+(        pending) N
+(      }) N
+(      "return the correct results for a SELECT with projections" in {) N
+(        pending) N
+(      }) N
+(      "return the correct results for a SELECT with a WHERE clause" in {) N
+(        pending) N
+(      }) N
+(      "return the correct results for a SELECT with a WHERE and projections" in {) N
+(        pending) N
+(      }) N
+(    }) N
+(  }) N
+(  */) N
+(}) p
+(QueryProcessingSpec.scala) (Page 2/2) (Dec 12, 14 16:14) title
+border
+grestore
+(Printed by Hawk Weisman) rhead
+() (53/53) (Friday December 12, 2014) footer
+end % of iso1dict
+pagesave restore
+showpage
+
+%%Trailer
+end
+%%EOF

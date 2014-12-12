@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets
 
 import com.github.tototoshi.csv.{CSVWriter, CSVReader}
 import com.typesafe.scalalogging.slf4j.LazyLogging
-import deebee.exceptions.QueryException
+import deebee.exceptions.{InternalStateException, QueryException}
 import deebee.sql.SQLParser
 import deebee.sql.ast._
 
@@ -73,12 +73,23 @@ class CSVRelation(
       .all()
       .toSet
       .map { row: List[String] =>
-        for {
-          i <- 0 until row.length
-        } yield {
+        for { i <- 0 until row.length } yield {
           attributes(i)
-            .apply(SQLParser.parseLit(row(i)).get)
-            .get
+            .apply(SQLParser parseLit row(i) match {
+                case Success(v) => v
+                case Failure(reason) =>
+                  throw new InternalStateException(
+                    "Could not parse literal",
+                    Some(reason)
+                  )
+              }) match {
+            case Success(fully) => fully
+            case Failure(reason) =>
+              throw new InternalStateException(
+                "Could not create entry",
+                Some(reason)
+              )
+          }
       }
     }
 
@@ -111,7 +122,7 @@ class CSVRelation(
     Success(this)
   }
 
-  override def select(statement: SelectStmt): Try[Relation] = this.process(statement)
+  override def select(statement: SelectStmt): Try[Relation] = process(statement)
 
 
   @throws[QueryException]("If something went wrong")
@@ -124,7 +135,7 @@ class CSVRelation(
   }
 
   @throws[QueryException]("If something went wrong")
-  override def delete(statement: DeleteStmt): Unit = this.process(statement) match {
+  override def delete(statement: DeleteStmt): Unit = process(statement) match {
     case Success(newRows: Relation) =>
       val writer = CSVWriter.open(back)
       newRows.rows.foreach(r => writer.writeRow(outFmt(r)))

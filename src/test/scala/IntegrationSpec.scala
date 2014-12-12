@@ -396,6 +396,40 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
       tableString should include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA")
     }
 
+
+    scenario("a CSV database recieves a `SELECT` statement with a predicate") {
+      Given("a CSV database")
+      val conn = target.connectTo
+      When("the relation is queried")
+      val tried = conn.statement("SELECT * FROM Writers WHERE first_name = 'Isaac';")
+      Then("the result should contain the row that matches the predicate")
+      tried should be a 'success
+      val result = tried.get
+      result should be('defined)
+      result.get.rows should have size 1
+      And("the result should contain the correct rows")
+      val tableString = result.toString
+      tableString should include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")
+      tableString should not include ("|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA")
+      tableString should not include ("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA")
+    }
+      scenario("a CSV database recieves a `SELECT` statement with a less-than predicate") {
+        Given("a CSV database")
+        val conn = target.connectTo
+        When("the relation is queried")
+        val tried = conn.statement("SELECT * FROM Writers WHERE id <= 2;")
+        Then("the result should contain all the rows from the table")
+        tried should be a 'success
+        val result = tried.get
+        result should be('defined)
+        result.get.rows should have size 2
+        And("the result should contain the correct rows")
+        val tableString = result.toString
+        tableString should include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")
+        tableString should include("|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA")
+        tableString should not include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA")
+    }
+
     scenario("a CSV database receives an `INSERT` statement") {
       Given("a CSV database")
       val conn = target.connectTo

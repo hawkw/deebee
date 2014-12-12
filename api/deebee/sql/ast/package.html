@@ -47,7 +47,12 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Created by hawk on 11/21/14.
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Abstract Syntax Tree (AST) for DeeBee SQL queries.</p><p>All AST nodes extend the <a href="Node.html" class="extype" name="deebee.sql.ast.Node">Node</a> trait. There are subtypes
+for specific types of SQL statements(<a href="DMLStmt.html" class="extype" name="deebee.sql.ast.DMLStmt">DMLStmt</a>,
+<a href="CreateStmt.html" class="extype" name="deebee.sql.ast.CreateStmt">CreateStmt</a>, and <a href="DropStmt.html" class="extype" name="deebee.sql.ast.DropStmt">DropStmt</a>).</p><p>Most of the classes here are for internal use only. The only time
+I can see anyone needing to poke around in here is if you wanted
+to implement LISP-esque macros in DeeBee SQL, which would actually
+be kind of cool, but I'd question your sanity.</p><p>Created by hawk on 11/21/14.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
@@ -401,7 +406,7 @@ Created by hawk on 11/21/14.</p>
       </a>
     </span>
       
-    </li><li name="deebee.sql.ast.Proj" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+    </li><li name="deebee.sql.ast.Proj" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="ProjextendsNode"></a>
       <a id="Proj:Proj"></a>
       <h4 class="signature">
@@ -417,7 +422,9 @@ Created by hawk on 11/21/14.</p>
         <img src="../../../lib/permalink.png" />
       </a>
     </span>
-      <p class="shortcomment cmt">Created by hawk on 11/21/14.</p>
+      <p class="shortcomment cmt">Trait for SQL projections.</p><div class="fullcomment"><div class="comment cmt"><p>Trait for SQL projections.
+Created by hawk on 11/21/14.
+</p></div></div>
     </li><li name="deebee.sql.ast.SelectStmt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="SelectStmtextendsDMLStmtwithProductwithSerializable"></a>
       <a id="SelectStmt:SelectStmt"></a>

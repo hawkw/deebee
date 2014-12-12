@@ -113,7 +113,7 @@ left-recursive grammars without infinite recursion. There isn't a whole lot of l
 I'm attempting to implement in Deebee, but the performance improvement is always nice.</p><p>If you're interested in packrat parsing, this technique was first described in a very interesting paper which can be
 found <a href="http://scala-programming-language.1934581.n4.nabble.com/attachment/1956909/0/packrat_parsers.pdf" target="_blank">here</a>.
 </p></div></div>
-    </li><li name="deebee.sql.ast" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="deebee.sql.ast" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="ast"></a>
       <a id="ast:ast"></a>
       <h4 class="signature">
@@ -129,7 +129,13 @@ found <a href="http://scala-programming-language.1934581.n4.nabble.com/attachmen
         <img src="../../lib/permalink.png" />
       </a>
     </span>
-      <p class="shortcomment cmt">Created by hawk on 11/21/14.</p>
+      <p class="shortcomment cmt">Abstract Syntax Tree (AST) for DeeBee SQL queries.</p><div class="fullcomment"><div class="comment cmt"><p>Abstract Syntax Tree (AST) for DeeBee SQL queries.</p><p>All AST nodes extend the <a href="ast/Node.html" class="extype" name="deebee.sql.ast.Node">Node</a> trait. There are subtypes
+for specific types of SQL statements(<a href="ast/DMLStmt.html" class="extype" name="deebee.sql.ast.DMLStmt">DMLStmt</a>,
+<a href="ast/CreateStmt.html" class="extype" name="deebee.sql.ast.CreateStmt">CreateStmt</a>, and <a href="ast/DropStmt.html" class="extype" name="deebee.sql.ast.DropStmt">DropStmt</a>).</p><p>Most of the classes here are for internal use only. The only time
+I can see anyone needing to poke around in here is if you wanted
+to implement LISP-esque macros in DeeBee SQL, which would actually
+be kind of cool, but I'd question your sanity.</p><p>Created by hawk on 11/21/14.
+</p></div></div>
     </li></ol>
             </div>
 

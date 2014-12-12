@@ -47,7 +47,9 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Created by hawk on 11/24/14.
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Package for storage backends and code related to interacting with DeeBee storage.
+This is all for internal use, except for <a href="Entry.html" class="extype" name="deebee.storage.Entry">Entry</a>, which may show
+up while unpacking result sets.</p><p>Created by hawk on 11/24/14.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
@@ -177,7 +179,7 @@ Created by hawk on 11/24/14.</p>
       </a>
     </span>
       
-    </li><li name="deebee.storage.Entry" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+    </li><li name="deebee.storage.Entry" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
       <a id="Entry[T]extendsAnyRef"></a>
       <a id="Entry[T]:Entry[T]"></a>
       <h4 class="signature">
@@ -193,7 +195,11 @@ Created by hawk on 11/24/14.</p>
         <img src="../../lib/permalink.png" />
       </a>
     </span>
-      <p class="shortcomment cmt">Created by hawk on 11/24/14.</p>
+      <p class="shortcomment cmt">Representation of an entry from a database row.</p><div class="fullcomment"><div class="comment cmt"><p>Representation of an entry from a database row.</p><p>These may show up when unpacking result sets. You can get the value of an
+entry using <code>Entry.value</code> or <a href="Entry$.html#unapply[T](e:deebee.storage.Entry[T]):T" class="extmbr" name="deebee.storage.Entry#unapply">Entry.unapply</a> (<code>entry(thing)</code> in a pattern match).
+Eventually there will be a typesafe JDBC-esque (<code>rs.nextChar</code>-style) API for result
+set unpacking, but that's still a work in progress.
+</p></div></div>
     </li><li name="deebee.storage.IntegerEntry" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="IntegerEntryextendsEntry[Int]"></a>
       <a id="IntegerEntry:IntegerEntry"></a>

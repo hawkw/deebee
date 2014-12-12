@@ -47,7 +47,10 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Created by hawk on 11/24/14.
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Representation of an entry from a database row.</p><p>These may show up when unpacking result sets. You can get the value of an
+entry using <code>Entry.value</code> or <a href="Entry$.html#unapply[T](e:deebee.storage.Entry[T]):T" class="extmbr" name="deebee.storage.Entry#unapply">Entry.unapply</a> (<code>entry(thing)</code> in a pattern match).
+Eventually there will be a typesafe JDBC-esque (<code>rs.nextChar</code>-style) API for result
+set unpacking, but that's still a work in progress.
 </p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>

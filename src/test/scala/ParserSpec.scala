@@ -20,7 +20,7 @@ class ParserSpec extends WordSpec with Matchers {
    */
   private def assertReconstructed (sql: String): Unit = {
     val result: Try[Node] = SQLParser.parse(sql)
-    result shouldBe a [Success[Node]]
+    result shouldBe a [Success[_]]
     result.get.emitSQL should include (sql.replace("NUMERIC", "DECIMAL"))
   }
 
@@ -46,8 +46,8 @@ class ParserSpec extends WordSpec with Matchers {
       }
 
       "parse the first CREATE TABLE from Writers.sql, ignoring comments" in {
-        val result: Try[Node] = SQLParser.parse(writersSchema take 15 mkString "\n")
-        result shouldBe a[Success[Node]]
+        val result: Try[Node] = SQLParser.parse(writersSchema take 19 mkString "\n")
+        result shouldBe a[Success[_]]
         result.get.emitSQL should include(
           "CREATE TABLE Writers (\n" +
             "\tid INTEGER NOT NULL PRIMARY KEY,\n" +
@@ -61,8 +61,8 @@ class ParserSpec extends WordSpec with Matchers {
         )
       }
       "parse a CREATE TABLE statement from Writers.sql with FOREIGN KEY constraints" in {
-        val result: Try[Node] = SQLParser.parse(writersSchema slice(27, 33) mkString "\n")
-        result shouldBe a[Success[Node]]
+        val result: Try[Node] = SQLParser.parse(writersSchema slice(31, 37) mkString "\n")
+        result shouldBe a[Success[_]]
         result.get.emitSQL should include(
           "CREATE TABLE Contemporaries (\n" +
             "\twriter_id INTEGER NOT NULL,\n" +

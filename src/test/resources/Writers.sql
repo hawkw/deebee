@@ -3,6 +3,10 @@
 -- -- single quotes needed in the check constraints
 -- -- BLOB and CLOB were not supported
 -- Note that this example contains a trigger and this is not parsed or handled
+# this is a comment in a different syntax
+/*
+  so is this
+ */
 CREATE TABLE Writers (
     id INTEGER NOT NULL PRIMARY KEY,
     first_name    VARCHAR(15) NOT NULL,

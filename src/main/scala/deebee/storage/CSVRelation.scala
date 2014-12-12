@@ -13,7 +13,7 @@ import deebee.sql.ast._
 
 import scala.util.{Try, Success, Failure}
 import scala.io.Source
-import deebee.sql.ast.{CreateStmt, Attribute, Constraint}
+import deebee.sql.ast.CreateStmt
 
 /**
  * Implementation for a [[Relation]] backed by a comma-separated values file.

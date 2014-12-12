@@ -1,11 +1,12 @@
-package deebee
+package deebee.frontends
 
-import deebee.storage._
-import deebee.sql.ast._
-import deebee.sql.SQLParser
+import deebee._
 import deebee.exceptions._
+import deebee.sql.SQLParser
+import deebee.sql.ast._
+import deebee.storage._
 
-import scala.util.{Try, Failure, Success}
+import scala.util.{Failure, Success, Try}
 
 /**
  * A quick shell for demoing DML queries when DDL is not implemented.
@@ -28,7 +29,7 @@ object DemoShell {
     )
   )
 
-  def doDemo(): Unit = {
+  protected[deebee] def doDemo(): Unit = {
     println("Welcome to the DeeBee Interactive Demo!\nEnter SQL commands at the prompt, or type `.exit` to exit.")
     print("> ")
     for {line <- io.Source.stdin.getLines() if line != ".exit"}{

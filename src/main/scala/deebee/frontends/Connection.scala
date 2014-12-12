@@ -10,6 +10,44 @@ import scala.util.Try
 /**
  * Common interface for connections into a DeeBee database.
  *
+ * == Connecting to a DeeBee DB ==
+ *
+ * [[Connection]]s are created using the [[Connection.apply()]] method on the
+ * [[Connection]] companion object. This creates a connection into the specified
+ * database. If that database is not currently running, it will be started up
+ * (or created if it doesn't exist).
+ *
+ * Currently, all connections are [[BlockingConnection]]s
+ * that block on queries until they recieve a result. Eventually, there will be non-blocking
+ * connections available as well.
+ *
+ * Also planned is a more advanced connections API, allowing callers to specify additional
+ * configuration options to configure both the connection and the database it connects to.
+ * A JDBC driver for DeeBee databases is also under consideration.
+ *
+ * == Using Connections ==
+ *
+ * Connections expose one main method, [[Connection.statement() statement()]].
+ * This method returns a [[scala.util.Try Try]] containing a [[scala.Option Option]] on a
+ * [[deebee.Relation Relation]] containing the result set.
+ *
+ * If the query failed,  [[Connection.statement() statement()]] will return a
+ * [[scala.util.Failure Failure]] containing a
+ * [[deebee.exceptions.QueryException QueryException]] with a message describing the failure.
+ *
+ * If the query was successful, [[Connection.statement() statement()]] will return a
+ * [[scala.util.Success Success]] containing a [[scala.Option Option]] on a
+ * [[deebee.Relation Relation]]. If the query was a `SELECT` statement, the
+ * option will be defined; otherwise, it will be [[scala.None]]
+ *
+ * The result set returned by a `SELECT` statement is a [[deebee.Relation Relation]].
+ * Relations provide a [[Relation.iterator iterator]] method to iterate through the rows,
+ * as well as a [[Relation.rows rows]] method to access the entire set of rows.
+ *
+ * Eventually there will be a type-safe JDBC-style API for deconstructing rows, but
+ * this is currently not yet implemented.
+ *
+ *
  * @author Hawk Weisman
  * Created by hawk on 12/9/14.
  */
@@ -23,7 +61,7 @@ object Connection {
   /**
    * Factory method for Connections. For now, this just makes [[BlockingConnection]]s.
    */
-  def connect(into: Database): Connection = new BlockingConnection(into)
+  protected[deebee] def connect(into: Database): Connection = new BlockingConnection(into)
 
   /**
    * Canonical way to connect to a Database. If the database isn't already running,

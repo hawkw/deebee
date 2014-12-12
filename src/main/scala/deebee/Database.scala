@@ -10,7 +10,7 @@ import sql.ast._
 import storage.RelationActor
 
 import scala.util.{Try, Success, Failure}
-import scala.concurrent._
+import scala.collection.mutable
 
 /**
  * Represents the top level of a database, responsible for sending queries
@@ -24,7 +24,7 @@ abstract class Database(val name: String) extends LazyLogging {
 
   type Table <: RelationActor
   protected val system = ActorSystem("Database-" + name)
-  protected var tables = Map[String, Table]()
+  protected val tables = mutable.Map[String, Table]()
 
 
   /**

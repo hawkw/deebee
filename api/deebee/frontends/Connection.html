@@ -47,8 +47,24 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Common interface for connections into a DeeBee database.
-</p></div><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"><p>Common interface for connections into a DeeBee database.</p><h4> Connecting to a DeeBee DB </h4><p><a href="" class="extype" name="deebee.frontends.Connection">Connection</a>s are created using the <span class="extype" name="Connection.apply()">Connection.apply()</span> method on the
+<a href="" class="extype" name="deebee.frontends.Connection">Connection</a> companion object. This creates a connection into the specified
+database. If that database is not currently running, it will be started up
+(or created if it doesn't exist).</p><p>Currently, all connections are <a href="BlockingConnection.html" class="extype" name="deebee.frontends.BlockingConnection">BlockingConnection</a>s
+that block on queries until they recieve a result. Eventually, there will be non-blocking
+connections available as well.</p><p>Also planned is a more advanced connections API, allowing callers to specify additional
+configuration options to configure both the connection and the database it connects to.
+A JDBC driver for DeeBee databases is also under consideration.</p><h4> Using Connections </h4><p>Connections expose one main method, <span class="extype" name="Connection.statement()">statement()</span>.
+This method returns a <span class="extype" name="scala.util.Try">Try</span> containing a <span class="extype" name="scala.Option">Option</span> on a
+<a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a> containing the result set.</p><p>If the query failed,  <span class="extype" name="Connection.statement()">statement()</span> will return a
+<span class="extype" name="scala.util.Failure">Failure</span> containing a
+<a href="../exceptions/QueryException.html" class="extype" name="deebee.exceptions.QueryException">QueryException</a> with a message describing the failure.</p><p>If the query was successful, <span class="extype" name="Connection.statement()">statement()</span> will return a
+<span class="extype" name="scala.util.Success">Success</span> containing a <span class="extype" name="scala.Option">Option</span> on a
+<a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>. If the query was a <code>SELECT</code> statement, the
+option will be defined; otherwise, it will be <span class="extype" name="scala.None">scala.None</span></p><p>The result set returned by a <code>SELECT</code> statement is a <a href="../Relation.html" class="extype" name="deebee.Relation">Relation</a>.
+Relations provide a <a href="../Relation.html#iterator:Iterator[deebee.Row]" class="extmbr" name="deebee.Relation#iterator">iterator</a> method to iterate through the rows,
+as well as a <a href="../Relation.html#rows:Set[deebee.Row]" class="extmbr" name="deebee.Relation#rows">rows</a> method to access the entire set of rows.</p><p>Eventually there will be a type-safe JDBC-style API for deconstructing rows, but
+this is currently not yet implemented.</p></div><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div><div class="toggleContainer block">

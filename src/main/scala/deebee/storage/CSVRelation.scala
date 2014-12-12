@@ -30,7 +30,7 @@ class CSVRelation(
         .fromFile(s"$path/$name/schema.sql")
         .mkString
     )
-      .get
+      .getOrElse(throw new InternalStateException("Could not parse saved schema!"))
       .asInstanceOf[CreateStmt],
     path)
 

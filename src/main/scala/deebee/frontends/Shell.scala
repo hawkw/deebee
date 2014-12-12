@@ -26,7 +26,8 @@ object Shell {
     head("deebee-shell","0.1")
     arg[String]("directory") optional() action { (x, c) =>
     c.copy(path = x) } validate { x =>
-      if ( Files exists Paths.get(x) ) success else failure(s"Could not get file for path $x")
+      if ( Files.isWritable(Paths get x) && Files.isReadable(Paths get x)) success
+      else failure(s"Path $x was not readable or writable")
     } text "directory containing the database to connect to"
     opt[Unit]('v', "verbose") action{ (_, c) =>
     c.copy(verbose = true)} text "enable verbose logging mode"

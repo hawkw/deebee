@@ -19,6 +19,7 @@ sealed abstract class Entry[T](val value: T){
     case that : Entry[T] => this.value == that.value
     case _ => false
   }
+  override def hashCode = value.hashCode
   override def toString = value.toString
 }
 

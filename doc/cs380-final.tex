@@ -1,0 +1,34 @@
+\input assets/380pre
+
+\usepackage{minted}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{lmodern}
+\usepackage{placeins}
+\begin{document}
+
+\MYTITLE{Final Project: Advanced Topics in Data Management}
+\MYHEADERS{}
+\PURPOSE{DeeBee: Implementation of A Relational Database Management System}
+\PLEDGE{}
+\HANDIN{Friday, December 12th, 2014}
+\ABSTRACT{DeeBee is a small relational database management system implemented for educational purposes. It implements a subset of the structured query language, enough to support simple database operations; and is designed for modularity, so that additional advanced database features can be added in the future.}
+
+\section{Introduction}
+
+Relational database management systems (RDBMSs) are everywhere. The relational model is a model of data storage in which data is stored in \textit{tuples}, or rows, which are grouped together to form \textit{relations}, or tables~\cite{silberschatz2010database,harrington2009relational,garcia2000database}. The relational model is perhaps the most popular models of data storage currently in use, with Silberschatz, Korth, and Sudarshan calling it ``[t]he primary data model for commercial data-processing applications''~\cite[page 39]{silberschatz2010database}.
+
+A majority of modern relational database management systems, from the SQLite embedded database in every Android phone and iPhone~\cite{sqliteFamous} to the MySQL databases used in many web applications~\cite{onLamp}, implement the \textit{Structured Query Language}, or SQL.\@ SQL is a \textit{query language}; domain-specific declarative programming language that is used by database administrators, users, and application software to interact with a database~\cite{silberschatz2010database}. 
+
+In order to learn more about how such SQL databases function `under the hood', I have implemented my own small RDBMS, called DeeBee. DeeBee implements a small subset of the SQL, chosen to be expressive enough to allow basic database operations to be performed but minimal enough to allow DeeBee to be implemented within the constraints of the Computer Science 380 Final Project. Implementing DeeBee has yielded many insights into the challenges, techniques, and patterns involved in the design and implementation of an RDBMS.
+
+At the time of writing, the DeeBee codebase comprises almost 1700 lines of Scala source code and over 500 lines of comments. While this is small compared to many `real-world' systems, it still represents a significant undertaking for a single individual over a 24-day period. Therefore, I have made use of a number of software engineering tools and practices in order to best maximize my productivity. While these techniques are not the focus of this assignment, I will touch on them briefly as well.
+
+\section{DeeBee}
+
+
+\pagebreak
+\bibliography{assets/final}{}
+\bibliographystyle{plain}
+
+\end{document}

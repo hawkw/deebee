@@ -520,6 +520,27 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
       result should be a 'success
       result.map(o => o.map(r => r.rows should have size 0))
     }
+    scenario("a CSV database receives a number of `INSERT` statements that cause type errors") {
+      Given("a CSV database")
+      val conn = target.connectTo
+      conn.statement("CREATE TABLE createme (" +
+        "testint INTEGER NOT NULL," +
+        "testchar CHAR(10) NOT NULL," +
+        "testvarchar VARCHAR(15) NOT NULL," +
+        "testdec DECIMAL(3,2) NOT NULL" +
+        ");")
+
+      When("the database recieves INSERT statements with nulls")
+      conn.statement("INSERT INTO createme VALUES('a string doesn't go here','a ten-char', 'valid string',333.22);")
+      conn.statement("INSERT INTO createme VALUES(1, 1, 'valid string',333.22);")
+      conn.statement("INSERT INTO createme VALUES(1,'a ten-char',3,333.22);")
+      conn.statement("INSERT INTO createme VALUES(1,'a ten-char', 'valid string','also a bad place for a string');")
+
+      Then("none of the INSERT statements should be inserted")
+      val result = conn.statement("SELECT * FROM createme;")
+      result should be a 'success
+      result.map(o => o.map(r => r.rows should have size 0))
+    }
   }
 
   feature("CREATE TABLE statements are processed correctly.") {
@@ -543,5 +564,27 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
       conn.statement("SELECT * FROM createme;").get.get.toString should include ("|4|i am a string|55555.4444")
     }
   }
+  feature("DROP TABLE statements are processed correctly.") {
+    val target = new CSVDatabase("testdb", testdb)
+    val conn = target.connectTo
+    conn.statement("CREATE TABLE createme (" +
+      "testPK INTEGER PRIMARY KEY," +
+      "testchar VARCHAR(15)," +
+      "testdec DECIMAL(5,4)" +
+      ");")
 
+    scenario("a CSV database recieves a `DROP` statement") {
+      Given("a CSV database wit a specific table")
+      When("the relation recieves a CREATE statement")
+      val result = conn.statement("DROP TABLE createme;")
+      Then("the result should be a success")
+      result should be a 'success
+      And("INSERTing values into the table should fail")
+      conn.statement("INSERT INTO createme VALUES(4,'i am a string',55555.44444);") should be a 'failure
+      And("SELECTing from the table should fail")
+      conn.statement("SELECT * FROM createme;") should be a 'failure
+      And("DELETEing from the table should fail")
+      conn.statement("DELETE * FROM createme;") should be a 'failure
+    }
+  }
 }

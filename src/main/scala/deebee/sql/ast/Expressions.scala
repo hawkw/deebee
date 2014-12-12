@@ -66,9 +66,9 @@ case class Ident(name: String) extends Expr[Int] {
 case class Comparison(left: Expr[_], op: String, right: Expr[_]) extends Expr[Row => Boolean] {
 
   override lazy val emitSQL = s"$left $op $right"
-
+  /*
   implicit def toPredicate(pred: Row => Boolean): Predicate = new Predicate(pred)
-
+  */
   /**
    * Attempt to process the comparison represented by this AST node against the specified context.
    * @param context The relation against which to evaluate the expression.
@@ -80,8 +80,8 @@ case class Comparison(left: Expr[_], op: String, right: Expr[_]) extends Expr[Ro
     rightside <- right.emit(context)
   } yield {
     (leftside, op, rightside) match {
-      case (l: Predicate, "AND", r: Predicate) => Success(l.&&(r))
-      case (l: Predicate, "OR", r: Predicate) => Success(l.||(r))
+      case (l: (Row => Boolean), "AND", r: (Row => Boolean)) => Success({ row: Row => l(row) && r(row)})
+      case (l: (Row => Boolean), "OR", r: (Row => Boolean)) => Success({ row: Row => l(row) || r(row)})
       case (l: Int, "=" | "==", value) => Success({ x: Row =>
         x(l).value == value
       })
@@ -90,22 +90,22 @@ case class Comparison(left: Expr[_], op: String, right: Expr[_]) extends Expr[Ro
       })
       case (l: Int, ">", value) => (context.attributes(l).datatype, value) match {
         case (IntegerType, v: Int) => Success({ x: Row => x(l).value.asInstanceOf[Int] > v})
-        case (DecimalType(_,_), v: Double) => Success({ x: Row => x(l).value.asInstanceOf[Double] > v})
+        case (DecimalType(_, _), v: Double) => Success({ x: Row => x(l).value.asInstanceOf[Double] > v})
         case thing => Failure(new QueryException(s"TypeError: '>' requires numeric type, got $thing."))
       }
       case (l: Int, "<", value) => (context.attributes(l).datatype, value) match {
         case (IntegerType, v: Int) => Success({ x: Row => x(l).value.asInstanceOf[Int] < v})
-        case (DecimalType(_,_), v: Double) => Success({ x: Row => x(l).value.asInstanceOf[Double] < v})
+        case (DecimalType(_, _), v: Double) => Success({ x: Row => x(l).value.asInstanceOf[Double] < v})
         case thing => Failure(new QueryException(s"TypeError: '<' requires numeric type, got $thing."))
       }
       case (l: Int, "<=", value) => (context.attributes(l).datatype, value) match {
         case (IntegerType, v: Int) => Success({ x: Row => x(l).value.asInstanceOf[Int] <= v})
-        case (DecimalType(_,_), v: Double) => Success({ x: Row => x(l).value.asInstanceOf[Double] <= v})
+        case (DecimalType(_, _), v: Double) => Success({ x: Row => x(l).value.asInstanceOf[Double] <= v})
         case thing => Failure(new QueryException(s"TypeError: '<=' requires numeric type, got $thing."))
       }
       case (l: Int, ">=", value) => (context.attributes(l).datatype, value) match {
         case (IntegerType, v: Int) => Success({ x: Row => x(l).value.asInstanceOf[Int] >= v})
-        case (DecimalType(_,_), v: Double) => Success({ x: Row => x(l).value.asInstanceOf[Double] >= v})
+        case (DecimalType(_, _), v: Double) => Success({ x: Row => x(l).value.asInstanceOf[Double] >= v})
         case thing => Failure(new QueryException(s"TypeError: '>=' requires numeric type, got $thing."))
       }
       case (l: Int, "LIKE", value) => (context.attributes(l).datatype, value) match {
@@ -115,6 +115,7 @@ case class Comparison(left: Expr[_], op: String, right: Expr[_]) extends Expr[Ro
     }
   }).flatten
 
+/*
   /**
    * Wraps partial functions of the form [[Row]] => [[Boolean]] to allow composition
    * @param pred a partial function [[Row]] => [[Boolean]]
@@ -127,7 +128,7 @@ case class Comparison(left: Expr[_], op: String, right: Expr[_]) extends Expr[Ro
     def ||(that: Row => Boolean) = new Predicate(x => pred(x) || that(x))
 
     def unary_! = new Predicate(x => !pred(x))
-  }
+  }*/
 }
 /*
 /**

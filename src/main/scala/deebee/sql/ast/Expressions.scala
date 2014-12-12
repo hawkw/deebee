@@ -3,6 +3,7 @@ package sql.ast
 
 import deebee.exceptions.QueryException
 import deebee.Relation
+import deebee.storage.IntegerEntry
 
 import scala.util.{Failure, Success, Try}
 
@@ -10,7 +11,7 @@ import scala.util.{Failure, Success, Try}
  * Trait for SQL exceptions.
  *
  * @author Hawk Weisman <hawk@meteorcodelabs.com>
- *           
+ *
  * Created by hawk on 11/23/14.
  */
 sealed trait Expr[T] extends Node {
@@ -93,17 +94,17 @@ case class Comparison(left: Expr[_], op: String, right: Expr[_]) extends Expr[Ro
         case thing => Failure(new QueryException(s"TypeError: '>' requires numeric type, got $thing."))
       }
       case (l: Int, "<", value) => (context.attributes(l).datatype, value) match {
-        case (IntegerType, v: Int) => Success({ x: Row => x(l).asInstanceOf[Int] < v})
+        case (IntegerType, v: Int) => Success({ x: Row => x(l).value.asInstanceOf[Int] < v})
         case (DecimalType(_,_), v: Double) => Success({ x: Row => x(l).value.asInstanceOf[Double] < v})
         case thing => Failure(new QueryException(s"TypeError: '<' requires numeric type, got $thing."))
       }
       case (l: Int, "<=", value) => (context.attributes(l).datatype, value) match {
-        case (IntegerType, v: Int) => Success({ x: Row => x(l).asInstanceOf[Int] <= v})
+        case (IntegerType, v: Int) => Success({ x: Row => x(l).value.asInstanceOf[Int] <= v})
         case (DecimalType(_,_), v: Double) => Success({ x: Row => x(l).value.asInstanceOf[Double] <= v})
         case thing => Failure(new QueryException(s"TypeError: '<=' requires numeric type, got $thing."))
       }
       case (l: Int, ">=", value) => (context.attributes(l).datatype, value) match {
-        case (IntegerType, v: Int) => Success({ x: Row => x(l).asInstanceOf[Int] >= v})
+        case (IntegerType, v: Int) => Success({ x: Row => x(l).value.asInstanceOf[Int] >= v})
         case (DecimalType(_,_), v: Double) => Success({ x: Row => x(l).value.asInstanceOf[Double] >= v})
         case thing => Failure(new QueryException(s"TypeError: '>=' requires numeric type, got $thing."))
       }

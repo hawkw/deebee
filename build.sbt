@@ -36,9 +36,9 @@ ScoverageKeys.minimumCoverage := 70
 
 ScoverageKeys.failOnMinimumCoverage := false
 
-ScoverageKeys.scoverageExcludedFiles := "*Shell*.*"
+ScoverageKeys.scoverageExcludedFiles := "<empty>;Shell.*;DemoShell.*"
 
-ScoverageKeys.excludedPackages := "deebee.exceptions"
+ScoverageKeys.excludedPackages := "<empty>;deebee.exceptions"
 
 ScoverageKeys.highlighting := {
   if (scalaBinaryVersion.value == "2.10") false

@@ -80,7 +80,7 @@ object Connection {
    */
   def apply(name: String, path: String): Connection = cache
     //TODO: eventually, connection strings for different type of DBs
-    .getOrElseUpdate(name, new CSVDatabase(name, path + "/name"))
+    .getOrElseUpdate(name, new CSVDatabase(name, path + s"/$name"))
     .connectTo
 }
 

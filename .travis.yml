@@ -6,7 +6,7 @@ scala:
 - 2.11.4
 script: sbt test
 after_success:
-- sbt test coverage coveralls
+- sbt coverage test coveralls
 - sbt doc
 - .travis/publish.sh
 env:

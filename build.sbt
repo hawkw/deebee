@@ -6,8 +6,6 @@ versionWithGit
 
 git.baseVersion := "0.1"
 
-org.scoverage.coveralls.CoverallsPlugin.coverallsSettings
-
 name := "deebee"
 
 scalaVersion := "2.11.4"
@@ -37,7 +35,6 @@ ScoverageSbtPlugin.ScoverageKeys.coverageFailOnMinimum := false
 ScoverageSbtPlugin.ScoverageKeys.coverageExcludedFiles := "<empty>;Shell.*;DemoShell.*"
 
 ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "<empty>;deebee.exceptions"
-
 
 publishArtifact in Test := false
 

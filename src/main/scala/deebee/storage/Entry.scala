@@ -4,6 +4,14 @@ package storage
 import java.util.Date
 
 /**
+ * Representation of an entry from a database row.
+ *
+ * These may show up when unpacking result sets. You can get the value of an
+ * entry using `Entry.value` or [[Entry.unapply]] (`entry(thing)` in a pattern match).
+ * Eventually there will be a typesafe JDBC-esque (`rs.nextChar`-style) API for result
+ * set unpacking, but that's still a work in progress.
+ *
+ * @author Hawk Weisman
  * Created by hawk on 11/24/14.
  */
 sealed abstract class Entry[T](val value: T){
@@ -16,6 +24,7 @@ sealed abstract class Entry[T](val value: T){
 
 object Entry {
   implicit def unpackImplicitly[T](e: Entry[T]): T = e.value
+  def unapply[T](e: Entry[T]) = e.value
 }
 
 class CharEntry(chars: String, length: Int) extends Entry[String](

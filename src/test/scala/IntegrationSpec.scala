@@ -410,8 +410,8 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
       And("the result should contain the correct rows")
       val tableString = result.toString
       tableString should include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")
-      tableString should not include ("|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA")
-      tableString should not include ("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA")
+      tableString should not include "|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA"
+      tableString should not include "|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA"
     }
       scenario("a CSV database receives a `SELECT` statement with a less-than predicate") {
         Given("a CSV database")
@@ -427,7 +427,7 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
         val tableString = result.toString
         tableString should include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")
         tableString should include("|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA")
-        tableString should not include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA")
+        tableString should not include "|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA"
     }
     scenario("a CSV database recieves a `SELECT` statement with a nested AND predicate") {
       Given("a CSV database")
@@ -441,8 +441,8 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
       result.get.rows should have size 1
       And("the result should contain the correct rows")
       val tableString = result.toString
-      tableString should not include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")
-      tableString should not include("|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA")
+      tableString should not include "|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR"
+      tableString should not include "|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA"
       tableString should include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA")
     }
     scenario("a CSV database recieves a `SELECT` statement with a nested OR predicate") {
@@ -474,7 +474,7 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
       And("the result should contain the correct rows")
       val tableString = result.toString
       tableString should include("|1|Isaac|Yudovich|Asimov|1/20/1920|4/6/1992|Russian SFSR")
-      tableString should not include("|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA")
+      tableString should not include "|2|Robert|Anson|Heinlein|7/7/1902|5/8/1988|USA"
       tableString should include("|3|Arthur|Charles|Clarke|12/16/1917|3/19/2008|USA")
     }
 
@@ -542,7 +542,7 @@ class IntegrationSpec extends FeatureSpec with Matchers with GivenWhenThen with 
       tableString should not include "|4|Ray|Douglas|Bradbury|8/22/1920|6/5/2012|USA"
       And("the CSV file on disk should contain the correct contents")
       val back = Source.fromFile( testdb + "/Writers/Writers.csv"). mkString
-      back should not include ("4,'Ray','Douglas','Bradbury','8/22/1920','6/5/2012','USA'")
+      back should not include "4,'Ray','Douglas','Bradbury','8/22/1920','6/5/2012','USA'"
     }
 
   }

@@ -2,8 +2,6 @@ package deebee
 package sql.ast
 
 import deebee.exceptions.QueryException
-import deebee.Relation
-import deebee.storage.IntegerEntry
 
 import scala.util.{Failure, Success, Try}
 

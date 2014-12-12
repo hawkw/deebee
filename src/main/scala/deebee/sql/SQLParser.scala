@@ -164,7 +164,7 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
   }
   lazy val whereClause: P[Comparison] = "where" ~> comparison
   lazy val limitClause: P[Expr[Int]] = "limit" ~> intExpr
-  lazy val parenComp: P[Comparison] = ("(" ~> comparison <~ ")")
+  //lazy val parenComp: P[Comparison] = "(" ~> comparison <~ ")"
   lazy val comparison: P[Comparison] = (
     complexComparison
       | basicComparison
@@ -192,7 +192,7 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
   lazy val intExpr: P[Expr[Int]] = int ^^{ Const(_) }
     // | term // TODO: insert math here
 
-  lazy val expression: P[Expr[_]] = (comparison | notCmpExpr)
+  lazy val expression: P[Expr[_]] = comparison | notCmpExpr
   lazy val notCmpExpr: P[Expr[_]] = (
     literal
     | identifier ^^{ case i => i.asInstanceOf[Expr[_]] }
@@ -210,7 +210,7 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
 
   /**
    * Quick REPL for debugging. `.exit` exits.
-   * @param args
+   * @param args any command-line arguments passed
    */
   def main(args: Array[String]): Unit = {
     print("> ")

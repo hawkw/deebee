@@ -3,6 +3,7 @@ package sql
 package ast
 
 /**
+ * Trait for SQL projections.
  * Created by hawk on 11/21/14.
  */
 sealed trait Proj extends Node {

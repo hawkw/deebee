@@ -1,4 +1,7 @@
 /**
+ * DeeBee: A Tiny Database
+ *
+ * @author Hawk Weisman
  * Created by hawk on 11/25/14.
  */
 package object deebee {

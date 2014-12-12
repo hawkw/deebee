@@ -1,11 +1,10 @@
 import com.typesafe.sbt.SbtGit._
 import sbtassembly.AssemblyKeys
+import scoverage.ScoverageSbtPlugin
 
 versionWithGit
 
 git.baseVersion := "0.1"
-
-scoverage.ScoverageSbtPlugin.instrumentSettings
 
 org.scoverage.coveralls.CoverallsPlugin.coverallsSettings
 
@@ -31,18 +30,14 @@ libraryDependencies ++= Seq(
 	"org.scalamock" 							%%	"scalamock-scalatest-support"	% "3.2" 	% "test"
 )
 
-ScoverageKeys.minimumCoverage := 70
+ScoverageSbtPlugin.ScoverageKeys.coverageMinimum := 70
 
-ScoverageKeys.failOnMinimumCoverage := false
+ScoverageSbtPlugin.ScoverageKeys.coverageFailOnMinimum := false
 
-ScoverageKeys.scoverageExcludedFiles := "<empty>;Shell.*;DemoShell.*"
+ScoverageSbtPlugin.ScoverageKeys.coverageExcludedFiles := "<empty>;Shell.*;DemoShell.*"
 
-ScoverageKeys.excludedPackages := "<empty>;deebee.exceptions"
+ScoverageSbtPlugin.ScoverageKeys.coverageExcludedPackages := "<empty>;deebee.exceptions"
 
-ScoverageKeys.highlighting := {
-  if (scalaBinaryVersion.value == "2.10") false
-  else false
-}
 
 publishArtifact in Test := false
 

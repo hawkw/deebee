@@ -164,28 +164,39 @@ object SQLParser extends StandardTokenParsers with PackratParsers {
   }
   lazy val whereClause: P[Comparison] = "where" ~> comparison
   lazy val limitClause: P[Expr[Int]] = "limit" ~> intExpr
+  lazy val parenComp: P[Comparison] = ("(" ~> comparison <~ ")")
   lazy val comparison: P[Comparison] = (
-    (expression ~ "=" ~ expression)
-    | (expression ~ "!=" ~ expression)
-    | (expression ~ "<>" ~ expression)
-    | (expression ~ ">=" ~ expression)
-    | (expression ~ "<=" ~ expression)
-    | (expression ~ ">" ~ expression)
-    | (expression ~ "<" ~ expression)
-    |  (expression ~ "and" ~ expression)
-    | (expression ~ "or" ~ expression)
+    complexComparison
+      | basicComparison
+      |  "(" ~> comparison <~ ")"
+    )
+  lazy val complexComparison: P[Comparison]= (
+    (comparison ~ "and" ~ comparison)
+    | (comparison ~ "or" ~ comparison)
     ) ^^ {
     case lhs ~ op ~ rhs => Comparison(lhs, op.toUpperCase, rhs)
   }
+
+  lazy val basicComparison: P[Comparison] = (
+    (notCmpExpr ~ "=" ~ notCmpExpr)
+    | (notCmpExpr ~ "!=" ~ notCmpExpr)
+    | (notCmpExpr ~ "<>" ~ notCmpExpr)
+    | (notCmpExpr ~ ">=" ~ notCmpExpr)
+    | (notCmpExpr ~ "<=" ~ notCmpExpr)
+    | (notCmpExpr ~ ">" ~ notCmpExpr)
+    | (notCmpExpr ~ "<" ~ notCmpExpr)
+    ) ^^{
+    case lhs ~ op ~ rhs => Comparison(lhs, op.toUpperCase, rhs)
+  }
+
   lazy val intExpr: P[Expr[Int]] = int ^^{ Const(_) }
     // | term // TODO: insert math here
 
-  lazy val expression: P[Expr[_]] = (
-    ("(" ~> comparison <~ ")") ^^{case c: Comparison => new ParenComparison(c)}
-      | comparison
-     | literal
+  lazy val expression: P[Expr[_]] = (comparison | notCmpExpr)
+  lazy val notCmpExpr: P[Expr[_]] = (
+    literal
     | identifier ^^{ case i => i.asInstanceOf[Expr[_]] }
-    )
+  )
   lazy val nullLit: P[Const[_]] = "null" ^^^ new NullConst
   lazy val literal: P[Const[_]] = (
     (

@@ -80,8 +80,8 @@ case class Comparison(left: Expr[_], op: String, right: Expr[_]) extends Expr[Ro
     rightside <- right.emit(context)
   } yield {
     (leftside, op, rightside) match {
-      case (l: Predicate, "AND", r: Predicate) => Success(l && r)
-      case (l: Predicate, "OR", r: Predicate) => Success(l || r)
+      case (l: Predicate, "AND", r: Predicate) => Success(l.&&(r))
+      case (l: Predicate, "OR", r: Predicate) => Success(l.||(r))
       case (l: Int, "=" | "==", value) => Success({ x: Row =>
         x(l).value == value
       })
@@ -129,7 +129,7 @@ case class Comparison(left: Expr[_], op: String, right: Expr[_]) extends Expr[Ro
     def unary_! = new Predicate(x => !pred(x))
   }
 }
-
+/*
 /**
  * Wraps a parenthesized comparison. Basically, this just farms out to
  * [[Comparison]] for all the heavy-lifting.
@@ -144,4 +144,4 @@ case class ParenComparison(left: Expr[_], op: String, right: Expr[_]) extends Ex
   def this(c: Comparison) = this(c.left, c.op, c.right)
 
   override def emit(context: Relation) = new Comparison(left, op, right).emit(context)
-}
+}*/

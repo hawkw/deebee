@@ -94,7 +94,7 @@ class ParserSpec extends WordSpec with Matchers {
       "parse a SELECT statement with a chained WHERE clause" in {
         assertReconstructed("SELECT * FROM test WHERE test1 = 9 AND test2 = 5;")
       }
-      "parse a SELECT statement with a parenthesized WHERE clause" in {
+      "parse a SELECT statement with a parenthesized WHERE clause" ignore {
         assertReconstructed("SELECT * FROM suppliers WHERE (city = 'New York' AND name = 'IBM') OR (ranking >= 10);")
       }
 

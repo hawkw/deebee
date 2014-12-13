@@ -55,6 +55,10 @@ trait Connection {
   def statement(queryString: String): Try[Option[Relation]]
   def name: String
 }
+
+/**
+ * Factory for [[Connection]]s
+ */
 object Connection {
 
   private val cache = collection.mutable.Map[String,Database]()

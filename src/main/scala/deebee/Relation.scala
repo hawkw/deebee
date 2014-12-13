@@ -105,8 +105,11 @@ trait Selectable extends Relation {
       )
       )
   }
-
 }
+
+/**
+ * Trait for a relation whose contents can be modified.
+ */
 trait Modifyable extends Relation with Selectable {
   /**
    * Join a `Seq[Try[T]]` into a `Try[Seq[T]]`.

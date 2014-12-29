@@ -1,0 +1,111 @@
+\input assets/380pre
+
+\usepackage{minted}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{lmodern}
+\usepackage{placeins}
+\begin{document}
+
+\MYTITLE{Final Project: Introduction to Compiler Design}
+\MYHEADERS{}
+\PURPOSE{Implementation of Query Processing in a Relational Database Management System}
+\PLEDGE{}
+\tableofcontents
+\listoflistings
+\vfill
+\pagebreak
+\section{Introduction}
+
+Relational database management systems (RDBMSs) are everywhere. The relational model is a model of data storage in which data is stored in \textit{tuples}, or rows, which are grouped together to form \textit{relations}, or tables~\cite{silberschatz2010database,harrington2009relational,garcia2000database}. The relational model is perhaps the most popular models of data storage currently in use, with Silberschatz, Korth, and Sudarshan calling it ``[t]he primary data model for commercial data-processing applications''~\cite[page 39]{silberschatz2010database}.
+%-- new --%
+
+Users and other software typically interact with these systems through the use of a \textit{query language}. A query language is a domain-specific declarative programming language that is used to express database queries, such as selecting data from the database; modifying the database's state by changing, inserting, or deleting records; and specifying the structure of the tables in the database. 
+
+Therefore, in order to facilitate users and application programs interaction with the database, it is necessary for an RDBMS to provide a query processing system with some method capable of executing query language statements. Essentially, this means that a compiler or an interpreter is a core feature of any RDBMS. These function similarly to compilers or interpreters which execute general-purpose programming languages.
+%-- old --%
+A majority of modern relational database management systems, from the SQLite embedded database in every Android phone and iPhone~\cite{sqliteFamous} to the MySQL databases used in many web applications~\cite{onLamp}, implement the \textit{Structured Query Language}, or SQL.\cite{silberschatz2010database}. %-- new --%
+SQL consists of two primary components, the \textit{Data Definition Language} or DDL, which is used to define the structures in which data is stored (called the \textit{schema} of the database), and the \textit{Data Manipulation Language}, or DML, which is used for statements which access and modify the data stored in the database.
+
+
+
+
+In order to learn more about how such SQL databases function `under the hood', I have implemented my own small RDBMS, called DeeBee. DeeBee implements a small subset of the SQL, chosen to be expressive enough to allow basic database operations to be performed but minimal enough to allow DeeBee to be implemented within the constraints of the Computer Science 380 Final Project. Implementing DeeBee has yielded many insights into the challenges, techniques, and patterns involved in the design and implementation of an RDBMS.
+
+At the time of writing, the DeeBee codebase comprises almost 1700 lines of Scala source code and over 500 lines of comments. While this is small compared to many `real-world' systems, it still represents a significant undertaking for a single individual over a 24-day period. Therefore, I have made use of a number of software engineering tools and practices in order to best maximize my productivity. While these techniques are not the focus of this assignment, I will touch on them briefly as well.
+
+DeeBee is released as open-source software under the MIT license. Current and past releases are available for download at \url{https://github.com/hawkw/deebee/releases}. The provided JAR file can be included as a library in projects which use the DeeBee API to connect to a DeeBee database; or it may be executed using the \textit{java -jar} command to interact with a DeeBee database from the command line. Finally, DeeBee's ScalaDoc API documentation is available at \url{http://hawkw.github.io/deebee/api/index.html#deebee.package}.
+
+\section{Implementation}
+
+\subsection{The Scala Programming Language}
+
+DeeBee was implemented using the Scala programming language, an object-oriented functional programming language which runs on the Java virtual machine~\cite{odersky2004scala,odersky2004overview,odersky2008programming}. Scala was designed by Martin Odersky of the Programming Methods Laboratory at \'Ecole Polytechnique F\'ed\'erale de Lausanne with the intention of developing a highly scalable programming language, ``in the sense that the same concepts can describe small as well as large parts''~\cite{odersky2004scala} and in the sense that Scala should be applicable to tasks of various sizes and complexities, and provide high performance at large scales~\cite{odersky2008programming}. 
+
+Scala was inspired by criticisms of Java and by the recent popularity of functional programming langauges such as Haskell. It aims to provide a syntax that is more expressive than that of Java but is still readily accessable to Java programmers. It is a statically-typed language and was developed with a focus on type safety, immutable data structures, and pure functions~\cite{odersky2004scala,odersky2004overview,odersky2008programming}. Because it compiles to Java bytecode and runs on the JVM, Scala is mutually cross-compatible with Java, meaning that Scala code can natively call Java methods and use Java libraries, and vise versa~\cite{odersky2008programming}.
+
+A key concept in the Scala design is the idea of an `embedded domain-specific language (DSL)'. Essentially, this concept suggests that Scala's syntax should be modifiable to the extent that code for specific tasks be expressed with its' own syntax within Scala. These DSLs are still Scala code and can still be compiled by the Scala compiler, but their syntax differs based on the task they are intended for~\cite{ghosh2010dsls,hofer2008polymorphic,odersky2008programming}. The Scala parsing library (\Cref{sec:parsing}) and the ScalaTest testing framework (\Cref{par:test}) both provide exmaples of embedded DSLs.
+
+Scala was chosen as the ideal language for DeeBee's implementation due to the expressiveness of its syntax, which allows complex systems to be implemented in few lines of code; its performance at scale; the existence of powerful libraries for text parsing (\Cref{sec:parsing}) and concurrent programming using the actors model (\Cref{sec:arch,sec:query}); and the cross-platform capabilities of the JVM.
+
+\subsection{Tools}
+
+DeeBee builds were conducted using SBT, the Simple Build Tool. SBT is a build tool similar to Maven or Gradle, that is configured using a Scala-based domain-specific language. Like Maven and Gradle, it is capable of automatically managing dependencies using Ivy repositories~\cite{saxena2013getting}. SBT was chosen due to improved compatibility with Scala-focused plugins, its' high performance incremental Scala compiler, and my desire to try out a new build tool. 
+
+\paragraph{Continuous Integration}
+Each push to the DeeBee GitHub repository was built using the Travis continuous integration service (\url{https://travis-ci.org/hawkw/deebee}), which ran tests, collected coverage information, generated and archived API documentation, and deployed to GitHub releases  (when a new Git tag was pushed). Codacy (\url{https://www.codacy.com/public/hawkweisman/deebee}), a service which performs static analysis of a codebase and assesses it according to various quality criteria such as code complexity, code style, performance, and compatibility, was used to ensure that the codebase maintained an overall high quality.
+
+
+\subsection{Testing}
+\label{par:test}
+Testing was conducted using the ScalaTest testing framework. ScalaTest provides an embedded DSL for conducting many different types of testing, including configuring test reports that automatically output specification information~\cite{vennersscalatest}. Three specifications were written to describe DeeBee's behaviour: an integration testing specification that deals with database-level behaviour, a specification for the SQL parser, and a specification for query processing at the table level.
+
+Code coverage data was collected using the Scoverage SBT plugin, and was archived on Coveralls (\url{https://coveralls.io/r/hawkw/deebee?branch=master}), a service which tracks coverage for open-source projects. Working with Coveralls caused some issues, as files that were not targets for code coverageanalysis were tracked by Coveralls despire being excluded from coverage in the buildfile. This lead to coverage reports that were consistently lower than the actual recorded coverage percentage.
+
+\section{Architecture}
+\label{sec:arch}
+
+DeeBee makes use of the actor model for concurrent programming. In this model, actors are independant objects capable of carrying out specific operations and communicating through asynchronous, anonymous passing of immutable message objects. When an actor recieves a message, that message enters its' queue (called a \textit{mailbox}), and it is capable of responding to the message by sending a message to the sender, sending messages to other actors, changing its' internal state, or carrying out some process~\cite{agha1985actors,haller2012integration,odersky2004scala}. Essentially, actors are finite-state machines with mailboxes.
+
+The asynchronous and anonymous nature of actor message-passing makes actors a highly useful way to compose concurrent systems. The anonymity (an actor cannot access any fields or methods of another actor) and decoupled nature of actors allows for a high level of fault tolerance, as if the process corresponding to one actor crashes, it has little to no effect on the rest of the system. Furthermore, since actors communicate through immutable message objects, actors can run on separate computers on a network, and communication overhead (both over the network and locally) is as low as possible. Finally, the actors model is almost entirely reactive in nature --- since computation happens only as a response to messages, the system only uses computational resources when fulfulling a request, and does not use CPU time while `idle'~\cite{agha1985actors,haller2012integration,odersky2004scala}. This property makes the actors model ideal for databases. In Scala, functionality related to actors is provided by the Akka framework.
+
+DeeBee models each database as an actor, and each table in the database as a child actor. The database actor is responsible for receiving queries and handling them by dispatching DML statements to the target tables or by creating and deleting table actors in response to DDL statements. The table actors can respond to queries by updating their state, or by sending result sets to the querying connection.
+
+\section{Query Processing}
+
+DeeBee processes SQL queries by parsing the input query strings and generating an abstract syntax tree (AST) which represents the query. The AST is then interpreted against a context (typically a database or table) to determine the actions necessary to carry out the query. The query is then conducted using the API of the target relations to carry out the necessary operations.
+
+\subsection{Query Parsing}
+\label{sec:parsing}
+
+DeeBee's query parser was implemented using the Scala standard library's parser-combinators~\cite{moors2008parser} package. Combinator parsing represents a functional programming approach to text parsing. In this approach, a parser combinator is a higher-order function which takes as a parameter two parsers (here defined as functions which accept some strings and reject others) and produces a new parser that combines the two input parsers according to some rule, such as sequencing, repetition, or disjunction. The repeated combination of smaller primitive parsers through various combinators constructs a recursive-descent parser for the specified language.~\cite{moors2008parser,swierstra2001combinator,fokker1995functional,frost2008parser}.
+
+Following the Scala philosophy of embedded domain-specific languages~\cite{ghosh2010dsls,hofer2008polymorphic,moors2008parser}, the Scala parsing library represents these combinators as symbols similar to those found in the Bauckus-Naur Form, a common symbolic representation of a language grammar. Using the Scala parser-combinators, then, is almost as simple as constructing the BNF for the language to be parsed.
+
+The `Packrat Parser' class contained within the Scala parsing library enhances parser combinators with the addition of a memoization facility. This allows recursive-descent parsing of left-recursive grammars. It also improves performance, providing linear-time parsing for most grammars~\cite{jonnalagedda2009packrat}. I make liberal use of packrat parsers in order take advantage of their improved performance.
+
+Some difficulties were encountered in parsing, mostly related to the parsing of nested predicate expressions in SQL \texttt{WHERE} clauses. These issues were eventually resolved by separating the productions for `leaf' predicates (those consisting of a comparison between an attribute and an expression) and predicates consisting of multiple predicate expressions, and using the longest-match parser combinator to back-track in order to parse the entire \texttt{WHERE} clause.
+
+\subsection{Query Interpretation}
+\label{sec:query}
+Queries are interpreted against a table using the \texttt{Relation} API. DeeBee defines a core trait for all tables, \texttt{Relation}, which defines a number of `primitive' operations on a table, such as filtering rows by a predicate, projecting a relation by selecting specific columns, and taking a subset number of rows. These in turn rely on two abstract methods, for accessing the table's attribute definitions and the set of the table's rows. These methods are implemented by each concrete class that implements \texttt{Relation}.
+
+Relation is extended by two other traits, \texttt{Selectable} and \texttt{Modifyable}, which provide polymorphic functions for actually processing queries. These can be mixed in as needed to represent tables which support these functionalities.
+
+Queries involving predicates, such as \texttt{SELECT} and \texttt{DELETE} statements with \texttt{WHERE} clauses, must go through an additional step of predicate construction, which converts SQL ASTs for \texttt{WHERE} clauses into Scala partial functions which take as a parameter a row from a table and return a Boolean. These functions are emitted by the AST node for \texttt{WHERE} clauses, using the target relation as a context for accessing the attributes corresponding to names in the SQL predicate. A similar process is performed for \texttt{INSERT} statements, which must be checked against the type and integrity constraints in the attribute corresponding to each value in the statement.
+
+\section{Storage}
+\label{sec:storage}
+DeeBee currently provides one storage type, \texttt{CSVRelation}, which stores each table as a comma-separated values file on disk. While this storage mechanism is not ideal for a relational database, as it provides poor performance, it was used for the first DeeBee storage backend due to ease of implementation and testing. However, the DeeBee storage system is designed to be modular, making it possible to implement other storage backends in the future. I am considering the implementation of a B+ tree backend, similar to those used in `real-world' RDBMSs, and/or some form of hash bucket based storage.
+
+\section{Further Research}
+While DeeBee currently implements the entirity of the planned subset of SQL, there are a number of additional features that could be implemented. As discussed in \Cref{sec:storage}, CSV storage is not as performant as the storage methods used by real RDBMSs, and I am considering implementing a more advanced storage system. 
+
+Furthermore, DeeBee SQL does not currently implement a large portion of SQL syntax, such as \texttt{JOIN}s, \texttt{UPDATE} statements, \texttt{VIEW}s, or aggregate functions such as \texttt{SUM} and \texttt{COUNT}. DeeBee also does not implement all of the data types available in other SQL databases, such as BLOBs (binary large objects) and CLOBs (character large objects). An implementation of the SQL \texttt{DATE} type based on \texttt{java.util.date} was prototyped but is currently not yet implemented. 
+
+Finally, DeeBee's connections API, used by other programs to interact with the system, could be expanded with support for non-blocking connections and additional options to configure the connected database, similar to those available in the Java DataBase Connection driver (JDBC). I have considered the implementing a JDBC compatible API for DeeBee, but am not currently certain if this is possible, due to the differences between DeeBee and other SQL databases.
+\pagebreak
+\bibliography{assets/final}{}
+\bibliographystyle{plain}
+
+\end{document}

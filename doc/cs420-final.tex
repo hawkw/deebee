@@ -5,6 +5,7 @@
 \usepackage{cleveref}
 \usepackage{lmodern}
 \usepackage{placeins}
+\usepackage{syntax}
 \begin{document}
 
 \MYTITLE{Final Project: Introduction to Compiler Design}
@@ -12,10 +13,10 @@
 \PURPOSE{Implementation of Query Processing in a Relational Database Management System}
 \PLEDGE{}
 \tableofcontents
-\listoflistings
+%\listoflistings
 \vfill
 \pagebreak
-\section{Background}
+\section{Motivation}
 
 Relational database management systems (RDBMSs) are everywhere. The relational model is a model of data storage in which data is stored in \textit{tuples}, or rows, which are grouped together to form \textit{relations}, or tables~\cite{silberschatz2010database,harrington2009relational,garcia2000database}. The relational model is perhaps the most popular models of data storage currently in use, with Silberschatz, Korth, and Sudarshan calling it ``[t]he primary data model for commercial data-processing applications''~\cite[page 39]{silberschatz2010database}.
 %-- new --%
@@ -25,14 +26,52 @@ Users and other software typically interact with these systems through the use o
 Therefore, in order to facilitate users and application programs interaction with the database, it is necessary for an RDBMS to provide a query processing system with some method capable of executing query language statements. Essentially, this means that a compiler or an interpreter is a core feature of any RDBMS. These function similarly to compilers or interpreters which execute general-purpose programming languages.
 %-- old --%
 
-A majority of modern relational database management systems, from the SQLite embedded database in every Android phone and iPhone~\cite{sqliteFamous} to the MySQL databases used in many web applications~\cite{onLamp}, implement the \textit{Structured Query Language}, or SQL.\cite{silberschatz2010database}. 
-%-- new --%
-SQL consists of two primary components, the \textit{Data Definition Language} or DDL, which is used to define the structures in which data is stored (called the \textit{schema} of the database), and the \textit{Data Manipulation Language}, or DML, which is used for statements which access and modify the data stored in the database.
-
-In order to learn more about how relational databases function, I have developed my own implementation, called DeeBee. DeeBee implements a limited subset of SQL chosen to be expressive enough to allow most relational database functionality. 
+A majority of modern relational database management systems, from the SQLite embedded database in every Android phone and iPhone~\cite{sqliteFamous} to the MySQL databases used in many web applications~\cite{onLamp}, implement the \textit{Structured Query Language}, or SQL.\cite{silberschatz2010database}. In order to learn more about how relational databases function, I have developed my own implementation, called DeeBee. DeeBee implements a limited subset of SQL chosen to be expressive enough to allow most relational database functionality. 
 %-- old --%
 DeeBee is released as open-source software under the MIT license. Current and past releases are available for download at \url{https://github.com/hawkw/deebee/releases}. The provided JAR file can be included as a library in projects which use the DeeBee API to connect to a DeeBee database; or it may be executed using the \textit{java -jar} command to interact with a DeeBee database from the command line. Finally, DeeBee's ScalaDoc API documentation is available at \url{http://hawkw.github.io/deebee/api/index.html#deebee.package}.
 
+\section{Background}
+\subsection{The Structured Query Language}
+%-- new --%
+SQL consists of two primary components, the \textit{Data Definition Language} or DDL, which is used to define the structures in which data is stored, and the \textit{Data Manipulation Language}, or DML, which is used for statements which access and modify the data stored in the database. The set of DDL statements which are run in order to create a database is referred to as the database's \texttt{schema}. A schema typically consists of a series of \texttt{CREATE TABLE} statements, which define each relation in the database by enumerating the names, data types, and constraints of each column in a table, as well as other statements, such as \texttt{CREATE TRIGGER}, which can be used to assign limited behaviors to various tables, and to create relationships between tables. Once a database has been created, it may be manipulated using DML statements such as \texttt{INSERT} to add data, \texttt{DELETE} to remove data, and \texttt{SELECT} to access data.
+
+\subsubsection{DDL Grammar}
+
+DeeBee's data definition language consists of the \texttt{CREATE TABLE} and \texttt{DELETE TABLE} statements. Since DeeBee does not implement a number of advanced database features, such as the creation of triggers, the SQL constructs corresponding to those features have been removed. A Baukus-Naur Form for the DeeBee data definition language is given in \cref{last:ddl-grammar}.
+\begin{listing}
+\begin{grammar}
+<DDL statement>  ::= <create-statement>
+	 \alt <delete-statement>
+	 
+<create-statement> ::= `CREATE' `TABLE' <name> `(' <members> `)' `;'
+
+<members> ::= <schema-item> `,' <column-list>
+	\alt <schema-item>
+
+<schema-item> ::= <attribute> \alt <referential-constraint> 	 
+	
+<attribute> ::= <name> <data-type> <constraint-list>
+
+<constraint-list> ::= <attr-constraint> `,' <constraint-list>
+	\alt <attr-constraint>
+	
+<attr-constraint> ::= `NOT' `NULL' \alt `UNIQUE' \alt `PRIMARY' `KEY'
+
+<data-type> ::= `INT'  \alt `INTEGER' \alt `CHAR' \alt `VARCHAR' \alt `NUMERIC'  \alt `DECIMAL'
+
+<referential-constraint> ::= `FOREIGN` `KEY' `(' <names-list> `)' `REFERENCES' <name> `(' <names-list>`)'
+
+<names-list> ::= <name> `,' <names-list> \alt <name>
+
+<delete-statement> ::= `DELETE' `TABLE' <name> `;'
+\end{grammar}
+\caption{Grammar of DeeBee DDL statements}
+\label{lst:ddl-grammar}
+\end{listing}
+
+In this grammar, the DeeBee DML is defined as consisting of either \texttt{CREATE TABLE} or \texttt{DELETE TABLE} statements. 
+
+\subsubsection{DML Grammar}
 \section{Implementation}
 
 \subsection{The Scala Programming Language}
@@ -70,6 +109,7 @@ Packrat parsing, first described by Bryan Ford in his masters' thesis~\cite{ford
 
 This class enhances parser combinators with the addition of a memoization facility. This allows recursive-descent parsing of left-recursive grammars. It also improves performance, providing linear-time parsing for most grammars~\cite{jonnalagedda2009packrat,ford2002packrat,ford2002packrat2}. I make liberal use of packrat parsers in order take advantage of their improved performance.
 
+\subsubsection{Challenges}
 Some difficulties were encountered in parsing, mostly related to the parsing of nested predicate expressions in SQL \texttt{WHERE} clauses. These issues were eventually resolved by separating the productions for `leaf' predicates (those consisting of a comparison between an attribute and an expression) and predicates consisting of multiple predicate expressions, and using the longest-match parser combinator to back-track in order to parse the entire \texttt{WHERE} clause.
 
 \subsection{Query Interpretation}

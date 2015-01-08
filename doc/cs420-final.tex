@@ -126,6 +126,8 @@ DeeBee's data manipulation language consists of \texttt{SELECT}, \texttt{INSERT}
 
 <select-statement> ::= `SELECT' <projections> `FROM' <name> <where-clause> `;'
 
+<delete-statement> ::= `DELETE' `FROM' <name> <where-clause> `;'
+
 <projections> ::= <projection-list> \alt `*'
 
 <projection-list> ::= <name> `,' <projection-list> \alt <name>
@@ -139,6 +141,11 @@ DeeBee's data manipulation language consists of \texttt{SELECT}, \texttt{INSERT}
 <comparison> ::= <expr> <comparison-op> <expr>
 
 <comparison-op> ::= `=' |`!=' | `<>' | `>=' | `<='  | `<' | `>'
+
+<expr> ::= <int-const> | <double-const> | <string-const> | `null' | <name>
+
+
+
 \end{grammar}
 \caption{Grammar of DeeBee DML statements.}
 \label{lst:dml-grammar}

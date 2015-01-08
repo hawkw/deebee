@@ -70,11 +70,11 @@ DeeBee's data definition language consists of the \texttt{CREATE TABLE} and \tex
 <constraint-list> ::= <attr-constraint> `,' <constraint-list>
 	\alt <attr-constraint>
 	
-<attr-constraint> ::= `NOT' `NULL' \alt `UNIQUE' \alt `PRIMARY' `KEY'
+<attr-constraint> ::= `NOT' `NULL'  | `UNIQUE' | `PRIMARY' `KEY'
 
-<data-type> ::= `INT'  \alt `INTEGER' \alt `CHAR' \alt `VARCHAR' \alt `NUMERIC'  \alt `DECIMAL'
+<data-type> ::= `INT'  | `INTEGER'  |`CHAR'  | `VARCHAR'  | `NUMERIC' | `DECIMAL'
 
-<referential-constraint> ::= `FOREIGN` `KEY' `(' <names-list> `)' `REFERENCES' <name> `(' <names-list>`)'
+<referential-constraint> ::= `FOREIGN` `KEY' `(' <names-list> `)' `REFERENCES'  <name> `(' <names-list> `)'
 
 <names-list> ::= <name> `,' <names-list> \alt <name>
 

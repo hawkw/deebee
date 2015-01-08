@@ -2,6 +2,8 @@
 \graphicspath{{assets/figures/}}
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
 \usepackage{minted}
+
+\renewcommand\listoflistingscaption{List of Listings}
 \begin{document}
 
 \MYTITLE{Final Project: Introduction to Compiler Design}
@@ -9,7 +11,8 @@
 \PURPOSE{Implementation of Query Processing in a Relational Database Management System}
 \PLEDGE{}
 \tableofcontents
-%\listoflistings
+%\listoffigures
+\listoflistings
 \vfill
 \pagebreak
 \section{Motivation}
@@ -24,7 +27,8 @@ Therefore, in order to facilitate users and application programs interaction wit
 
 A majority of modern relational database management systems, from the SQLite embedded database in every Android phone and iPhone~\cite{sqliteFamous} to the MySQL databases used in many web applications~\cite{onLamp}, implement the \textit{Structured Query Language}, or SQL~\cite{silberschatz2010database}. In order to learn more about how relational databases function, I have developed my own implementation, called DeeBee. DeeBee implements a limited subset of SQL chosen to be expressive enough to allow most relational database functionality. 
 %-- old --%
-DeeBee is released as open-source software under the MIT license. Current and past releases are available for download at \url{https://github.com/hawkw/deebee/releases}. The provided JAR file can be included as a library in projects which use the DeeBee API to connect to a DeeBee database; or it may be executed using the \textit{java -jar} command to interact with a DeeBee database from the command line. Finally, DeeBee's ScalaDoc API documentation is available at \url{http://hawkw.github.io/deebee/api/index.html#deebee.package}.
+
+DeeBee is released as open-source software under the MIT license. Current and past releases are available for download at \url{https://github.com/hawkw/deebee/releases}. The provided JAR file can be included as a library in projects which use the DeeBee API to connect to a DeeBee database; or it may be executed using the \texttt{java -jar} command to interact with a DeeBee database from the command line. Finally, DeeBee's ScalaDoc API documentation is available at \url{http://hawkw.github.io/deebee/api/index.html#deebee.package}.
 
 \section{Background}
 \subsection{Database Query Processing}
@@ -32,6 +36,7 @@ DeeBee is released as open-source software under the MIT license. Current and pa
 In the typical relational database management system, the processing of a SQL query takes the general form given in \Cref{fig:qp}. Queries are input into the system as strings. These strings are run through a query parser, which produces an intermediate representation of the query, in the form of a relational algebra expression. The relational algebra is run through a query optimizer, which uses metadata stored by the DBMS to determine the optimal execution plan for the query. These steps can be thought of as analogous to the compilation process of a general-purpose programming language.
 
 \begin{figure}[h]
+	\centering
 	\includegraphics[width=\textwidth]{QueryProcessing}
 	\caption{Steps in query processing~\cite{silberschatz2010database}.}
 	\label{fig:qp}
@@ -47,11 +52,11 @@ SQL consists of two primary components, the \textit{Data Definition Language} or
 
 \subsubsection{DDL Grammar}
 
-DeeBee's data definition language consists of the \texttt{CREATE TABLE} and \texttt{DELETE TABLE} statements. Since DeeBee does not implement a number of advanced database features, such as the creation of triggers, the SQL constructs corresponding to those features have been removed. A Baukus-Naur Form for the DeeBee data definition language is given in \cref{lst:ddl-grammar}. Do note that in DeeBee SQL, as in many SQL dialects, keywords are not case sensitive; however, SQL keywords are conventionally typeset upper case.
-\begin{listing}
+DeeBee's data definition language consists of the \texttt{CREATE TABLE} and \texttt{DROP TABLE} statements. Since DeeBee does not implement a number of advanced database features, such as the creation of triggers, the SQL constructs corresponding to those features have been removed. A Baukus-Naur Form for the DeeBee data definition language is given in \cref{lst:ddl-grammar}. Do note that in DeeBee SQL, as in many SQL dialects, keywords are not case sensitive; however, SQL keywords are conventionally typeset upper case.
+\begin{listing}[h]
 \begin{grammar}
-<DDL statement>  ::= <create-statement>
-	 \alt <delete-statement>
+<DDL-statement>  ::= <create-statement>
+	 \alt <drop-statement>
 	 
 <create-statement> ::= `CREATE' `TABLE' <name> `(' <members> `)' `;'
 
@@ -73,13 +78,13 @@ DeeBee's data definition language consists of the \texttt{CREATE TABLE} and \tex
 
 <names-list> ::= <name> `,' <names-list> \alt <name>
 
-<delete-statement> ::= `DELETE' `TABLE' <name> `;'
+<delete-statement> ::= `DROP' `TABLE' <name> `;'
 \end{grammar}
 \caption{Grammar of DeeBee DDL statements}
 \label{lst:ddl-grammar}
 \end{listing}
 
-In this grammar, the DeeBee DML is defined as consisting of either \texttt{CREATE TABLE} or \texttt{DELETE TABLE} statements.  A \texttt{CREATE TABLE} statement consists of the keyword \texttt{CREATE TABLE}, followed by the name of the table to be created, followed by a listing of the attributes and constraints placed on the table, surrounded by parentheses. Each attribute definition consists of a name, a type, and optional row constraints, such as \texttt{NOT NULL} or \texttt{UNIQUE}. \Cref{lst:create} provides an example of a \texttt{CREATE TABLE} statement. All valid SQL statements are terminated with the semicolon character.
+In this grammar, the DeeBee DDL is defined as consisting of either \texttt{CREATE TABLE} or \texttt{DROP TABLE} statements.  A \texttt{CREATE TABLE} statement consists of the keyword \texttt{CREATE TABLE}, followed by the name of the table to be created, followed by a listing of the attributes and constraints placed on the table, surrounded by parentheses. Each attribute definition consists of a name, a type, and optional row constraints, such as \texttt{NOT NULL} or \texttt{UNIQUE}. \Cref{lst:create} provides an example of a \texttt{CREATE TABLE} statement. All valid SQL statements are terminated with the semicolon character.
 
 \begin{listing}[h]
     \begin{minted}[gobble=8]{SQL}
@@ -97,17 +102,48 @@ In this grammar, the DeeBee DML is defined as consisting of either \texttt{CREAT
 \label{lst:create}
 \end{listing}
 
-A \texttt{DELETE TABLE} statement simply consists of the keywords \texttt{DELETE TABLE} followed by the name of the table to be deleted. \Cref{lst:delete} provides an example of such a statement.
+A \texttt{DROP TABLE} statement simply consists of the keywords \texttt{DROP TABLE} followed by the name of the table to be deleted. \Cref{lst:drop} provides an example of such a statement.
 
 \begin{listing}[h]
     \begin{minted}[gobble=8]{SQL}
-        DELETE TABLE Writers;
+        DROP TABLE Writers;
 \end{minted}
-\caption{Example SQL \texttt{DELETE TABLE} statement.}
-\label{lst:delete}
+\caption{Example SQL \texttt{DROP TABLE} statement.}
+\label{lst:drop}
 \end{listing}
 
 \subsubsection{DML Grammar}
+
+DeeBee's data manipulation language consists of \texttt{SELECT}, \texttt{INSERT}, and \texttt{DELETE} statements. \texttt{INSERT} statements add rows to a table, while \texttt{DELETE} statements remove rows, and \texttt{SELECT} statements access rows. Most SQL implementations also include a \texttt{UPDATE} statement that modifies the data stored in table rows, but this statement was excluded from DeeBee as it is essentially syntactic sugar for actions that can be accomplished through the use of \texttt{DELETE} and \texttt{INSERT} statements. \Cref{lst:dml-grammar} presents a Baukus-Naur Form for the DeeBee DML.
+
+\begin{listing}[h!]
+\begin{grammar}
+<DML-statement> ::= <select-statement> \alt <insert-statement> \alt <delete-statement>
+
+<insert-statement> ::= `INSERT' `INTO' <name> `VALUES' `(' <vals-list> `)' `;'
+
+<vals-list> ::= <literal> `,' <vals-list> \alt <literal>
+
+<select-statement> ::= `SELECT' <projections> `FROM' <name> <where-clause> `;'
+
+<projections> ::= <projection-list> \alt `*'
+
+<projection-list> ::= <name> `,' <projection-list> \alt <name>
+
+<where-clause> ::= `WHERE' <predicate> \alt $\varepsilon$
+
+<predicate> ::= <comparison> <combining-op> <comparison> \alt <comparison>
+
+<combining-op> ::= `AND'  |`OR'
+
+<comparison> ::= <expr> <comparison-op> <expr>
+
+<comparison-op> ::= `=' |`!=' | `<>' | `>=' | `<='  | `<' | `>'
+\end{grammar}
+\caption{Grammar of DeeBee DML statements.}
+\label{lst:dml-grammar}
+\end{listing}
+
 \section{Implementation}
 
 \subsection{The Scala Programming Language}

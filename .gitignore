@@ -45,12 +45,15 @@ project/plugins/project/
 *.ilg
 *.ind
 *.lof
+*.lol
 *.lot
 *.maf
 *.mtc
 *.mtc1
 *.out
+*.vrb
 *.synctex.gz
+*.synctex.gz(busy)
 .idea
 
 *.fdb_latexmk

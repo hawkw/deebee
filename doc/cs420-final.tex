@@ -1,11 +1,7 @@
 \input assets/380pre
-
+\graphicspath{{assets/figures/}}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
 \usepackage{minted}
-\usepackage{hyperref}
-\usepackage{cleveref}
-\usepackage{lmodern}
-\usepackage{placeins}
-\usepackage{syntax}
 \begin{document}
 
 \MYTITLE{Final Project: Introduction to Compiler Design}
@@ -26,18 +22,32 @@ Users and other software typically interact with these systems through the use o
 Therefore, in order to facilitate users and application programs interaction with the database, it is necessary for an RDBMS to provide a query processing system with some method capable of executing query language statements. Essentially, this means that a compiler or an interpreter is a core feature of any RDBMS. These function similarly to compilers or interpreters which execute general-purpose programming languages.
 %-- old --%
 
-A majority of modern relational database management systems, from the SQLite embedded database in every Android phone and iPhone~\cite{sqliteFamous} to the MySQL databases used in many web applications~\cite{onLamp}, implement the \textit{Structured Query Language}, or SQL.\cite{silberschatz2010database}. In order to learn more about how relational databases function, I have developed my own implementation, called DeeBee. DeeBee implements a limited subset of SQL chosen to be expressive enough to allow most relational database functionality. 
+A majority of modern relational database management systems, from the SQLite embedded database in every Android phone and iPhone~\cite{sqliteFamous} to the MySQL databases used in many web applications~\cite{onLamp}, implement the \textit{Structured Query Language}, or SQL~\cite{silberschatz2010database}. In order to learn more about how relational databases function, I have developed my own implementation, called DeeBee. DeeBee implements a limited subset of SQL chosen to be expressive enough to allow most relational database functionality. 
 %-- old --%
 DeeBee is released as open-source software under the MIT license. Current and past releases are available for download at \url{https://github.com/hawkw/deebee/releases}. The provided JAR file can be included as a library in projects which use the DeeBee API to connect to a DeeBee database; or it may be executed using the \textit{java -jar} command to interact with a DeeBee database from the command line. Finally, DeeBee's ScalaDoc API documentation is available at \url{http://hawkw.github.io/deebee/api/index.html#deebee.package}.
 
 \section{Background}
+\subsection{Database Query Processing}
+
+In the typical relational database management system, the processing of a SQL query takes the general form given in \Cref{fig:qp}. Queries are input into the system as strings. These strings are run through a query parser, which produces an intermediate representation of the query, in the form of a relational algebra expression. The relational algebra is run through a query optimizer, which uses metadata stored by the DBMS to determine the optimal execution plan for the query. These steps can be thought of as analogous to the compilation process of a general-purpose programming language.
+
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{QueryProcessing}
+	\caption{Steps in query processing~\cite{silberschatz2010database}.}
+	\label{fig:qp}
+\end{figure}
+
+Once the execution plan has been produced, it is evaluated against the data stored in the database. If the query is one which accesses data, then output may be returned to the querying program; otherwise, there may be changes to the database's internal state~\cite{silberschatz2010database,harrington2009relational,garcia2000database}.
+
+DeeBee's query processing system uses a simplified version of this general flow. For ease-of-implementation reasons, DeeBee interprets queries, rather than compiling and optimizing them. Furthermore, DeeBee's internal query representation takes the form of an abstract-syntax tree (AST) rather than a relational algebra expression. This is due to the fact that DeeBee does not implement the entire relational algebra, and some queries which DeeBee is capable of processing cannot be expressed in this manner.
+
 \subsection{The Structured Query Language}
 %-- new --%
 SQL consists of two primary components, the \textit{Data Definition Language} or DDL, which is used to define the structures in which data is stored, and the \textit{Data Manipulation Language}, or DML, which is used for statements which access and modify the data stored in the database. The set of DDL statements which are run in order to create a database is referred to as the database's \texttt{schema}. A schema typically consists of a series of \texttt{CREATE TABLE} statements, which define each relation in the database by enumerating the names, data types, and constraints of each column in a table, as well as other statements, such as \texttt{CREATE TRIGGER}, which can be used to assign limited behaviors to various tables, and to create relationships between tables. Once a database has been created, it may be manipulated using DML statements such as \texttt{INSERT} to add data, \texttt{DELETE} to remove data, and \texttt{SELECT} to access data.
 
 \subsubsection{DDL Grammar}
 
-DeeBee's data definition language consists of the \texttt{CREATE TABLE} and \texttt{DELETE TABLE} statements. Since DeeBee does not implement a number of advanced database features, such as the creation of triggers, the SQL constructs corresponding to those features have been removed. A Baukus-Naur Form for the DeeBee data definition language is given in \cref{last:ddl-grammar}.
+DeeBee's data definition language consists of the \texttt{CREATE TABLE} and \texttt{DELETE TABLE} statements. Since DeeBee does not implement a number of advanced database features, such as the creation of triggers, the SQL constructs corresponding to those features have been removed. A Baukus-Naur Form for the DeeBee data definition language is given in \cref{lst:ddl-grammar}. Do note that in DeeBee SQL, as in many SQL dialects, keywords are not case sensitive; however, SQL keywords are conventionally typeset upper case.
 \begin{listing}
 \begin{grammar}
 <DDL statement>  ::= <create-statement>
@@ -69,7 +79,33 @@ DeeBee's data definition language consists of the \texttt{CREATE TABLE} and \tex
 \label{lst:ddl-grammar}
 \end{listing}
 
-In this grammar, the DeeBee DML is defined as consisting of either \texttt{CREATE TABLE} or \texttt{DELETE TABLE} statements. 
+In this grammar, the DeeBee DML is defined as consisting of either \texttt{CREATE TABLE} or \texttt{DELETE TABLE} statements.  A \texttt{CREATE TABLE} statement consists of the keyword \texttt{CREATE TABLE}, followed by the name of the table to be created, followed by a listing of the attributes and constraints placed on the table, surrounded by parentheses. Each attribute definition consists of a name, a type, and optional row constraints, such as \texttt{NOT NULL} or \texttt{UNIQUE}. \Cref{lst:create} provides an example of a \texttt{CREATE TABLE} statement. All valid SQL statements are terminated with the semicolon character.
+
+\begin{listing}[h]
+    \begin{minted}[gobble=8]{SQL}
+        CREATE TABLE Writers (
+            id           	  INTEGER NOT NULL PRIMARY KEY,
+            first_name           VARCHAR(15) NOT NULL,
+            middle_name          VARCHAR(15),
+            last_name            VARCHAR(15) NOT NULL,
+            birth_date           VARCHAR(10) NOT NULL,
+            death_date           VARCHAR(10),
+            country_of_origin    VARCHAR(20) NOT NULL
+        );
+\end{minted}
+\caption{Example SQL \texttt{CREATE TABLE} statement.}
+\label{lst:create}
+\end{listing}
+
+A \texttt{DELETE TABLE} statement simply consists of the keywords \texttt{DELETE TABLE} followed by the name of the table to be deleted. \Cref{lst:delete} provides an example of such a statement.
+
+\begin{listing}[h]
+    \begin{minted}[gobble=8]{SQL}
+        DELETE TABLE Writers;
+\end{minted}
+\caption{Example SQL \texttt{DELETE TABLE} statement.}
+\label{lst:delete}
+\end{listing}
 
 \subsubsection{DML Grammar}
 \section{Implementation}
@@ -82,7 +118,7 @@ Scala was inspired by criticisms of Java and by the recent popularity of functio
 
 A key concept in the Scala design is the idea of an `embedded domain-specific language (DSL)'. Essentially, this concept suggests that Scala's syntax should be modifiable to the extent that code for specific tasks be expressed with its' own syntax within Scala. These DSLs are still Scala code and can still be compiled by the Scala compiler, but their syntax differs based on the task they are intended for~\cite{ghosh2010dsls,hofer2008polymorphic,odersky2008programming}. The Scala parsing library and the ScalaTest testing framework both provide exmaples of embedded DSLs.
 
-Scala was chosen as the ideal language for DeeBee's implementation due to the expressiveness of its syntax, which allows complex systems to be implemented in few lines of code; its performance at scale; the existence of powerful libraries for text parsing (\Cref{sec:parsing}) and concurrent programming using the actors model ; and the cross-platform capabilities of the JVM.
+Scala was chosen as the ideal language for DeeBee's implementation due to the expressiveness of its syntax, which allows complex systems to be implemented in few lines of code; its performance at scale; the existence of powerful libraries for text parsing and concurrent programming using the actors model; and the cross-platform capabilities of the JVM.
 
 \subsection{Query Parsing}
 DeeBee processes SQL queries by parsing the input query strings and generating an abstract syntax tree (AST) which represents the query. The AST is then interpreted against a context (typically a database or table) to determine the actions necessary to carry out the query. The query is then conducted using the API of the target relations to carry out the necessary operations.
@@ -94,6 +130,7 @@ In the parser generator approach, the grammar of a language is described using a
 While the use of these tools is often much less demanding than implementing a parser by hand, the use of parser generators has a number of disadvantages. The generated source code is frequently highly complex and, since it is generated automatically, it may be poorly documented and difficult to understand. This can make debugging and maintaining the generated code very difficult.
 
 \subsubsection{Combinator Parsing}
+
 Combinator parsing provides a method of implementing recursive descent parsers using a BNF-like domain-specific language,  but rather than using that grammar description to generate parsing code, the grammar description is the source code of the parser, and can be inspected, maintained, and modified transparently~\cite{ghosh2010dsls,hofer2008polymorphic,moors2008parser}.
 
 In this approach, a parser is defined as a function which takes as input a string and either accepts or rejects that string according to some rule. A parser combinator is a higher-order function which takes as parameters two parsers, and produces a new parser that combines the two input parsers. Parser combinators exist which combine the input parsers according to various rules, such as sequencing, alternation, optionality, or repetition. The language specification is written by repeatedly combining primitive parsers for tokens such as keywords, constants, and identifiers into more complex parsers for constructs such as expressions. At runtime, the parser then attempts to parse some input against the start symbol parser, which is composed of multiple smaller parsers, recursively descending through the grammar by calling each component parser.~\cite{moors2008parser,swierstra2001combinator,fokker1995functional,frost2008parser}

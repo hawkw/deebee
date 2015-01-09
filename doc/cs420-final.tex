@@ -4,6 +4,8 @@
 \usepackage{minted}
 
 \renewcommand\listoflistingscaption{List of Listings}
+\usepackage[nottoc,numbib]{tocbibind}
+\usemintedstyle{trac}
 \begin{document}
 
 \MYTITLE{Final Project: Introduction to Compiler Design}
@@ -153,8 +155,11 @@ DeeBee's data manipulation language consists of \texttt{SELECT}, \texttt{INSERT}
 \end{listing}
 
 An \texttt{INSERT} statement is used to add a row to a table in the database. It consists of the keywords \texttt{INSERT INTO} followed by the name of a table, followed by the keyword \texttt{VALUES} followed by a comma-separated list of values surrounded in parentheses. \Cref{lst:insert} provides a sample of such a statement.
-\begin{listing}[h!]
-    \begin{minted}{SQL}
+\begin{listing}[h]
+    \begin{minted}[linenos,
+               numbersep=5pt,
+               frame=lines,
+               framesep=2mm]{SQL}
 INSERT INTO Writers VALUES (
 	1,
 	'Robert',
@@ -168,24 +173,50 @@ INSERT INTO Writers VALUES (
         \caption{Sample SQL \texttt{INSERT} statement.}
         \label{lst:insert}
         \end{listing}
-        \FloatBarrier
         
-A \texttt{SELECT} statement returns rows contained in a table. Optionally, specific columns may be specified, referred to as \textit{projections}. Additionally, the rows may be filtered according to a predicate, or a \texttt{LIMIT} clause may be used to select up to a certain number of rows. \Cref{last:select} gives a number of sample \texttt{SELECT} statements.
+A \texttt{SELECT} statement returns rows contained in a table. Optionally, specific columns may be specified, referred to as \textit{projections}. Additionally, the rows may be filtered according to a predicate, or a \texttt{LIMIT} clause may be used to select up to a certain number of rows. \Cref{last:select} gives a number of sample \texttt{SELECT} statements, demonstrating the multiple forms possible for this statement. 
 
-\begin{listing}[h!]
-    \begin{minted}[gobble=8]{SQL}
+\begin{listing}[h]
+    \begin{minted}[linenos,
+               numbersep=5pt,
+               gobble=8
+               frame=lines,
+               framesep=2mm]{SQL}
         SELECT * FROM Writers;
-        SELECT first_name, last_name FROM Writers;
-        SELECT * FROM Writers WHERE first_name = "Anton";
-        SELECT * FROM Writers WHERE id > 5 AND country_of_origin = "USA";
-        SELECT * FROM Writers LIMIT 5;
+        SELECT first_name, middle_name, last_name FROM Writers; 
+        SELECT * FROM Writers WHERE first_name = "Anton"; 
+        SELECT * FROM Writers WHERE id > 5 AND country_of_origin = "USA"; 
+        SELECT * FROM Writers LIMIT 5; 
+        SELECT first_name, last_name FROM Writers WHERE country_of_origin = "UK" LIMIT 3; 
     \end{minted}
-    \caption{Sample SQL \texttt[SELECT} statements.}
-    \label{lst:select}.
+    \caption{Sample SQL \texttt{SELECT} statements.}
+    \label{lst:select}
 \end{listing}
-\section{Implementation}
 
-A \texttt{DELETE} statement removes rows from a table. By default, it will remove all rows, but the deleted rows may be filtered according to a predicate, or provided with a limit clause, as in the \texttt{SELECT} statement.
+Many relational database management systems support \texttt{SELECT} statements with \texttt{JOIN} clauses, which allow the records of one or more tables to be combined. There are multiple forms of \texttt{JOIN} statement, such as inner join, cross join, and various forms of outer join, which allow records to be joined in different ways according to the rules of relational algebra. While these expressions are very useful in many database applications, DeeBee does not implement any form of \texttt{JOIN} statement due to the significant increase in complexity provided by the wide range of possible join expressions.
+
+Additionally, most SQL implementations support aggregate functions, such as \texttt{SUM}, \texttt{COUNT}, and \texttt{AVERAGE} in their select statements. Rather than returning all rows matching the \texttt{SELECT} statement, these aggregate functions reduce the result set to a single record, usually numeric. Although these aggregate functions would not be as difficult to implement as \texttt{JOIN} clauses, DeeBee does not currently support them as they were deemed to fall outside of the core SQL functionality necessary for DeeBee.
+
+A \texttt{DELETE} statement removes rows from a table. By default, it will remove all rows, but the deleted rows may be filtered according to a predicate, or provided with a limit clause, as in the \texttt{SELECT} statement. \Cref{lst:delete} provides samples of the possible forms of this statement.
+
+\begin{listing}[h]
+    \begin{minted}[linenos,
+               numbersep=5pt,
+               gobble=8,
+               frame=lines,
+               framesep=2mm]{SQL}
+        DELETE FROM Writers;
+        DELETE FROM Writers LIMIT 10;
+        DELETE FROM Writers WHERE country_of_origin != "USA";
+        DELETE FROM Writers WHERE id >= 8 LIMIT 3; 
+    \end{minted}
+    \caption{Sample \texttt{SQL DELETE} statements.}
+    \label{lst:delete}
+\end{listing}
+
+\FloatBarrier
+
+\section{Implementation}
 
 \subsection{The Scala Programming Language}
 
@@ -212,20 +243,65 @@ Combinator parsing provides a method of implementing recursive descent parsers u
 
 In this approach, a parser is defined as a function which takes as input a string and either accepts or rejects that string according to some rule. A parser combinator is a higher-order function which takes as parameters two parsers, and produces a new parser that combines the two input parsers. Parser combinators exist which combine the input parsers according to various rules, such as sequencing, alternation, optionality, or repetition. The language specification is written by repeatedly combining primitive parsers for tokens such as keywords, constants, and identifiers into more complex parsers for constructs such as expressions. At runtime, the parser then attempts to parse some input against the start symbol parser, which is composed of multiple smaller parsers, recursively descending through the grammar by calling each component parser.~\cite{moors2008parser,swierstra2001combinator,fokker1995functional,frost2008parser}
 
-For example, in the Scala parser combinators library, the \texttt{\textasciitilde} parser combinator is the sequencing parser combinator. If \texttt{a} and \texttt{b} are parser functions, then the expression \texttt{a \textasciitilde b} would create a parser which accepts a string containing a substring accepted by \texttt{a} followed by a substring accepted by \texttt{b}. Similarly,  \texttt{|} is the alternation combinator, so the expression \texttt{a | b} specifies a parser that accepts either a string accepted by \texttt{a} or \texttt{b}.  The \texttt{.?} combinator can be applied to a single parser in order to make that parser optional (one or none), while the \texttt{.*} combinator will accept any number of repetitions of the input parser. 
+For example, in the Scala parser combinators library, the \texttt{\textasciitilde} parser combinator is the sequencing parser combinator. If \texttt{a} and \texttt{b} are parser functions, then the expression \texttt{a \textasciitilde b} would create a parser which accepts a string containing a substring accepted by \texttt{a} followed by a substring accepted by \texttt{b}. Similarly,  \texttt{|} is the alternation combinator, so the expression \texttt{a | b} specifies a parser that accepts either a string accepted by \texttt{a} or \texttt{b}.  The \texttt{.?} combinator can be applied to a single parser in order to make that parser optional (one or none), while the \texttt{.*} combinator will accept any number of repetitions of the input parser.  Finally, the \verb!^^! combinator creates a parser which applies a partial function to the parse result; this functions similarly to the "rules" specified in a \texttt{yacc} or \texttt{bison} grammar.
 
-Multiple parser combinators can be combined into complex expressions. For example, if \texttt{a}, \texttt{b}. and \texttt{c} are all parser functions, the expression \texttt{def d = a \textasciitilde b | c.*} defines \texttt{d} as a parser that accepts a string which contains a substring matching \texttt{a} followed by a substring matching either \texttt{b} or any number of repetitions of \texttt{c}.
+Multiple parser combinators can be combined into complex expressions. For example, if \texttt{a}, \texttt{b}. and \texttt{c} are all parser functions, the expression \mint{scala}!def d = a ~ b | c.*! defines \texttt{d} as a parser that accepts a string which contains a substring matching \texttt{a} followed by a substring matching either \texttt{b} or any number of repetitions of \texttt{c}. 
+
+\begin{listing}[h]
+    \begin{minted}[linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{scala}
+  def query: Parser[Node] = (
+    createTable
+      | dropTable
+      | select
+      | delete
+      | insert
+    ) <~ ";"
+    
+  def dropTable: Parser[DropStmt] = "drop" ~> "table" ~> identifier ^^{
+    case i => DropStmt(i)
+  }
+    \end{minted}
+    \caption{Combinator parsing in Scala.}
+    \label{lst:parcoms}
+\end{listing}
+
+\Cref{lst:parcoms} provides a brief example of the usage of parser combinators, selected from an early version of the DeeBee SQL parser. Lines 1 through 7 of \Cref{last:parcoms} define \texttt{query} as a parser which produces \texttt{Node}s (the DeeBee base type for an AST node), and then enumerates that \texttt{query} accepts a string parsed by the \texttt{createTable}, \texttt{dropTable}, \texttt{select}, \texttt{delete}, or \texttt{insert} parsers. Lines 9 through 11 define \texttt{dropTable} as a parser which produces \texttt{DropStmt} AST nodes, and then states that the \texttt{dropTable} parser accepts the keyword ``drop'' followed by the keyword ``table'' followed by an identifier, extracts the parsed identifier through pattern matching, and returns a new \texttt{DropStmt} node containing that identifier. The relative similarity of this source code to the Baukus-Naur Form for the DeeBee DDL grammar given in \cref{lst:ddl-grammar} highlights the power of combinator parsing.
+\FloatBarrier
 
 \subsubsection{Packrat Parsing}
-A major disadvantage of top-down parsers, such as the recursive descent parsers created through the use of parser combinators, is that they cannot parse left-recursive grammars. Scala's parsing library offers a solution to this problem by providing packrat parsing functionality.
+A major disadvantage of top-down parsers, such as the recursive descent parsers created through the use of parser combinators, is that they cannot parse left-recursive grammars\footnote{Those in which there exists a non-terminal symbol in which the left-most symbol in a production for that non-terminal evaluates to that symbol.}. Scala's parsing library offers a solution to this problem by providing \textit{packrat parsing} functionality.
 
-Packrat parsing, first described by Bryan Ford in his masters' thesis~\cite{ford2002packrat} is a technique that both improves performance of backtracking parsers (such as recursive descent parsers), guaranteeing linear parse time, and allows the parsing of grammars containing left recursion, as well as any LL(\textit{k}) or LR(\textit{k}) language. Packrat parsing works by memoizing the results of each invocation of 
+Packrat parsing, first described by Bryan Ford in his masters' thesis~\cite{ford2002packrat} is a technique that both improves performance of backtracking parsers (such as recursive descent parsers), guaranteeing linear parse time, and allows the parsing of grammars containing left recursion, as well as any LL(\textit{k}) or LR(\textit{k}) language. Packrat parsing works by memoizing the results of each invocation of a parsing function at a given location in the input text, and returning that cached result when the parsing function is called again for that location, significantly improving performance~\cite{jonnalagedda2009packrat,ford2002packrat,ford2002packrat2}. Left recursion is accepted by attempting to `grow' the cached input by attempting to reapply the production to the input, and checking if the position of the new parse result is greater than or less than the previous position. If the positions higher than the previously cached result, then the process is repeated, otherwise, the cached result is returned~\cite{jonnalagedda2009packrat,ford2002packrat}.
 
-This class enhances parser combinators with the addition of a memoization facility. This allows recursive-descent parsing of left-recursive grammars. It also improves performance, providing linear-time parsing for most grammars~\cite{jonnalagedda2009packrat,ford2002packrat,ford2002packrat2}. I make liberal use of packrat parsers in order take advantage of their improved performance.
+In the Scala packrat parsing implementation, memoization is implemented through the use of \textit{lazy evaluation}, an evaluation common in functional programming languages. Lazy evaluation refers to the practice of differing the evaluation of some expression until that expression's value is needed elsewhere, and by caching that result and reusing it every time the expression is evaluated. This means that in Scala, packrat parsing may be used simply by mixing in the \texttt{PackratParsers} trait and by replacing parsers written using \texttt{def}, indicating that they are defined as functions, with \texttt{lazy val}, which defines those parsers as lazily-evaluated values, instead. Therefore, we could rewrite the code example in \Cref{lst:parcoms} as \Cref{lst:packrat1}.
+\begin{listing}[h]
+    \begin{minted}[linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm]{scala}
+  lazy val query: PackratParser[Node] = (
+    createTable
+      | dropTable
+      | select
+      | delete
+      | insert
+    ) <~ ";"
+    
+  lazy val dropTable: PackratParser[DropStmt] = "drop" ~> "table" ~> identifier ^^{
+    case i => DropStmt(i)
+  }
+    \end{minted}
+    \caption{Packrat parsing in Scala.}
+    \label{lst:packrat1}
+\end{listing}
 
-\subsubsection{Challenges}
-Some difficulties were encountered in parsing, mostly related to the parsing of nested predicate expressions in SQL \texttt{WHERE} clauses. These issues were eventually resolved by separating the productions for `leaf' predicates (those consisting of a comparison between an attribute and an expression) and predicates consisting of multiple predicate expressions, and using the longest-match parser combinator to back-track in order to parse the entire \texttt{WHERE} clause.
-
+The use of packrat parsing was invaluable in DeeBee's implementation, mostly in situations related to the parsing of nested predicate expressions in SQL \texttt{WHERE} clauses containing nested comparisons (using the \texttt{AND} and \texttt{OR} operators). These issues were eventually resolved by separating the productions for `leaf' predicates (those consisting of a comparison between an attribute and an expression) and predicates consisting of multiple predicate expressions, and using the longest-match parser combinator to back-track in order to parse the entire \texttt{WHERE} clause. Unlimited backtracking was guaranteed through the use of packrat parsing, allowing predicates to be nested to arbitrary depths.
+\FloatBarrier
 \subsection{Query Interpretation}
 \label{sec:query}
 Queries are interpreted against a table using the \texttt{Relation} API. DeeBee defines a core trait for all tables, \texttt{Relation}, which defines a number of `primitive' operations on a table, such as filtering rows by a predicate, projecting a relation by selecting specific columns, and taking a subset number of rows. These in turn rely on two abstract methods, for accessing the table's attribute definitions and the set of the table's rows. These methods are implemented by each concrete class that implements \texttt{Relation}.
@@ -234,11 +310,12 @@ Relation is extended by two other traits, \texttt{Selectable} and \texttt{Modify
 
 Queries involving predicates, such as \texttt{SELECT} and \texttt{DELETE} statements with \texttt{WHERE} clauses, must go through an additional step of predicate construction, which converts SQL ASTs for \texttt{WHERE} clauses into Scala partial functions which take as a parameter a row from a table and return a Boolean. These functions are emitted by the AST node for \texttt{WHERE} clauses, using the target relation as a context for accessing the attributes corresponding to names in the SQL predicate. A similar process is performed for \texttt{INSERT} statements, which must be checked against the type and integrity constraints in the attribute corresponding to each value in the statement.
 
-\section{Storage}
-\label{sec:storage}
-DeeBee currently provides one storage type, \texttt{CSVRelation}, which stores each table as a comma-separated values file on disk. While this storage mechanism is not ideal for a relational database, as it provides poor performance, it was used for the first DeeBee storage backend due to ease of implementation and testing. However, the DeeBee storage system is designed to be modular, making it possible to implement other storage backends in the future. I am considering the implementation of a B+ tree backend, similar to those used in `real-world' RDBMSs, and/or some form of hash bucket based storage.
+% \section{Storage}
+% \label{sec:storage}
+% DeeBee currently provides one storage type, \texttt{CSVRelation}, which stores each table as a comma-separated values file on disk. While this storage mechanism is not ideal for a relational database, as it provides poor performance, it was used for the first DeeBee storage backend due to ease of implementation and testing. However, the DeeBee storage system is designed to be modular, making it possible to implement other storage backends in the future. I am considering the implementation of a B+ tree backend, similar to those used in `real-world' RDBMSs, and/or some form of hash bucket based storage.
 
-\section{Further Research}
+\section{Conclusions}
+\subsection{Further Research}
 While DeeBee currently implements the entirity of the planned subset of SQL, there are a number of additional features that could be implemented. As discussed in \Cref{sec:storage}, CSV storage is not as performant as the storage methods used by real RDBMSs, and I am considering implementing a more advanced storage system. 
 
 Furthermore, DeeBee SQL does not currently implement a large portion of SQL syntax, such as \texttt{JOIN}s, \texttt{UPDATE} statements, \texttt{VIEW}s, or aggregate functions such as \texttt{SUM} and \texttt{COUNT}. DeeBee also does not implement all of the data types available in other SQL databases, such as BLOBs (binary large objects) and CLOBs (character large objects). An implementation of the SQL \texttt{DATE} type based on \texttt{java.util.date} was prototyped but is currently not yet implemented. 

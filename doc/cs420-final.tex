@@ -316,9 +316,12 @@ Queries involving predicates, such as \texttt{SELECT} and \texttt{DELETE} statem
 
 \section{Conclusions}
 
-The implementation of a query processing system for a relational database is one of many interesting applications of the study of compilers. Implementing a complete, working SQL database as I have done would not have been remotely possible were it not for the great deal of skills and information I have learned over the course of Computer Science 420. The significant differences between DeeBee SQL and Decaf has also presented the opportunity to explore more areas of programming language implmenentation. Since
+The implementation of a query processing system for a relational database is one of many interesting applications of the study of compilers. Implementing a complete, working SQL database as I have done would not have been remotely possible were it not for the great deal of skills and information I have learned over the course of Computer Science 420. The significant differences between DeeBee SQL and Decaf has also presented the opportunity to explore more areas of programming language implmenentation. 
+
+Since DeeBee SQL is interpreted rather than compiled, it was not necessary to implement code generation for DeeBee. Instead, since SQL is a domain specific language for querying a database, it was necessary to develop a system for evaluating database queries. However, parsing DeeBee SQL is a fairly analogous problem to parsing a general-purpose programming language, so techniques such as combinator and packrat parsing still apply. My experience working on Decaf's parser was sufficient preparation for working on the DeeBee SQL parser.
+
 \subsection{Further Research}
-While DeeBee currently implements the entirity of the planned subset of SQL, there are a number of additional features that could be implemented. As discussed in \Cref{sec:storage}, CSV storage is not as performant as the storage methods used by real RDBMSs, and I am considering implementing a more advanced storage system. 
+While DeeBee currently implements the entireity of the planned subset of SQL, there are a number of additional features that could be implemented. DeeBee currently uses CSV storage, which is not as performant as the storage methods used by real RDBMSs, and I am considering implementing a more advanced storage system. 
 
 Furthermore, DeeBee SQL does not currently implement a large portion of SQL syntax, such as \texttt{JOIN}s, \texttt{UPDATE} statements, \texttt{VIEW}s, or aggregate functions such as \texttt{SUM} and \texttt{COUNT}. DeeBee also does not implement all of the data types available in other SQL databases, such as BLOBs (binary large objects) and CLOBs (character large objects). An implementation of the SQL \texttt{DATE} type based on \texttt{java.util.date} was prototyped but is currently not yet implemented. 
 

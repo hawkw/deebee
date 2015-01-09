@@ -299,7 +299,7 @@ In the Scala packrat parsing implementation, memoization is implemented through 
     \caption{Packrat parsing in Scala.}
     \label{lst:packrat1}
 \end{listing}
-
+\FloatBarrier
 The use of packrat parsing was invaluable in DeeBee's implementation, mostly in situations related to the parsing of nested predicate expressions in SQL \texttt{WHERE} clauses containing nested comparisons (using the \texttt{AND} and \texttt{OR} operators). These issues were eventually resolved by separating the productions for `leaf' predicates (those consisting of a comparison between an attribute and an expression) and predicates consisting of multiple predicate expressions, and using the longest-match parser combinator to back-track in order to parse the entire \texttt{WHERE} clause. Unlimited backtracking was guaranteed through the use of packrat parsing, allowing predicates to be nested to arbitrary depths.
 \FloatBarrier
 \subsection{Query Interpretation}
@@ -315,6 +315,8 @@ Queries involving predicates, such as \texttt{SELECT} and \texttt{DELETE} statem
 % DeeBee currently provides one storage type, \texttt{CSVRelation}, which stores each table as a comma-separated values file on disk. While this storage mechanism is not ideal for a relational database, as it provides poor performance, it was used for the first DeeBee storage backend due to ease of implementation and testing. However, the DeeBee storage system is designed to be modular, making it possible to implement other storage backends in the future. I am considering the implementation of a B+ tree backend, similar to those used in `real-world' RDBMSs, and/or some form of hash bucket based storage.
 
 \section{Conclusions}
+
+The implementation of a query processing system for a relational database is one of many interesting applications of the study of compilers. Implementing a complete, working SQL database as I have done would not have been remotely possible were it not for the great deal of skills and information I have learned over the course of Computer Science 420. The significant differences between DeeBee SQL and Decaf has also presented the opportunity to explore more areas of programming language implmenentation. Since
 \subsection{Further Research}
 While DeeBee currently implements the entirity of the planned subset of SQL, there are a number of additional features that could be implemented. As discussed in \Cref{sec:storage}, CSV storage is not as performant as the storage methods used by real RDBMSs, and I am considering implementing a more advanced storage system. 
 

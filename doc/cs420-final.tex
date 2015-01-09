@@ -124,7 +124,7 @@ DeeBee's data manipulation language consists of \texttt{SELECT}, \texttt{INSERT}
 
 <vals-list> ::= <literal> `,' <vals-list> \alt <literal>
 
-<select-statement> ::= `SELECT' <projections> `FROM' <name> <where-clause> `;'
+<select-statement> ::= `SELECT' <projections> `FROM' <name> <where-clause> <limit-clause>`;'
 
 <delete-statement> ::= `DELETE' `FROM' <name> <where-clause> `;'
 
@@ -134,6 +134,8 @@ DeeBee's data manipulation language consists of \texttt{SELECT}, \texttt{INSERT}
 
 <where-clause> ::= `WHERE' <predicate> \alt $\varepsilon$
 
+<limit-clause> ::= `LIMIT' <int-const> \alt $\varepsilon$
+
 <predicate> ::= <comparison> <combining-op> <comparison> \alt <comparison>
 
 <combining-op> ::= `AND'  |`OR'
@@ -142,22 +144,54 @@ DeeBee's data manipulation language consists of \texttt{SELECT}, \texttt{INSERT}
 
 <comparison-op> ::= `=' |`!=' | `<>' | `>=' | `<='  | `<' | `>'
 
-<expr> ::= <int-const> | <double-const> | <string-const> | `null' | <name>
+<expr> ::= <literal> | <name>
 
-
-
+<literal> ::= <int-const> | <double-const> | <string-const> | `null' 
 \end{grammar}
 \caption{Grammar of DeeBee DML statements.}
 \label{lst:dml-grammar}
 \end{listing}
 
+An \texttt{INSERT} statement is used to add a row to a table in the database. It consists of the keywords \texttt{INSERT INTO} followed by the name of a table, followed by the keyword \texttt{VALUES} followed by a comma-separated list of values surrounded in parentheses. \Cref{lst:insert} provides a sample of such a statement.
+\begin{listing}[h!]
+    \begin{minted}{SQL}
+INSERT INTO Writers VALUES (
+	1,
+	'Robert',
+	'Anton',
+	'Heinlein', 
+	'7/7/1907',
+	'5/8/1988',
+	'USA'
+);
+        \end{minted}
+        \caption{Sample SQL \texttt{INSERT} statement.}
+        \label{lst:insert}
+        \end{listing}
+        \FloatBarrier
+        
+A \texttt{SELECT} statement returns rows contained in a table. Optionally, specific columns may be specified, referred to as \textit{projections}. Additionally, the rows may be filtered according to a predicate, or a \texttt{LIMIT} clause may be used to select up to a certain number of rows. \Cref{last:select} gives a number of sample \texttt{SELECT} statements.
+
+\begin{listing}[h!]
+    \begin{minted}[gobble=8]{SQL}
+        SELECT * FROM Writers;
+        SELECT first_name, last_name FROM Writers;
+        SELECT * FROM Writers WHERE first_name = "Anton";
+        SELECT * FROM Writers WHERE id > 5 AND country_of_origin = "USA";
+        SELECT * FROM Writers LIMIT 5;
+    \end{minted}
+    \caption{Sample SQL \texttt[SELECT} statements.}
+    \label{lst:select}.
+\end{listing}
 \section{Implementation}
+
+A \texttt{DELETE} statement removes rows from a table. By default, it will remove all rows, but the deleted rows may be filtered according to a predicate, or provided with a limit clause, as in the \texttt{SELECT} statement.
 
 \subsection{The Scala Programming Language}
 
 DeeBee was implemented using the Scala programming language, an object-oriented functional programming language which runs on the Java virtual machine~\cite{odersky2004scala,odersky2004overview,odersky2008programming}. Scala was designed by Martin Odersky of the Programming Methods Laboratory at \'Ecole Polytechnique F\'ed\'erale de Lausanne with the intention of developing a highly scalable programming language, ``in the sense that the same concepts can describe small as well as large parts''~\cite{odersky2004scala} and in the sense that Scala should be applicable to tasks of various sizes and complexities, and provide high performance at large scales~\cite{odersky2008programming}. 
 
-Scala was inspired by criticisms of Java and by the recent popularity of functional programming langauges such as Haskell. It aims to provide a syntax that is more expressive than that of Java but is still readily accessable to Java programmers. It is a statically-typed language and was developed with a focus on type safety, immutable data structures, and pure functions~\cite{odersky2004scala,odersky2004overview,odersky2008programming}. Because it compiles to Java bytecode and runs on the JVM, Scala is mutually cross-compatible with Java, meaning that Scala code can natively call Java methods and use Java libraries, and vise versa~\cite{odersky2008programming}.
+Scala was inspired by criticisms of Java and by the recent popularity of functional programming languages such as Haskell. It aims to provide a syntax that is more expressive than that of Java but is still readily accessible to Java programmers. It is a statically-typed language and was developed with a focus on type safety, immutable data structures, and pure functions~\cite{odersky2004scala,odersky2004overview,odersky2008programming}. Because it compiles to Java bytecode and runs on the JVM, Scala is mutually cross-compatible with Java, meaning that Scala code can natively call Java methods and use Java libraries, and vise versa~\cite{odersky2008programming}.
 
 A key concept in the Scala design is the idea of an `embedded domain-specific language (DSL)'. Essentially, this concept suggests that Scala's syntax should be modifiable to the extent that code for specific tasks be expressed with its' own syntax within Scala. These DSLs are still Scala code and can still be compiled by the Scala compiler, but their syntax differs based on the task they are intended for~\cite{ghosh2010dsls,hofer2008polymorphic,odersky2008programming}. The Scala parsing library and the ScalaTest testing framework both provide exmaples of embedded DSLs.
 

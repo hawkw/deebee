@@ -1,9 +1,11 @@
+sudo: false
 language: scala
 sbt_args: "-sbt-version 0.13.7"
 scala:
 - 2.10.4
 - 2.11.2
 - 2.11.4
+- 2.11.5
 script: sbt test
 after_success:
 - sbt coverage test coveralls
@@ -22,4 +24,4 @@ deploy:
   on:
     tags: true
     all_branches: true
-    scala: 2.11.4
+    scala: 2.11.5

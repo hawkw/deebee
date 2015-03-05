@@ -1,12 +1,16 @@
 language: scala
-sbt_args: "-sbt-version 0.13.7"
+sbt_args: -sbt-version 0.13.7
 scala:
 - 2.10.4
 - 2.11.2
 - 2.11.4
-script: sbt test
+- 2.11.5
+script:
+- sbt clean coverage test coveralls
+- sbt coverageReport
+- sbt coverageAggregate
+- sbt codacyCoverage
 after_success:
-- sbt coverage test coveralls
 - sbt doc
 - .travis/publish.sh
 env:
@@ -22,4 +26,6 @@ deploy:
   on:
     tags: true
     all_branches: true
-    scala: 2.11.4
+    scala: 2.11.5
+dd:
+  secure: sIr2L9ZUzhxrAr6vLXWEVOdQelh7YG/CUz8skG4RjwFNdah+8htm75X1NJl8XTkXQ1G/u2gdAJlMxE4Z69xTQmdwsDkXFzVMmLZBTcMlt3qSx+/g0G4Cdat6iqWPsYeQtLzGQGxEoRkCLbtuxe+VxYVX4IxtNA4m00GUK8OuEiM=

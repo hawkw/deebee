@@ -2,10 +2,9 @@ sudo: false
 language: scala
 sbt_args: -sbt-version 0.13.7
 scala:
-- 2.10.4
-- 2.11.2
-- 2.11.4
+- 2.11.6
 - 2.11.5
+- 2.11.4
 script:
 - sbt clean coverage test coveralls
 - sbt coverageReport
@@ -16,9 +15,8 @@ after_success:
 - .travis/publish.sh
 env:
   global:
-    secure:
-     - exn9JRP3/A/2WVrlkselkIMj8dSgz9J6sPx3Zg92pSQq0QOURLinWMaNf1eD8gz8g9jZ/HQDxdFMihlkjeh58q2/fyNBonqAzF3gSXKkJwg/uF8gjis+wqdb10y04xxzF24jWE4fy408H0deRFe7QFvMZmnextqrenlWeN4W1zo=
-     - sIr2L9ZUzhxrAr6vLXWEVOdQelh7YG/CUz8skG4RjwFNdah+8htm75X1NJl8XTkXQ1G/u2gdAJlMxE4Z69xTQmdwsDkXFzVMmLZBTcMlt3qSx+/g0G4Cdat6iqWPsYeQtLzGQGxEoRkCLbtuxe+VxYVX4IxtNA4m00GUK8OuEiM=
+    secure: exn9JRP3/A/2WVrlkselkIMj8dSgz9J6sPx3Zg92pSQq0QOURLinWMaNf1eD8gz8g9jZ/HQDxdFMihlkjeh58q2/fyNBonqAzF3gSXKkJwg/uF8gjis+wqdb10y04xxzF24jWE4fy408H0deRFe7QFvMZmnextqrenlWeN4W1zo=
+    secure: Ir2L9ZUzhxrAr6vLXWEVOdQelh7YG/CUz8skG4RjwFNdah+8htm75X1NJl8XTkXQ1G/u2gdAJlMxE4Z69xTQmdwsDkXFzVMmLZBTcMlt3qSx+/g0G4Cdat6iqWPsYeQtLzGQGxEoRkCLbtuxe+VxYVX4IxtNA4m00GUK8OuEiM=
 
 before_deploy: sbt assembly
 deploy:
@@ -30,4 +28,4 @@ deploy:
   on:
     tags: true
     all_branches: true
-    scala: 2.11.5
+    scala: 2.11.6
